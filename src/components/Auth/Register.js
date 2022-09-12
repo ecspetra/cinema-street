@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import md5 from 'md5';
 import { getDatabase, ref, set } from "firebase/database";
 
@@ -18,13 +18,6 @@ const Register = () => {
     useEffect(() => {
         console.log(formError);
     }, [formError]);
-
-    const history = useNavigate();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            history('/');
-        }
-    });
 
     const handleUserNameChange = (event) => {
         setUserName(event.target.value);
@@ -95,7 +88,7 @@ const Register = () => {
     return (
         <form className="registration-form" onSubmit={handleSubmit}>
             <div className="registration-form__text-wrap">
-                <h1 className="registration-form__title">Register to MovieNET</h1>
+                <h1 className="registration-form__title">Register to Cinema field</h1>
                 <p className="registration-form__text">Please fill in the fields to enter</p>
             </div>
             <div className="registration-form__field">

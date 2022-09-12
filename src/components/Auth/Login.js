@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {Link, useNavigate} from "react-router-dom";
-import {signInWithEmailAndPassword, getAuth, updateProfile, onAuthStateChanged} from "firebase/auth";
+import {signInWithEmailAndPassword, getAuth, updateProfile} from "firebase/auth";
 import {getDatabase, ref, set} from "firebase/database";
 
 const Login = () => {
@@ -16,13 +16,6 @@ const Login = () => {
     useEffect(() => {
         console.log(formError);
     }, [formError]);
-
-    const history = useNavigate();
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            history('/');
-        }
-    });
 
     const handleUserEmailChange = (event) => {
         setUserEmail(event.target.value);
@@ -57,7 +50,7 @@ const Login = () => {
     return (
         <form className="login-form" onSubmit={handleSubmit}>
             <div className="login-form__text-wrap">
-                <h1 className="login-form__title">Login to MovieNET</h1>
+                <h1 className="login-form__title">Login to Cinema field</h1>
                 <p className="login-form__text">Please enter your data</p>
             </div>
             <div className="login-form__field">

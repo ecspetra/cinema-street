@@ -3,22 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
-import './firebase';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import rootReducer from "./reducers";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+const store = createStore(rootReducer, composeWithDevTools());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
 root.render(
-    <BrowserRouter>
-        <Routes>
-            <Route exact path="/" element={<App/>} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/register" element={<Register/>} />
-        </Routes>
-    </BrowserRouter>
+	<Provider store={store}>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
+	</Provider>
 );
 
 reportWebVitals();
