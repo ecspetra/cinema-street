@@ -1,9 +1,12 @@
 import React from "react";
+import MovieList from "../MovieList/MovieList";
 
-const Home = () => {
+const Home = (props) => {
+
 	return (
 		<div className="home">
-			<h1>Home</h1>
+			<h1>Explore movies</h1>
+			{props.movies && <MovieList movies={props.movies} genres={props.genres} addMovieToMyCollection={props.addMovieToMyCollection} />}
 		</div>
 	)
 }

@@ -5,6 +5,7 @@ const Profile = (props) => {
 	return (
 		<div className="profile">
 			<h1>My Profile</h1>
+			<p>{props.user && props.user.displayName}</p>
 			<p>{props.user && props.user.email}</p>
 		</div>
 	)

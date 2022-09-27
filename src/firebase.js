@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-// import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 import { getDatabase } from "firebase/database";
 
@@ -15,11 +15,4 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-export const database = getDatabase();
-
-// async function getMovies(database) {
-//     const moviesCollection = collection(database, 'movies');
-//     const movieSnapshot = await getDocs(moviesCollection);
-//     const movieList = movieSnapshot.docs.map(doc => doc.data());
-//     return movieList;
-// }
+export const database = getDatabase(app);
