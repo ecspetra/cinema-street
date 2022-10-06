@@ -17,7 +17,7 @@ import {
     setFavouriteMovies,
     setPersons,
     setGenres,
-    removeFromFavouriteMovies
+    removeFromFavouriteMovies, setCurrentMoviePage
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -26,7 +26,7 @@ import TopBanner from "../TopBanner/TopBanner";
 import MoviePage from "../MoviePage/MoviePage";
 import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
 import { database } from "../../firebase";
-import {getDatabase, ref, push, set, onValue} from "firebase/database";
+import {getDatabase, ref, push, set, onValue, remove} from "firebase/database";
 import favouriteMovies from "../FavouriteMovies/FavouriteMovies";
 
 const App = (props) => {
@@ -59,6 +59,11 @@ const App = (props) => {
 
     const handleRemoveFromFavouriteMovies = (selectedMovie) => {
         dispatch(removeFromFavouriteMovies(selectedMovie));
+        removeMovieFromMyCollection(selectedMovie);
+    }
+
+    const handleSetCurrentMoviePage = (selectedMovie) => {
+        dispatch(setCurrentMoviePage(selectedMovie));
     }
 
     const handleSetPersons = (movies) => {
@@ -141,22 +146,18 @@ const App = (props) => {
         })
     }
 
-    // const removeMovieFromMyCollection = (key) => {
-    //     database.ref("movies").child(key).remove();
-    //     console.log(key);
-    //     handleSetFavouriteMovies();
-    // }
+    const removeMovieFromMyCollection = (selectedMovie) => {
+        const dbRef = ref(database, "/movies/" + selectedMovie.key);
+        remove(dbRef).then(() => console.log("Movie removed"));
+    }
 
     const addMovieToMyCollection = (selectedMovie) => {
-        // if (props.favouriteMovies && Object.keys(props.favouriteMovies).find(movie => movie.data.movie.id === selectedMovie.id)) {
-        //     alert('You already have this movie');
-        // } else {
-        //     postMoviesToDataBase(selectedMovie);
-        //     getMyMoviesFromDatabase();
-        // }
-
-        postMoviesToDataBase(selectedMovie);
-        getMyMoviesFromDatabase();
+        if (props.favouriteMovies && props.favouriteMovies.find(movie => movie.data.movie.id === selectedMovie.id)) {
+            alert('You already have this movie');
+        } else {
+            postMoviesToDataBase(selectedMovie);
+            getMyMoviesFromDatabase();
+        }
     }
 
     return (
@@ -165,14 +166,14 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home movies={props.movies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} />} />
+                    <Route exact path="/" element={<Home movies={props.movies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
-                    <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
+                    <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/actors" element={<Actors persons={props.persons}/>} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path="/movie" element={<MoviePage />} />
+                    <Route path={props.currentMoviePage && '/movie' + '/' + props.currentMoviePage.id} element={<MoviePage movies={props.movies} currentMoviePage={props.currentMoviePage} />} />
                 </Routes>
             </div>
         </div>
@@ -183,8 +184,9 @@ const mapStateToProps = state => ({
     currentUser: state.user.currentUser,
     movies: state.movies.uploadedMovies,
     favouriteMovies: state.favouriteMovies.favouriteMovies,
+    currentMoviePage: state.currentMoviePage.currentMoviePage,
     persons: state.persons.uploadedPersons,
     genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies })(App);
+export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMoviePage })(App);

@@ -1,5 +1,7 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
+import favouriteMovies from "../components/FavouriteMovies/FavouriteMovies";
+import {SET_CURRENT_MOVIE_PAGE} from "../actions/types";
 
 const initialUserState = {
 	currentUser: null,
@@ -13,6 +15,10 @@ const initialMoviesState = {
 
 const initialFavouriteMoviesState = {
 	favouriteMovies: [],
+};
+
+const initialCurrentMoviePageState = {
+	currentMoviePage: null,
 };
 
 const initialPersonsState = {
@@ -54,12 +60,26 @@ const movies_reducer = (state = initialMoviesState, action) => {
 const favourite_movies_reducer = (state = initialFavouriteMoviesState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_FAVOURITE_MOVIES:
+			const movieAlreadyExistsInState = state.favouriteMovies.some(item => item.data.movie.id === action.payload.favouriteMovies.data.movie.id);
+			if (movieAlreadyExistsInState) {
+				return state;
+			}
 			return {
 				...state,
 				favouriteMovies: [...state.favouriteMovies, action.payload.favouriteMovies],
 			}
 		case actionTypes.REMOVE_FROM_FAVOURITE_MOVIES:
 			return {...state, favouriteMovies: state.favouriteMovies.filter(item => item.data.movie.id !== action.payload)}
+		default: return state;
+	}
+}
+
+const current_movie_page_reducer = (state = initialCurrentMoviePageState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_CURRENT_MOVIE_PAGE:
+			return {
+				currentMoviePage: action.payload.currentMoviePage
+			}
 		default: return state;
 	}
 }
@@ -89,6 +109,7 @@ const rootReducer = combineReducers({
 	user: user_reducer,
 	movies: movies_reducer,
 	favouriteMovies: favourite_movies_reducer,
+	currentMoviePage: current_movie_page_reducer,
 	persons: person_reducer,
 	genres: genres_reducer,
 });

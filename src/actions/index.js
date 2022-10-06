@@ -1,5 +1,4 @@
 import * as actionTypes from './types';
-import {REMOVE_FROM_FAVOURITE_MOVIES} from "./types";
 
 export const setPersons = (persons) => {
 	return {
@@ -28,10 +27,19 @@ export const setFavouriteMovies = (movies) => {
 	}
 }
 
-export const removeFromFavouriteMovies = (id) => {
+export const removeFromFavouriteMovies = (selectedMovie) => {
 	return {
 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
-		payload: id
+		payload: selectedMovie.data.movie.id
+	}
+}
+
+export const setCurrentMoviePage = (selectedMovie) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_PAGE,
+		payload: {
+			currentMoviePage: selectedMovie
+		}
 	}
 }
 

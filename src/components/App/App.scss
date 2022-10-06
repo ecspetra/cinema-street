@@ -312,11 +312,15 @@ button {
     }
 
     &__genre {
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1;
         font-weight: 400;
-        margin: 0 8px 4px 0;
-        color: #7d7986;
+        margin: 0 4px 4px 0;
+        padding: 3px;
+        border-radius: 3px;
+        color: #a7a2b4;
+        text-transform: uppercase;
+        background-color: #221f2d;
     }
 
     &__button {

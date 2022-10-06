@@ -12,7 +12,7 @@ const FavouriteMovies = (props) => {
 					?
 					<>
 						{favouriteMovies.map((item, index) => {
-							return <MovieCard movie={item.data.movie} key={index} genres={props.genres} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies}/>
+							return <MovieCard movie={item.data.movie} key={index} genres={props.genres} favouriteMovieInfo={item} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage}/>
 						}
 					)}
 					</>
