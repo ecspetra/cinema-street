@@ -1,7 +1,6 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
-import favouriteMovies from "../components/FavouriteMovies/FavouriteMovies";
-import {SET_CURRENT_MOVIE_PAGE} from "../actions/types";
+import {setCurrentMovieSimilar} from "../actions";
 
 const initialUserState = {
 	currentUser: null,
@@ -18,7 +17,11 @@ const initialFavouriteMoviesState = {
 };
 
 const initialCurrentMoviePageState = {
-	currentMoviePage: null,
+	currentMovieInfo: null,
+	currentMovieCredits: null,
+	currentMovieImages: null,
+	currentMovieReviews: null,
+	currentMovieSimilar: null,
 };
 
 const initialPersonsState = {
@@ -76,9 +79,30 @@ const favourite_movies_reducer = (state = initialFavouriteMoviesState, action) =
 
 const current_movie_page_reducer = (state = initialCurrentMoviePageState, action) => {
 	switch (action.type) {
-		case actionTypes.SET_CURRENT_MOVIE_PAGE:
+		case actionTypes.SET_CURRENT_MOVIE_INFO:
 			return {
-				currentMoviePage: action.payload.currentMoviePage
+				...state,
+				currentMovieInfo: action.payload.currentMovieInfo
+			}
+		case actionTypes.SET_CURRENT_MOVIE_CREDITS:
+			return {
+				...state,
+				currentMovieCredits: action.payload.currentMovieCredits
+			}
+		case actionTypes.SET_CURRENT_MOVIE_IMAGES:
+			return {
+				...state,
+				currentMovieImages: action.payload.currentMovieImages
+			}
+		case actionTypes.SET_CURRENT_MOVIE_REVIEWS:
+			return {
+				...state,
+				currentMovieReviews: action.payload.currentMovieReviews
+			}
+		case actionTypes.SET_CURRENT_MOVIE_SIMILAR:
+			return {
+				...state,
+				currentMovieSimilar: action.payload.currentMovieSimilar
 			}
 		default: return state;
 	}

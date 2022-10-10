@@ -27,18 +27,61 @@ export const setFavouriteMovies = (movies) => {
 	}
 }
 
-export const removeFromFavouriteMovies = (selectedMovie) => {
+// export const removeFromFavouriteMovies = (selectedMovie) => {
+// 	return {
+// 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
+// 		payload: selectedMovie.data.movie.id
+// 	}
+// }
+
+export const removeFromFavouriteMovies = (id) => {
 	return {
 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
-		payload: selectedMovie.data.movie.id
+		payload: id
 	}
 }
 
-export const setCurrentMoviePage = (selectedMovie) => {
+export const setCurrentMovieInfo = (selectedMovie) => {
 	return {
-		type: actionTypes.SET_CURRENT_MOVIE_PAGE,
+		type: actionTypes.SET_CURRENT_MOVIE_INFO,
 		payload: {
-			currentMoviePage: selectedMovie
+			currentMovieInfo: selectedMovie,
+		}
+	}
+}
+
+export const setCurrentMovieCredits = (movieCredits) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_CREDITS,
+		payload: {
+			currentMovieCredits: movieCredits,
+		}
+	}
+}
+
+export const setCurrentMovieImages = (movieImages) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_IMAGES,
+		payload: {
+			currentMovieImages: movieImages,
+		}
+	}
+}
+
+export const setCurrentMovieReviews = (movieReviews) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_REVIEWS,
+		payload: {
+			currentMovieReviews: movieReviews,
+		}
+	}
+}
+
+export const setCurrentMovieSimilar = (movieSimilar) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_SIMILAR,
+		payload: {
+			currentMovieSimilar: movieSimilar,
 		}
 	}
 }

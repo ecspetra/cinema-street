@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { useLocation } from "react-router";
+import LogoIcon from "../App/assets/icons/Logo";
 
 const TopBanner = () => {
 
@@ -15,7 +16,7 @@ const TopBanner = () => {
 	return (
 		<div className={topBannerClassNames}>
 			<div className="top-banner__title-wrapper">
-				<span className="top-banner__title">Cinema<span className="top-banner__accent">field</span></span>
+				<span className="top-banner__title">Cinema<LogoIcon className="top-banner__logo-icon" /><span className="top-banner__accent">street</span></span>
 			</div>
 		</div>
 	)

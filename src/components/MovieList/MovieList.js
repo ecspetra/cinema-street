@@ -7,7 +7,7 @@ const MoviesList = (props) => {
 			Filter
 			<div className="movie-list">
 				{props.movies.map((movie, index) => {
-					return <MovieCard movie={movie} key={index} genres={props.genres} addMovieToMyCollection={props.addMovieToMyCollection} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
+					return <MovieCard movie={movie} key={index} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
 				})
 				}
 			</div>

@@ -17,7 +17,7 @@ import {
     setFavouriteMovies,
     setPersons,
     setGenres,
-    removeFromFavouriteMovies, setCurrentMoviePage
+    removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -57,13 +57,41 @@ const App = (props) => {
         dispatch(setFavouriteMovies(selectedMovie));
     }
 
-    const handleRemoveFromFavouriteMovies = (selectedMovie) => {
+    const handleRemoveFromFavouriteMovies = (selectedMovie, key) => {
         dispatch(removeFromFavouriteMovies(selectedMovie));
-        removeMovieFromMyCollection(selectedMovie);
+        removeMovieFromMyCollection(key);
     }
 
     const handleSetCurrentMoviePage = (selectedMovie) => {
-        dispatch(setCurrentMoviePage(selectedMovie));
+        getCurrentMoviePage(selectedMovie);
+    }
+
+    const getCurrentMoviePage = (selectedMovie) => {
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieInfo(data));
+            });
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/credits?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieCredits(data));
+            });
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/images?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieImages(data));
+            });
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/reviews?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieReviews(data));
+            });
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/similar?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieSimilar(data));
+            });
     }
 
     const handleSetPersons = (movies) => {
@@ -146,18 +174,23 @@ const App = (props) => {
         })
     }
 
-    const removeMovieFromMyCollection = (selectedMovie) => {
-        const dbRef = ref(database, "/movies/" + selectedMovie.key);
+    const removeMovieFromMyCollection = (key) => {
+        const dbRef = ref(database, "/movies/" + key);
         remove(dbRef).then(() => console.log("Movie removed"));
     }
 
+    // const addMovieToMyCollection = (selectedMovie) => {
+    //     if (props.favouriteMovies && props.favouriteMovies.find(movie => movie.data.movie.id === selectedMovie.id)) {
+    //         alert('You already have this movie');
+    //     } else {
+    //         postMoviesToDataBase(selectedMovie);
+    //         getMyMoviesFromDatabase();
+    //     }
+    // }
+
     const addMovieToMyCollection = (selectedMovie) => {
-        if (props.favouriteMovies && props.favouriteMovies.find(movie => movie.data.movie.id === selectedMovie.id)) {
-            alert('You already have this movie');
-        } else {
-            postMoviesToDataBase(selectedMovie);
-            getMyMoviesFromDatabase();
-        }
+        postMoviesToDataBase(selectedMovie);
+        getMyMoviesFromDatabase();
     }
 
     return (
@@ -166,14 +199,14 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home movies={props.movies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route exact path="/" element={<Home movies={props.movies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/actors" element={<Actors persons={props.persons}/>} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage && '/movie' + '/' + props.currentMoviePage.id} element={<MoviePage movies={props.movies} currentMoviePage={props.currentMoviePage} />} />
+                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage currentMoviePage={props.currentMoviePage} />} />
                 </Routes>
             </div>
         </div>
@@ -184,9 +217,9 @@ const mapStateToProps = state => ({
     currentUser: state.user.currentUser,
     movies: state.movies.uploadedMovies,
     favouriteMovies: state.favouriteMovies.favouriteMovies,
-    currentMoviePage: state.currentMoviePage.currentMoviePage,
+    currentMoviePage: state.currentMoviePage,
     persons: state.persons.uploadedPersons,
     genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMoviePage })(App);
+export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar })(App);

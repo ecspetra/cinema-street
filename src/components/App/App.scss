@@ -1,10 +1,17 @@
+$main-background-color: #0E141C;
+$wrap-background-color: #272B35;
+$main-color: #ff0062;
+$main-collection-color: #e38b38;
+
+$text-color-extra-light: #f3f1f0;
+
 html, body {
     padding: 0;
     margin: 0;
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
-    color: white;
-    background-color: #110F17;
+    color: $text-color-extra-light;
+    background-color: $main-background-color;
 }
 
 * {
@@ -17,7 +24,6 @@ a {
 }
 
 h1 {
-    text-align: center;
     margin: 0 0 40px;
 }
 
@@ -30,7 +36,7 @@ button {
     font-family: 'Poppins', sans-serif;
     border-radius: 4px;
     cursor: pointer;
-    color: white;
+    color: $text-color-extra-light;
 }
 
 .registration-form,
@@ -44,7 +50,7 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #eeeae7;
+    background-color: $text-color-extra-light;
     z-index: 3;
 
     &__content {
@@ -76,7 +82,7 @@ button {
     transform: translateX(-50%);
 
     &__item {
-        color: white;
+        color: $text-color-extra-light;
         position: relative;
 
         &:not(:last-child) {
@@ -90,8 +96,8 @@ button {
                 bottom: -2px;
                 left: 0;
                 width: 0;
-                height: 1px;
-                background-color: #EBC156;
+                height: 2px;
+                background-color: $main-color;
                 transition: .3s;
             }
         }
@@ -103,7 +109,7 @@ button {
         }
 
         &--auth {
-            background-color: rgba(#110F17, .4);
+            background-color: rgba($main-background-color, .4);
             padding: 6px 10px;
             border-radius: 4px;
         }
@@ -128,26 +134,23 @@ button {
     position: relative;
     width: 100vw;
     height: 400px;
-    background-image: url('assets/images/image-3.jpg');
+    background-image: url('assets/images/image-20.jpg');
     background-size: 100vw auto;
-    background-position: center calc(50% - 220px);
+    background-position: center;
     background-repeat: no-repeat;
     line-height: 1;
     margin: 0;
 
     &--actors {
         background-image: url('assets/images/image-5.jpg');
-        background-position: center;
     }
 
     &--genres {
         background-image: url('assets/images/image-7.jpg');
-        background-position: center;
     }
 
     &--profile {
         background-image: url('assets/images/image-1.jpg');
-        background-position: center;
     }
 
     //&--profile {
@@ -169,7 +172,7 @@ button {
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: linear-gradient(to top, #110F17 0%, rgba(#110F17, .7) 100%);
+        background-image: linear-gradient(to top, $main-background-color 0%, rgba($main-background-color, .8) 100%);
     }
 
     &__title-wrapper {
@@ -182,23 +185,35 @@ button {
     }
 
     &__title {
-        width: 242px;
+        width: 126px;
         display: block;
         position: relative;
-        font-size: 60px;
+        font-size: 30px;
         font-weight: 700;
-        color: #eeeae7;
+        color: $text-color-extra-light;
+    }
+
+    &__logo-icon {
+        position: absolute;
+        width: 34px;
+        height: 34px;
+        top: -2px;
+        right: -50px;
+        animation: logo-animation 4s infinite linear;
+
+        path.logo-background {
+            fill: $main-color;
+        }
     }
 
     &__accent {
         display: block;
         position: absolute;
-        top: 40px;
-        right: -30px;
-        font-size: 60px;
-        font-family: 'La Belle Aurore', cursive;
-        font-weight: 400;
-        color: #ffb800;
+        top: 25px;
+        right: -20px;
+        font-size: 40px;
+        font-weight: 600;
+        color: $main-color;
     }
 }
 
@@ -254,48 +269,16 @@ button {
         line-height: 1;
         font-weight: 500;
         margin-top: 6px;
-
-        &--low {
-            color: #d50329;
-
-            .movie-card {
-                &__rating-icon {
-                    path {
-                        fill: #d50329;
-                    }
-                }
-            }
-        }
-
-        &--middle {
-            color: #ffb800;
-
-            .movie-card {
-                &__rating-icon {
-                    path {
-                        fill: #ffb800;
-                    }
-                }
-            }
-        }
-
-        &--high {
-            color: #80b200;
-
-            .movie-card {
-                &__rating-icon {
-                    path {
-                        fill: #80b200;
-                    }
-                }
-            }
-        }
     }
 
     &__rating-icon {
         width: 12px;
         height: 12px;
         margin-right: 4px;
+
+        path {
+            fill: $main-color;
+        }
     }
 
     &__image {
@@ -320,21 +303,90 @@ button {
         border-radius: 3px;
         color: #a7a2b4;
         text-transform: uppercase;
-        background-color: #221f2d;
+        background-color: $wrap-background-color;
     }
 
     &__button {
-        border: 1px solid #d50329;
+        border: 2px solid $main-color;
         font-size: 12px;
         font-weight: 600;
-        padding: 10px 16px;
+        padding: 10px 8px;
         margin: auto 0 0;
         width: 100%;
         text-transform: uppercase;
         transition: .3s;
 
         &:hover {
-            background-color: #d50329;
+            background-color: $main-color;
+            box-shadow: 0 0 15px rgba($main-color, .5);
         }
+
+        &--remove {
+            border-color: transparent;
+            background-color: rgba($main-color, .1);
+            color: $main-color;
+
+            &:hover {
+                color: $text-color-extra-light;
+            }
+        }
+    }
+}
+
+.movie-page {
+
+    &__content {
+
+    }
+
+    &__movie-info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        background-color: $wrap-background-color;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    &__cover-wrap {
+        margin: -60px 40px 0 0;
+    }
+
+    &__image {
+        width: 320px;
+        border-radius: 8px;
+        display: block;
+    }
+
+    &__info-wrap {
+    }
+
+    &__credits {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        .person-card {
+            width: 100px;
+            &__image {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+        }
+    }
+
+    &__reviews {
+
+    }
+}
+
+@keyframes logo-animation {
+
+    100% {
+        transform: rotate(360deg);
     }
 }
