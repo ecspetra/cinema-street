@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
-import {setCurrentMovieSimilar} from "../actions";
 
 const initialUserState = {
 	currentUser: null,
@@ -9,12 +8,11 @@ const initialUserState = {
 
 const initialMoviesState = {
 	uploadedMovies: null,
-	isLoading: true
 }
 
 const initialFavouriteMoviesState = {
 	favouriteMovies: [],
-};
+}
 
 const initialCurrentMoviePageState = {
 	currentMovieInfo: null,
@@ -22,11 +20,10 @@ const initialCurrentMoviePageState = {
 	currentMovieImages: null,
 	currentMovieReviews: null,
 	currentMovieSimilar: null,
-};
+}
 
 const initialPersonsState = {
 	uploadedPersons: null,
-	isLoading: true
 }
 
 const initialGenresState = {
@@ -53,8 +50,7 @@ const movies_reducer = (state = initialMoviesState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_MOVIES:
 			return {
-				uploadedMovies: action.payload.uploadedMovies,
-				isLoading: false
+				uploadedMovies: action.payload.uploadedMovies
 			}
 		default: return state;
 	}
@@ -112,8 +108,7 @@ const person_reducer = (state = initialPersonsState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_PERSONS:
 			return {
-				uploadedPersons: action.payload.uploadedPersons,
-				isLoading: false
+				uploadedPersons: action.payload.uploadedPersons
 			}
 		default: return state;
 	}

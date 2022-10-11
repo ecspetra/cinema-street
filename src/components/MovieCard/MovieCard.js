@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import RatingIcon from "../App/assets/icons/Rating";
+import Button from "../Button/Button";
 
 const MovieCard = (props) => {
 
@@ -9,7 +10,7 @@ const MovieCard = (props) => {
 
 	const favouriteMovies = props.favouriteMovies;
 
-	console.log(props.favouriteMovieInfo);
+	// console.log(props.favouriteMovieInfo);
 
 	const getMovieGenresIDs = () => {
 		props.movie.genre_ids.map((genre) => {
@@ -41,7 +42,7 @@ const MovieCard = (props) => {
 			<Link to={'/movie' + '/' + props.movie.id} className="movie-card__link" onClick={() => {
 				props.handleSetCurrentMoviePage(props.movie)
 			}}>
-				<img className="movie-card__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.movie.poster_path} />
+				<img className="movie-card__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.movie.poster_path} alt="movie-poster" />
 				<span className="movie-card__title-wrap">
 					<h3 className="movie-card__title">{props.movie.title}</h3>
 					<span className="movie-card__rating">
@@ -59,11 +60,7 @@ const MovieCard = (props) => {
 					})
 				}
 			</div>
-			{
-				favouriteMovies.some(item => item.data.movie.id === props.movie.id)
-					? (<button className="movie-card__button movie-card__button--remove" onClick={() => {const favouriteMovieItem = favouriteMovies.find(item => item.data.movie.id === props.movie.id); const key = favouriteMovieItem.key; props.handleRemoveFromFavouriteMovies(props.movie.id, key)}}>Remove from collection</button>)
-					: (<button className="movie-card__button" onClick={() => {props.addMovieToMyCollection(props.movie)}}>Add to collection</button>)
-			}
+			<Button favouriteMovies={props.favouriteMovies} movie={props.movie} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} />
 		</div>
 	)
 }

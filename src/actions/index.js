@@ -27,13 +27,6 @@ export const setFavouriteMovies = (movies) => {
 	}
 }
 
-// export const removeFromFavouriteMovies = (selectedMovie) => {
-// 	return {
-// 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
-// 		payload: selectedMovie.data.movie.id
-// 	}
-// }
-
 export const removeFromFavouriteMovies = (id) => {
 	return {
 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,

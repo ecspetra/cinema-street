@@ -1,5 +1,8 @@
 import React from "react";
-import ActorCard from "../ActorCard/ActorCard";
+import Button from "../Button/Button";
+import ActorsList from "../ActorsList/ActorsList";
+import BackdropsList from "../BackdropsList/BackdropsList";
+import ReviewsList from "../ReviewsList/ReviewsList";
 
 const MoviePage = (props) => {
 
@@ -8,7 +11,7 @@ const MoviePage = (props) => {
 			<div className="movie-page__content">
 				<div className="movie-page__movie-info">
 					<div className="movie-page__cover-wrap">
-						<img className="movie-page__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.currentMoviePage.currentMovieInfo.poster_path} />
+						<img className="movie-page__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.currentMoviePage.currentMovieInfo.poster_path} alt="movie-poster" />
 					</div>
 					<div className="movie-page__info-wrap">
 						{props.currentMoviePage.currentMovieInfo.adult && <span>18+</span>}
@@ -17,15 +20,14 @@ const MoviePage = (props) => {
 						<p>{props.currentMoviePage.currentMovieInfo.overview}</p>
 						<p>{props.currentMoviePage.currentMovieInfo.budget}</p>
 						<p>{props.currentMoviePage.currentMovieInfo.release_date}</p>
+						<Button currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} movie={props.currentMoviePage.currentMovieInfo} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} />
 					</div>
 				</div>
 				<div className="movie-page__credits-wrap">
 					<h1>Cast</h1>
 					<div className="movie-page__credits">
 						{
-							props.currentMoviePage.currentMovieCredits && props.currentMoviePage.currentMovieCredits.cast.map((item, key) => {
-								return <ActorCard key={key} person={item} />
-							})
+							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} isMovieCharacter />
 						}
 					</div>
 				</div>
@@ -33,9 +35,7 @@ const MoviePage = (props) => {
 					<h1>Backdrops</h1>
 					<div className="movie-page__images">
 						{
-							props.currentMoviePage.currentMovieImages && props.currentMoviePage.currentMovieImages.backdrops.map((item, key) => {
-								return <img className="movie-page__backdrop" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + item.file_path} key={key} />
-							})
+							props.currentMoviePage.currentMovieImages && <BackdropsList backdrops={props.currentMoviePage.currentMovieImages.backdrops} />
 						}
 					</div>
 				</div>
@@ -43,15 +43,7 @@ const MoviePage = (props) => {
 					<h1>Reviews</h1>
 					<div className="movie-page__reviews">
 						{
-							props.currentMoviePage.currentMovieReviews && props.currentMoviePage.currentMovieReviews.results.map((item, key) => {
-								return (
-									<div className="movie-page__review">
-										<div className="movie-page__review">{item.author_details.username}</div>
-										<div className="movie-page__review">{item.author_details.rating}</div>
-										<img className="movie-page__review" src={item.author_details.avatar_path} />
-										<div className="movie-page__review">{item.content}</div>
-									</div>)
-							})
+							props.currentMoviePage.currentMovieReviews && <ReviewsList reviews={props.currentMoviePage.currentMovieReviews.results} />
 						}
 					</div>
 				</div>

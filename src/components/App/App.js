@@ -206,7 +206,7 @@ const App = (props) => {
                     <Route path="/actors" element={<Actors persons={props.persons}/>} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage currentMoviePage={props.currentMoviePage} />} />
+                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
                 </Routes>
             </div>
         </div>

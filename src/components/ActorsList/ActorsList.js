@@ -6,15 +6,15 @@ const ActorsList = (props) => {
 	const persons = props.persons;
 
 	return (
-		<>
-			Filter
-			<div className="movie-list">
-				{persons.map((person, index) => {
-					return <ActorCard person={person} key={index} />
+		<div className="persons-list">
+			{
+				persons && persons.map((person, index) => {
+					if (index <= 7) {
+						return <ActorCard person={person} key={index} isMovieCharacter={props.isMovieCharacter} />
+					}
 				})
-				}
-			</div>
-		</>
+			}
+		</div>
 	)
 }
 
