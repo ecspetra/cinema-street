@@ -3,8 +3,18 @@ import Button from "../Button/Button";
 import ActorsList from "../ActorsList/ActorsList";
 import BackdropsList from "../BackdropsList/BackdropsList";
 import ReviewsList from "../ReviewsList/ReviewsList";
+import {useEffect, useRef} from "react";
 
 const MoviePage = (props) => {
+
+	const onMoviePageUnmount = useRef();
+	onMoviePageUnmount.current = () => {
+		props.handleClearCurrentMoviePage();
+	}
+
+	useEffect(() => {
+		return () => onMoviePageUnmount.current();
+	}, []);
 
 	return (
 		<div className="movie-page">
@@ -27,7 +37,9 @@ const MoviePage = (props) => {
 					<h1>Cast</h1>
 					<div className="movie-page__credits">
 						{
-							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} isMovieCharacter />
+							props.isCurrentMovieLoading
+								? 'Loading'
+								: props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} isMovieCharacter />
 						}
 					</div>
 				</div>
@@ -35,7 +47,9 @@ const MoviePage = (props) => {
 					<h1>Backdrops</h1>
 					<div className="movie-page__images">
 						{
-							props.currentMoviePage.currentMovieImages && <BackdropsList backdrops={props.currentMoviePage.currentMovieImages.backdrops} />
+							(props.currentMoviePage.currentMovieImages && props.currentMoviePage.currentMovieImages.backdrops.length)
+								? <BackdropsList backdrops={props.currentMoviePage.currentMovieImages.backdrops} />
+								: 'No backdrops yet'
 						}
 					</div>
 				</div>
@@ -43,7 +57,9 @@ const MoviePage = (props) => {
 					<h1>Reviews</h1>
 					<div className="movie-page__reviews">
 						{
-							props.currentMoviePage.currentMovieReviews && <ReviewsList reviews={props.currentMoviePage.currentMovieReviews.results} />
+							(props.currentMoviePage.currentMovieReviews && props.currentMoviePage.currentMovieReviews.results.length)
+								? <ReviewsList reviews={props.currentMoviePage.currentMovieReviews.results} />
+								: 'No reviews yet'
 						}
 					</div>
 				</div>

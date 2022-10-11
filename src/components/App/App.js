@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import './App.scss';
 import { Route, Routes } from "react-router-dom";
 import Home from "../Home/Home";
@@ -17,7 +17,13 @@ import {
     setFavouriteMovies,
     setPersons,
     setGenres,
-    removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar
+    removeFromFavouriteMovies,
+    setCurrentMovieInfo,
+    setCurrentMovieCredits,
+    setCurrentMovieImages,
+    setCurrentMovieReviews,
+    setCurrentMovieSimilar,
+    clearCurrentMoviePage
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -27,7 +33,7 @@ import MoviePage from "../MoviePage/MoviePage";
 import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
 import { database } from "../../firebase";
 import {getDatabase, ref, push, set, onValue, remove} from "firebase/database";
-import favouriteMovies from "../FavouriteMovies/FavouriteMovies";
+import {useLocation} from "react-router";
 
 const App = (props) => {
 
@@ -154,6 +160,16 @@ const App = (props) => {
         getPersons();
     }, []);
 
+
+    // const location = useLocation();
+    //
+    // useEffect(() => {
+    //     if (location === '/movie') {
+    //         console.log(location);
+    //         // handleSetCurrentMoviePage(props.movie.id);
+    //     }
+    // }, [location]);
+
     ///////////////////////////////////////////////////
 
     const database = getDatabase();
@@ -193,6 +209,20 @@ const App = (props) => {
         getMyMoviesFromDatabase();
     }
 
+    const handleClearCurrentMoviePage = () => {
+        dispatch(clearCurrentMoviePage());
+    }
+
+    // useLayoutEffect(() => {
+    //     if (props.currentMoviePage.currentMovieInfo !== null) {
+    //         handleClearCurrentMoviePage();
+    //     }
+    // }, [props.currentMoviePage]);
+
+    // useEffect(() => {
+    //     handleClearCurrentMoviePage();
+    // }, []);
+
     return (
         <div className="content-wrapper">
             <Menu auth={auth} />
@@ -203,10 +233,10 @@ const App = (props) => {
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
-                    <Route path="/actors" element={<Actors persons={props.persons}/>} />
+                    <Route path="/actors" element={<Actors persons={props.persons} />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
+                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} isCurrentMovieLoading={props.currentMoviePage.isCurrentMovieLoading} />} />
                 </Routes>
             </div>
         </div>
@@ -222,4 +252,4 @@ const mapStateToProps = state => ({
     genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar })(App);
+export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar, clearCurrentMoviePage })(App);

@@ -79,6 +79,12 @@ export const setCurrentMovieSimilar = (movieSimilar) => {
 	}
 }
 
+export const clearCurrentMoviePage = () => {
+	return {
+		type: actionTypes.CLEAR_CURRENT_MOVIE,
+	}
+}
+
 export const setUser = (user) => {
 	return {
 		type: actionTypes.SET_USER,

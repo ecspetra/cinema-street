@@ -20,6 +20,7 @@ const initialCurrentMoviePageState = {
 	currentMovieImages: null,
 	currentMovieReviews: null,
 	currentMovieSimilar: null,
+	isCurrentMovieLoading: true,
 }
 
 const initialPersonsState = {
@@ -78,27 +79,36 @@ const current_movie_page_reducer = (state = initialCurrentMoviePageState, action
 		case actionTypes.SET_CURRENT_MOVIE_INFO:
 			return {
 				...state,
-				currentMovieInfo: action.payload.currentMovieInfo
+				currentMovieInfo: action.payload.currentMovieInfo,
+				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_CREDITS:
 			return {
 				...state,
-				currentMovieCredits: action.payload.currentMovieCredits
+				currentMovieCredits: action.payload.currentMovieCredits,
+				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_IMAGES:
 			return {
 				...state,
-				currentMovieImages: action.payload.currentMovieImages
+				currentMovieImages: action.payload.currentMovieImages,
+				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_REVIEWS:
 			return {
 				...state,
-				currentMovieReviews: action.payload.currentMovieReviews
+				currentMovieReviews: action.payload.currentMovieReviews,
+				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_SIMILAR:
 			return {
 				...state,
-				currentMovieSimilar: action.payload.currentMovieSimilar
+				currentMovieSimilar: action.payload.currentMovieSimilar,
+				isCurrentMovieLoading: false,
+			}
+		case actionTypes.CLEAR_CURRENT_MOVIE:
+			return {
+				...initialCurrentMoviePageState
 			}
 		default: return state;
 	}
