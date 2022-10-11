@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import RatingIcon from "../App/assets/icons/Rating";
 import Button from "../Button/Button";
+import {useParams} from "react-router";
 
 const MovieCard = (props) => {
 
@@ -9,8 +10,6 @@ const MovieCard = (props) => {
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
 
 	const favouriteMovies = props.favouriteMovies;
-
-	// console.log(props.favouriteMovieInfo);
 
 	const getMovieGenresIDs = () => {
 		props.movie.genre_ids.map((genre) => {
@@ -37,9 +36,11 @@ const MovieCard = (props) => {
 		findGenres();
 	}, [movieGenresIDs]);
 
+	let { id = props.movie.id } = useParams();
+
 	return (
 		<div className="movie-card">
-			<Link to={'/movie' + '/' + props.movie.id} className="movie-card__link" onClick={() => {
+			<Link to={"/movie/" + id} className="movie-card__link" onClick={() => {
 				props.handleSetCurrentMoviePage(props.movie)
 			}}>
 				<img className="movie-card__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.movie.poster_path} alt="movie-poster" />
