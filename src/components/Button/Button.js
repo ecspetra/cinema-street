@@ -14,8 +14,8 @@ const Button = (props) => {
 		<>
 			{
 				favouriteMovies && favouriteMovies.some(item => item.data.movie.id === props.movie.id)
-					? (<button className="movie-card__button movie-card__button--remove" onClick={() => {removeMovieFromCollection()}}>Remove from collection</button>)
-					: (<button className="movie-card__button" onClick={() => {props.addMovieToMyCollection(props.movie)}}>Add to collection</button>)
+					? (<button className="main-button main-button--remove" onClick={() => {removeMovieFromCollection()}}>Remove from collection</button>)
+					: (<button className="main-button" onClick={() => {props.addMovieToMyCollection(props.movie)}}>Add to collection</button>)
 			}
 		</>
 	)

@@ -108,3 +108,12 @@ export const setGenres = (genres) => {
 		}
 	}
 }
+
+export const setCompany = (company) => {
+	return {
+		type: actionTypes.SET_COMPANY_PAGE,
+		payload: {
+			currentCompany: company
+		}
+	}
+}

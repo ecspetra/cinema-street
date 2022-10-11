@@ -11,3 +11,4 @@ export const SET_PERSONS = 'SET_PERSONS';
 export const SET_USER = 'SET_USER';
 export const CLEAR_USER = 'CLEAR_USER';
 export const SET_GENRES = 'SET_GENRES';
+export const SET_COMPANY_PAGE = 'SET_COMPANY_PAGE';

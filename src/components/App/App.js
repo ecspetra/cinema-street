@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './App.scss';
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes, matchPath, BrowserRouter} from "react-router-dom";
 import Home from "../Home/Home";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
@@ -23,7 +23,8 @@ import {
     setCurrentMovieImages,
     setCurrentMovieReviews,
     setCurrentMovieSimilar,
-    clearCurrentMoviePage
+    clearCurrentMoviePage,
+    setCompany
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -34,6 +35,7 @@ import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
 import { database } from "../../firebase";
 import {getDatabase, ref, push, set, onValue, remove} from "firebase/database";
 import {useLocation} from "react-router";
+import CompanyPage from "../CompanyPage/CompanyPage";
 
 const App = (props) => {
 
@@ -69,10 +71,12 @@ const App = (props) => {
     }
 
     const handleSetCurrentMoviePage = (selectedMovie) => {
+        handleClearCurrentMoviePage();
         getCurrentMoviePage(selectedMovie);
     }
 
     const getCurrentMoviePage = (selectedMovie) => {
+        console.log(selectedMovie.id);
         fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
             .then(response => response.json())
             .then(data => {
@@ -141,6 +145,18 @@ const App = (props) => {
             });
     }
 
+    const handleSetCompanyPage = (selectedCompany) => {
+        dispatch(setCompany(selectedCompany));
+    }
+
+    const getCompanyPage = (selectedCompany) => {
+        fetch('https://api.themoviedb.org/3/company/' + selectedCompany.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                handleSetCompanyPage(data.results);
+            });
+    }
+
     const getMyMoviesFromDatabase = () => {
         onValue(postListRef, (snapshot) => {
             snapshot.forEach((childSnapshot) => {
@@ -159,16 +175,6 @@ const App = (props) => {
         getMovies();
         getPersons();
     }, []);
-
-
-    // const location = useLocation();
-    //
-    // useEffect(() => {
-    //     if (location === '/movie') {
-    //         console.log(location);
-    //         // handleSetCurrentMoviePage(props.movie.id);
-    //     }
-    // }, [location]);
 
     ///////////////////////////////////////////////////
 
@@ -195,15 +201,6 @@ const App = (props) => {
         remove(dbRef).then(() => console.log("Movie removed"));
     }
 
-    // const addMovieToMyCollection = (selectedMovie) => {
-    //     if (props.favouriteMovies && props.favouriteMovies.find(movie => movie.data.movie.id === selectedMovie.id)) {
-    //         alert('You already have this movie');
-    //     } else {
-    //         postMoviesToDataBase(selectedMovie);
-    //         getMyMoviesFromDatabase();
-    //     }
-    // }
-
     const addMovieToMyCollection = (selectedMovie) => {
         postMoviesToDataBase(selectedMovie);
         getMyMoviesFromDatabase();
@@ -213,15 +210,23 @@ const App = (props) => {
         dispatch(clearCurrentMoviePage());
     }
 
-    // useLayoutEffect(() => {
-    //     if (props.currentMoviePage.currentMovieInfo !== null) {
-    //         handleClearCurrentMoviePage();
-    //     }
-    // }, [props.currentMoviePage]);
+    /////////////////////////////////////////////////// - set current movie page when click back button
 
-    // useEffect(() => {
-    //     handleClearCurrentMoviePage();
-    // }, []);
+    const location = useLocation();
+
+    useEffect(() => {
+
+        const match = matchPath({ path: '/movie/:id' }, location.pathname);
+
+        if (match) {
+            // console.log(location.pathname);
+            // console.log(match.params.movieID);
+            // console.log(match.params);
+            handleSetCurrentMoviePage(match.params);
+        }
+    }, [location]);
+
+    ///////////////////////////////////////////////////
 
     return (
         <div className="content-wrapper">
@@ -236,7 +241,8 @@ const App = (props) => {
                     <Route path="/actors" element={<Actors persons={props.persons} />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage.currentMovieInfo && '/movie' + '/' + props.currentMoviePage.currentMovieInfo.id} element={<MoviePage handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} isCurrentMovieLoading={props.currentMoviePage.isCurrentMovieLoading} />} />
+                    <Route path={props.currentMoviePage.currentMovieInfo && "/movie/:id"} element={<MoviePage handleSetCompanyPage={handleSetCompanyPage} handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
+                    <Route path={"/company/:id"} element={<CompanyPage currentCompany={props.currentCompany} movies={props.movies} />} />
                 </Routes>
             </div>
         </div>
@@ -250,6 +256,7 @@ const mapStateToProps = state => ({
     currentMoviePage: state.currentMoviePage,
     persons: state.persons.uploadedPersons,
     genres: state.genres.uploadedGenres,
+    currentCompany: state.currentCompany.currentCompany,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar, clearCurrentMoviePage })(App);
+export default connect(mapStateToProps, { setPersons, setMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar, clearCurrentMoviePage, setCompany })(App);

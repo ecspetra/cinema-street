@@ -20,7 +20,6 @@ const initialCurrentMoviePageState = {
 	currentMovieImages: null,
 	currentMovieReviews: null,
 	currentMovieSimilar: null,
-	isCurrentMovieLoading: true,
 }
 
 const initialPersonsState = {
@@ -29,6 +28,10 @@ const initialPersonsState = {
 
 const initialGenresState = {
 	uploadedGenres: null,
+}
+
+const initialCompanyPageState = {
+	currentCompany: null,
 }
 
 const user_reducer = (state = initialUserState, action) => {
@@ -80,31 +83,26 @@ const current_movie_page_reducer = (state = initialCurrentMoviePageState, action
 			return {
 				...state,
 				currentMovieInfo: action.payload.currentMovieInfo,
-				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_CREDITS:
 			return {
 				...state,
 				currentMovieCredits: action.payload.currentMovieCredits,
-				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_IMAGES:
 			return {
 				...state,
 				currentMovieImages: action.payload.currentMovieImages,
-				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_REVIEWS:
 			return {
 				...state,
 				currentMovieReviews: action.payload.currentMovieReviews,
-				isCurrentMovieLoading: false,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_SIMILAR:
 			return {
 				...state,
 				currentMovieSimilar: action.payload.currentMovieSimilar,
-				isCurrentMovieLoading: false,
 			}
 		case actionTypes.CLEAR_CURRENT_MOVIE:
 			return {
@@ -134,6 +132,16 @@ const genres_reducer = (state = initialGenresState, action) => {
 	}
 }
 
+const companies_reducer = (state = initialCompanyPageState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_COMPANY_PAGE:
+			return {
+				currentCompany: action.payload.currentCompany,
+			}
+		default: return state;
+	}
+}
+
 const rootReducer = combineReducers({
 	user: user_reducer,
 	movies: movies_reducer,
@@ -141,6 +149,7 @@ const rootReducer = combineReducers({
 	currentMoviePage: current_movie_page_reducer,
 	persons: person_reducer,
 	genres: genres_reducer,
+	currentCompany: companies_reducer,
 });
 
 export default rootReducer;
