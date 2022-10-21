@@ -6,7 +6,7 @@ const Actors = (props) => {
 	return (
 		<div className="actors">
 			<h1>Actors</h1>
-			<ActorsList persons={props.persons} />
+			<ActorsList persons={props.persons} getCurrentPersonInfo={props.getCurrentPersonInfo} />
 		</div>
 	)
 }

@@ -18,6 +18,15 @@ export const setMovies = (movies) => {
 	}
 }
 
+export const setUpcomingMovies = (movies) => {
+	return {
+		type: actionTypes.SET_UPCOMING_MOVIES,
+		payload: {
+			upcomingMovies: movies
+		}
+	}
+}
+
 export const setFavouriteMovies = (movies) => {
 	return {
 		type: actionTypes.SET_FAVOURITE_MOVIES,
@@ -109,11 +118,17 @@ export const setGenres = (genres) => {
 	}
 }
 
-export const setCompany = (company) => {
+export const setCurrentPersonPage = (selectedPerson) => {
 	return {
-		type: actionTypes.SET_COMPANY_PAGE,
+		type: actionTypes.SET_CURRENT_PERSON_PAGE,
 		payload: {
-			currentCompany: company
+			currentPersonInfo: selectedPerson
 		}
+	}
+}
+
+export const clearCurrentPersonPage = () => {
+	return {
+		type: actionTypes.CLEAR_CURRENT_PERSON_PAGE,
 	}
 }

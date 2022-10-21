@@ -19,7 +19,7 @@ const ActorCard = (props) => {
 
 	return (
 		<div className="person-card">
-			<Link to="/movie/ + props.movie.poster_path" className="person-card__link">
+			<Link to={"/person/" + props.person.id} className="person-card__link" onClick={() => {props.getCurrentPersonInfo(props.person.id)}}>
 				<div className="person-card__content">
 					<div className={personCardImageWrapClassNames}>
 						<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={addDefaultSrc} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.person.profile_path} alt="person-photo" />

@@ -1,13 +1,22 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
+import {setUpcomingMovies} from "../actions";
 
 const initialUserState = {
 	currentUser: null,
 	isLoading: true
 }
 
+// const initialMoviesState = {
+// 	uploadedMovies: null,
+// }
+
 const initialMoviesState = {
-	uploadedMovies: null,
+	uploadedMovies: [],
+}
+
+const initialUpcomingMoviesState = {
+	upcomingMovies: null,
 }
 
 const initialFavouriteMoviesState = {
@@ -24,14 +33,11 @@ const initialCurrentMoviePageState = {
 
 const initialPersonsState = {
 	uploadedPersons: null,
+	currentPersonInfo: null,
 }
 
 const initialGenresState = {
 	uploadedGenres: null,
-}
-
-const initialCompanyPageState = {
-	currentCompany: null,
 }
 
 const user_reducer = (state = initialUserState, action) => {
@@ -50,11 +56,32 @@ const user_reducer = (state = initialUserState, action) => {
 	}
 }
 
+// const movies_reducer = (state = initialMoviesState, action) => {
+// 	switch (action.type) {
+// 		case actionTypes.SET_MOVIES:
+// 			return {
+// 				uploadedMovies: action.payload.uploadedMovies
+// 			}
+// 		default: return state;
+// 	}
+// }
+
 const movies_reducer = (state = initialMoviesState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_MOVIES:
 			return {
-				uploadedMovies: action.payload.uploadedMovies
+				...state,
+				uploadedMovies: [...state.uploadedMovies, action.payload.uploadedMovies],
+			}
+		default: return state;
+	}
+}
+
+const upcoming_movies_reducer = (state = initialUpcomingMoviesState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_UPCOMING_MOVIES:
+			return {
+				upcomingMovies: action.payload.upcomingMovies
 			}
 		default: return state;
 	}
@@ -116,7 +143,18 @@ const person_reducer = (state = initialPersonsState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_PERSONS:
 			return {
-				uploadedPersons: action.payload.uploadedPersons
+				...state,
+				uploadedPersons: action.payload.uploadedPersons,
+			}
+		case actionTypes.SET_CURRENT_PERSON_PAGE:
+			return {
+				...state,
+				currentPersonInfo: action.payload.currentPersonInfo,
+			}
+		case actionTypes.CLEAR_CURRENT_PERSON_PAGE:
+			return {
+				...state,
+				currentPersonInfo: null,
 			}
 		default: return state;
 	}
@@ -132,24 +170,14 @@ const genres_reducer = (state = initialGenresState, action) => {
 	}
 }
 
-const companies_reducer = (state = initialCompanyPageState, action) => {
-	switch (action.type) {
-		case actionTypes.SET_COMPANY_PAGE:
-			return {
-				currentCompany: action.payload.currentCompany,
-			}
-		default: return state;
-	}
-}
-
 const rootReducer = combineReducers({
 	user: user_reducer,
 	movies: movies_reducer,
+	upcomingMovies: upcoming_movies_reducer,
 	favouriteMovies: favourite_movies_reducer,
 	currentMoviePage: current_movie_page_reducer,
 	persons: person_reducer,
 	genres: genres_reducer,
-	currentCompany: companies_reducer,
 });
 
 export default rootReducer;

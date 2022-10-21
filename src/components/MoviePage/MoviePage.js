@@ -51,7 +51,7 @@ const MoviePage = (props) => {
 							<div className="production-companies">
 								{
 									props.currentMoviePage.currentMovieInfo && props.currentMoviePage.currentMovieInfo.production_companies.map((item, index) => {
-										return <ProductionCompany company={item} key={index} handleSetCompanyPage={props.handleSetCompanyPage} />
+										return <ProductionCompany company={item} key={index} />
 									})
 								}
 							</div>
@@ -63,7 +63,7 @@ const MoviePage = (props) => {
 					<h1>Cast</h1>
 					<div className="movie-page__credits">
 						{
-							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} isMovieCharacter />
+							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} getCurrentPersonInfo={props.getCurrentPersonInfo} isMovieCharacter />
 						}
 					</div>
 				</div>

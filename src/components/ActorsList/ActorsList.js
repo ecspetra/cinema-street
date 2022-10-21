@@ -10,7 +10,7 @@ const ActorsList = (props) => {
 			{
 				persons && persons.map((person, index) => {
 					if (index <= 7) {
-						return <ActorCard person={person} key={index} isMovieCharacter={props.isMovieCharacter} />
+						return <ActorCard person={person} key={index} isMovieCharacter={props.isMovieCharacter} getCurrentPersonInfo={props.getCurrentPersonInfo} />
 					}
 				})
 			}
