@@ -5,6 +5,7 @@ $main-collection-color: #e38b38;
 
 $text-color-extra-light: #f3f1f0;
 $text-color-light: #a7a2b4;
+$text-color-dark: #5a5862;
 
 html, body {
     padding: 0;
@@ -143,6 +144,7 @@ button {
     width: calc(100% - 32px);
     max-width: 1140px;
     margin: 0 auto;
+    padding-bottom: 40px;
 }
 
 .top-banner {
@@ -327,6 +329,7 @@ button {
         width: 100%;
         border-radius: 8px;
         margin-bottom: 10px;
+        display: block;
     }
 
     &__genres-wrap {
@@ -346,6 +349,11 @@ button {
         color: $text-color-light;
         text-transform: uppercase;
         background-color: $wrap-background-color;
+    }
+
+    &__release-date {
+        color: $text-color-dark;
+        font-size: 12px;
     }
 }
 
@@ -372,6 +380,12 @@ button {
         &:hover {
             color: $text-color-extra-light;
         }
+    }
+
+    &--more-results {
+        width: auto;
+        margin: 0 auto;
+        background-color: $main-color;
     }
 }
 

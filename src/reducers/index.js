@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
-import {setUpcomingMovies} from "../actions";
 
 const initialUserState = {
 	currentUser: null,
@@ -71,7 +70,7 @@ const movies_reducer = (state = initialMoviesState, action) => {
 		case actionTypes.SET_MOVIES:
 			return {
 				...state,
-				uploadedMovies: [...state.uploadedMovies, action.payload.uploadedMovies],
+				uploadedMovies: [...state.uploadedMovies, ...action.payload.uploadedMovies],
 			}
 		default: return state;
 	}

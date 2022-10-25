@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './App.scss';
 import {Route, Routes, matchPath, BrowserRouter} from "react-router-dom";
 import Home from "../Home/Home";
@@ -35,6 +35,7 @@ import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
 import { database } from "../../firebase";
 import {getDatabase, ref, push, set, onValue, remove} from "firebase/database";
 import {useLocation} from "react-router";
+import axios from 'axios';
 
 const App = (props) => {
 
@@ -143,20 +144,20 @@ const App = (props) => {
 
 
 
-    const getMovies = () => {
-
-        let pageNumber = 1;
-
-        for (pageNumber; pageNumber < 4; pageNumber++) {
-
-            console.log(pageNumber);
-
-            fetch('https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce' + '&page=' + pageNumber)
-                .then(response => response.json()).then(data => {
-                    handleSetMovies(data.results);
-                });
-        }
-    }
+    // const getMovies = () => {
+    //
+    //     let pageNumber = 1;
+    //
+    //     for (pageNumber; pageNumber < 4; pageNumber++) {
+    //
+    //         console.log(pageNumber);
+    //
+    //         fetch('https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce' + '&page=' + pageNumber)
+    //             .then(response => response.json()).then(data => {
+    //                 handleSetMovies(data.results);
+    //             });
+    //     }
+    // }
 
     const getUpcomingMovies = () => {
         fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
@@ -230,7 +231,6 @@ const App = (props) => {
     useEffect(() => {
         getMyMoviesFromDatabase();
         getGenres();
-        getMovies();
         getUpcomingMovies();
         getPersons();
     }, []);
@@ -272,13 +272,45 @@ const App = (props) => {
 
     ///////////////////////////////////////////////////
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    const [currentResultsPage, setCurrentResultsPage] = useState(1);
+    const [prevResultsPage, setPrevResultsPage] = useState(0);
+    const [wasLastList, setWasLastList] = useState(false);
+    const [isMovieListLoading, setIsMovieListLoading] = useState(false);
+
+    const getMovies = async () => {
+        setIsMovieListLoading(true);
+        const response = await axios.get(
+            'https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce' + '&page=' + currentResultsPage
+        );
+        if (!response.data.results.length) {
+            setWasLastList(true);
+            return;
+        }
+        setPrevResultsPage(currentResultsPage);
+        setCurrentResultsPage(currentResultsPage + 1);
+        handleSetMovies(response.data.results);
+        setIsMovieListLoading(false);
+    };
+
+    useEffect(() => {
+        if (!wasLastList && prevResultsPage !== currentResultsPage) {
+            getMovies();
+            console.log('useEffect runs');
+        }
+    }, []);
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     return (
         <div className="content-wrapper">
             <Menu auth={auth} />
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home movies={props.movies} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route exact path="/" element={<Home getMovies={getMovies} isMovieListLoading={isMovieListLoading} movies={props.movies} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
