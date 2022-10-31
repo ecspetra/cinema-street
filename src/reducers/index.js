@@ -6,10 +6,6 @@ const initialUserState = {
 	isLoading: true
 }
 
-// const initialMoviesState = {
-// 	uploadedMovies: null,
-// }
-
 const initialMoviesState = {
 	uploadedMovies: [],
 }
@@ -28,6 +24,7 @@ const initialCurrentMoviePageState = {
 	currentMovieImages: null,
 	currentMovieReviews: null,
 	currentMovieSimilar: null,
+	currentMovieVideos: null,
 }
 
 const initialPersonsState = {
@@ -54,16 +51,6 @@ const user_reducer = (state = initialUserState, action) => {
 		default: return state;
 	}
 }
-
-// const movies_reducer = (state = initialMoviesState, action) => {
-// 	switch (action.type) {
-// 		case actionTypes.SET_MOVIES:
-// 			return {
-// 				uploadedMovies: action.payload.uploadedMovies
-// 			}
-// 		default: return state;
-// 	}
-// }
 
 const movies_reducer = (state = initialMoviesState, action) => {
 	switch (action.type) {
@@ -129,6 +116,11 @@ const current_movie_page_reducer = (state = initialCurrentMoviePageState, action
 			return {
 				...state,
 				currentMovieSimilar: action.payload.currentMovieSimilar,
+			}
+		case actionTypes.SET_CURRENT_MOVIE_VIDEOS:
+			return {
+				...state,
+				currentMovieVideos: action.payload.currentMovieVideos,
 			}
 		case actionTypes.CLEAR_CURRENT_MOVIE:
 			return {

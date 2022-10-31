@@ -88,6 +88,15 @@ export const setCurrentMovieSimilar = (movieSimilar) => {
 	}
 }
 
+export const setCurrentMovieVideos = (movieVideos) => {
+	return {
+		type: actionTypes.SET_CURRENT_MOVIE_VIDEOS,
+		payload: {
+			currentMovieVideos: movieVideos,
+		}
+	}
+}
+
 export const clearCurrentMoviePage = () => {
 	return {
 		type: actionTypes.CLEAR_CURRENT_MOVIE,

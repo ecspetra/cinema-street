@@ -24,6 +24,7 @@ import {
     setCurrentMovieImages,
     setCurrentMovieReviews,
     setCurrentMovieSimilar,
+    setCurrentMovieVideos,
     clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage, setUpcomingMovies
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
@@ -55,10 +56,6 @@ const App = (props) => {
 
     const handleSetMovies = (movies) => {
         dispatch(setMovies(movies));
-    }
-
-    const handleSetUpcomingMovies = (movies) => {
-        dispatch(setUpcomingMovies(movies));
     }
 
     const handleSetGenres = (genres) => {
@@ -95,6 +92,10 @@ const App = (props) => {
         dispatch(clearCurrentMoviePage());
     }
 
+    const handleSetUpcomingMovies = (movies) => {
+        dispatch(setUpcomingMovies(movies));
+    }
+
     const getCurrentMoviePage = (selectedMovie) => {
         console.log(selectedMovie.id);
         fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
@@ -122,6 +123,11 @@ const App = (props) => {
             .then(data => {
                 dispatch(setCurrentMovieSimilar(data));
             });
+        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
+            .then(response => response.json())
+            .then(data => {
+                dispatch(setCurrentMovieVideos(data.results));
+            });
     }
 
     const getGenres = () => {
@@ -131,33 +137,6 @@ const App = (props) => {
                 handleSetGenres(data);
             });
     }
-
-    // const getMovies = () => {
-    //     fetch('https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             handleSetMovies(data.results);
-    //         });
-    // }
-
-    // const [pageNumber, setPageNumber] = useState(1);
-
-
-
-    // const getMovies = () => {
-    //
-    //     let pageNumber = 1;
-    //
-    //     for (pageNumber; pageNumber < 4; pageNumber++) {
-    //
-    //         console.log(pageNumber);
-    //
-    //         fetch('https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce' + '&page=' + pageNumber)
-    //             .then(response => response.json()).then(data => {
-    //                 handleSetMovies(data.results);
-    //             });
-    //     }
-    // }
 
     const getUpcomingMovies = () => {
         fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
@@ -310,7 +289,7 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home getMovies={getMovies} isMovieListLoading={isMovieListLoading} movies={props.movies} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route exact path="/" element={<Home getMovies={getMovies} upcomingMovieVideo={props.upcomingMovieVideo} isMovieListLoading={isMovieListLoading} movies={props.movies} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
@@ -335,4 +314,4 @@ const mapStateToProps = state => ({
     genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setUpcomingMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar, clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage })(App);
+export default connect(mapStateToProps, { setPersons, setMovies, setUpcomingMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieSimilar, setCurrentMovieVideos, clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage })(App);

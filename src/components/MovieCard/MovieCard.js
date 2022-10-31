@@ -5,34 +5,22 @@ import Rating from "../Rating/Rating";
 import default_user_icon from "../App/assets/icons/default-user.svg";
 import classNames from "classnames";
 
+import getMovieGenresIDs from '../../functions/getMovieGenresIDs';
+import getComparedGenresIDs from '../../functions/getComparedGenresIDs';
+
 const MovieCard = (props) => {
 
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
 
-	const getMovieGenresIDs = () => {
-		props.movie.genre_ids.map((genre) => {
-			if (!movieGenresIDs.includes(genre)) {
-				setMovieGenresIDs(prevState => [...prevState, genre]);
-			}
-		});
-	}
-
-	const findGenres = () => {
-		const genresObject = props.genres;
-		Object.keys(genresObject.genres).map((genre) => {
-			if ((movieGenresIDs.includes(genresObject.genres[genre].id)) && (!movieGenresNames.includes(genresObject.genres[genre].name))) {
-				setMovieGenresNames(prevState => [...prevState, genresObject.genres[genre].name]);
-			}
-		});
-	}
-
 	useEffect(() => {
-		getMovieGenresIDs();
+		const movieGenresIDsArray = getMovieGenresIDs(props.genres, props.movie);
+		setMovieGenresIDs(movieGenresIDsArray);
 	}, []);
 
 	useEffect(() => {
-		findGenres();
+		const comparedGenresNames = getComparedGenresIDs(props.genres, movieGenresIDs);
+		setMovieGenresNames(comparedGenresNames);
 	}, [movieGenresIDs]);
 
 	const [isImageLoaded, setIsImageLoaded] = useState(false);

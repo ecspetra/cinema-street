@@ -29,6 +29,13 @@ const MoviePage = (props) => {
 					<div className="movie-page__info-wrap">
 						{props.currentMoviePage.currentMovieInfo.adult && <span>18+</span>}
 						<h1 className="movie-page__title">{props.currentMoviePage.currentMovieInfo.title}</h1>
+						<p className="movie-page__genres">
+							{
+								props.currentMoviePage.currentMovieInfo && props.currentMoviePage.currentMovieInfo.genres.map((item, index) => {
+									return <span className="movie-page__genres-item" key={index}>{item.name + (index !== (props.currentMoviePage.currentMovieInfo.genres.length - 1) ? ', ' : '')}</span>
+								})
+							}
+						</p>
 						{
 							props.currentMoviePage.currentMovieInfo.tagline && <p className="movie-page__details movie-page__details--tagline">{props.currentMoviePage.currentMovieInfo.tagline}</p>
 						}
@@ -40,7 +47,7 @@ const MoviePage = (props) => {
 						<p className="movie-page__details movie-page__details--production-countries">
 							{
 								props.currentMoviePage.currentMovieInfo && props.currentMoviePage.currentMovieInfo.production_countries.map((item, index) => {
-									return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={index}>{(index ? ', ' : '') + item.name}</span>
+									return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={index}>{item.name + (index !== 'undefined' ? ', ' : '')}</span>
 								})
 							}
 						</p>
