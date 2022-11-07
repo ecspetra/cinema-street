@@ -23,7 +23,6 @@ const initialCurrentMoviePageState = {
 	currentMovieCredits: null,
 	currentMovieImages: null,
 	currentMovieReviews: null,
-	currentMovieSimilar: null,
 	currentMovieVideos: null,
 }
 
@@ -58,6 +57,10 @@ const movies_reducer = (state = initialMoviesState, action) => {
 			return {
 				...state,
 				uploadedMovies: [...state.uploadedMovies, ...action.payload.uploadedMovies],
+			}
+		case actionTypes.CLEAR_MOVIES:
+			return {
+				...initialMoviesState,
 			}
 		default: return state;
 	}
@@ -111,11 +114,6 @@ const current_movie_page_reducer = (state = initialCurrentMoviePageState, action
 			return {
 				...state,
 				currentMovieReviews: action.payload.currentMovieReviews,
-			}
-		case actionTypes.SET_CURRENT_MOVIE_SIMILAR:
-			return {
-				...state,
-				currentMovieSimilar: action.payload.currentMovieSimilar,
 			}
 		case actionTypes.SET_CURRENT_MOVIE_VIDEOS:
 			return {

@@ -1,6 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import UpcomingMovieItem from "../UpcomingMovieItem/UpcomingMovieItem";
 import axios from "axios";
+import Plyr from "plyr-react"
+import "plyr-react/plyr.css"
 
 const UpcomingMovies = (props) => {
 
@@ -9,8 +11,8 @@ const UpcomingMovies = (props) => {
 			'https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce'
 		);
 		if (response.data.results.length) {
-			const videoTrailer = response.data.results[0];
-			return videoTrailer.key;
+			const trailer = response.data.results.find(video => video.type === "Trailer");
+			return trailer.key;
 		}
 	}
 
@@ -18,31 +20,32 @@ const UpcomingMovies = (props) => {
 
 		const defaultMovie = props.movies[0];
 
-		const defaultMovieVideoKey = await getUpcomingMovieVideo(defaultMovie);
+		const defaultTrailerKey = await getUpcomingMovieVideo(defaultMovie);
 
 		setMoviePreview(
 			{
 				moviePosterPath: defaultMovie.poster_path,
 				movieTitle: defaultMovie.title,
 				movieReleaseDate: defaultMovie.release_date,
-				movieVideo: defaultMovieVideoKey,
+				movieTrailer: defaultTrailerKey,
 			}
 		);
+		setIsMoviePreviewSelected(defaultMovie.id);
 	}
 
 	const [moviePreview, setMoviePreview] = useState({});
-	const [isMoviePreviewSelected, setIsMoviePreviewSelected] = useState(props.movies[0].id);
+	const [isMoviePreviewSelected, setIsMoviePreviewSelected] = useState();
 
 	const handleSetMoviePreview = async (movie) => {
 
-		const trailerKey = await getUpcomingMovieVideo(movie);
+		const selectedMovieTrailerKey = await getUpcomingMovieVideo(movie);
 
 		setMoviePreview(
 			{
 				moviePosterPath: movie.poster_path,
 				movieTitle: movie.title,
 				movieReleaseDate: movie.release_date,
-				movieVideo: trailerKey,
+				movieTrailer: selectedMovieTrailerKey,
 			}
 		);
 		setIsMoviePreviewSelected(movie.id);
@@ -55,22 +58,50 @@ const UpcomingMovies = (props) => {
 
 	useEffect(() => {
 		getInitialPreviewState();
-	}, []);
+	}, [moviesSortedByReleaseDate]);
+
+	const videoSrc = {
+		type: "video",
+		sources: [
+			{
+				src: moviePreview.movieTrailer,
+				provider: "youtube",
+			}
+		]
+	};
+
+	const videoOptions = {
+		// debug: true,
+		controls: [
+			'restart', // Restart playback
+			'play', // Play/pause playback
+			'progress', // The progress bar and scrubber for playback and buffering
+			'current-time', // The current time of playback
+			'duration', // The full duration of the media
+			'mute', // Toggle mute
+			'volume', // Volume control
+			'captions', // Toggle captions
+			'settings', // Settings menus
+			'fullscreen', // Toggle fullscreen
+		],
+		// youtube: {
+		// 	modestbranding: 1,
+		// }
+	};
 
 	return (
 		<div className="upcoming-movies">
 			<div className="upcoming-movies__preview">
 				{
-					moviePreview.movieVideo ? (
-						<video controls>
-							<source src={'https://www.youtube.com/watch?v=' + moviePreview.movieVideo} type="video/mp4" />
-						</video>
-					) : (<img className="upcoming-movies__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + moviePreview.moviePosterPath} alt="movie-poster" />)
+					moviePreview.movieTrailer
+						? <div className="upcoming-movies__video-player"><Plyr source={videoSrc} options={videoOptions} /></div>
+						: (<>
+							<img className="upcoming-movies__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + moviePreview.moviePosterPath} alt="movie-poster" />
+							<div className="upcoming-movies__info">
+								<h1 className="upcoming-movies__title">{moviePreview.movieTitle}</h1>
+							</div>
+						</>)
 				}
-				<div className="upcoming-movies__info">
-					<h1 className="upcoming-movies__title">{moviePreview.movieTitle}</h1>
-					<p className="upcoming-movies__release-date">{moviePreview.movieReleaseDate}</p>
-				</div>
 			</div>
 			<div className="upcoming-movies__list">
 				{

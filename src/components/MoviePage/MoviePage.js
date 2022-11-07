@@ -7,6 +7,7 @@ import {useEffect, useRef} from "react";
 import MovieList from "../MovieList/MovieList";
 import ProductionCompany from "../ProductionCompany/ProductionCompany";
 import Rating from "../Rating/Rating";
+import { LINK_TO_FETCH_SIMILAR_MOVIES } from '../../functions/linksToFetch';
 
 const MoviePage = (props) => {
 
@@ -18,6 +19,8 @@ const MoviePage = (props) => {
 	useEffect(() => {
 		return () => onMoviePageUnmount.current();
 	}, []);
+
+	console.log('CurrentMovie Rating', Number(props.currentMoviePage.currentMovieInfo.vote_average.toFixed(1)), 'id', props.currentMoviePage.currentMovieInfo.id, 'name', props.currentMoviePage.currentMovieInfo.title);
 
 	return (
 		<div className="movie-page">
@@ -51,7 +54,12 @@ const MoviePage = (props) => {
 								})
 							}
 						</p>
-						<Rating movie={props.currentMoviePage.currentMovieInfo} isRatingCount />
+						<Rating movie={props.currentMoviePage.currentMovieInfo} isRatingCount isShowExtendRating />
+
+						<div className="movie-page__my-mark">
+
+						</div>
+
 						<p className="movie-page__overview">{props.currentMoviePage.currentMovieInfo.overview}</p>
 						<div className="movie-page__production-companies-wrap">
 							<h3 className="movie-page__production-companies-title">Production companies:</h3>
@@ -98,8 +106,8 @@ const MoviePage = (props) => {
 					<h1>Similar movies</h1>
 					<div className="movie-page__similar-movies">
 						{
-							(props.currentMoviePage.currentMovieSimilar && props.currentMoviePage.currentMovieSimilar.results.length)
-								? <MovieList movies={props.currentMoviePage.currentMovieSimilar.results} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
+							props.movies
+								? <MovieList handleSetMovies={props.handleSetMovies} handleClearMovies={props.handleClearMovies} linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', props.currentMoviePage.currentMovieInfo.id)} getMovies={props.getMovies} movies={props.movies} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
 								: 'No similar movies'
 						}
 					</div>

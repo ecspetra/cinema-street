@@ -1,4 +1,5 @@
 import * as actionTypes from './types';
+import {CLEAR_MOVIES} from "./types";
 
 export const setPersons = (persons) => {
 	return {
@@ -15,6 +16,12 @@ export const setMovies = (movies) => {
 		payload: {
 			uploadedMovies: movies
 		}
+	}
+}
+
+export const clearMovies = () => {
+	return {
+		type: actionTypes.CLEAR_MOVIES,
 	}
 }
 
@@ -75,15 +82,6 @@ export const setCurrentMovieReviews = (movieReviews) => {
 		type: actionTypes.SET_CURRENT_MOVIE_REVIEWS,
 		payload: {
 			currentMovieReviews: movieReviews,
-		}
-	}
-}
-
-export const setCurrentMovieSimilar = (movieSimilar) => {
-	return {
-		type: actionTypes.SET_CURRENT_MOVIE_SIMILAR,
-		payload: {
-			currentMovieSimilar: movieSimilar,
 		}
 	}
 }

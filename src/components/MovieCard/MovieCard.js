@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import Rating from "../Rating/Rating";
-import default_user_icon from "../App/assets/icons/default-user.svg";
+import default_movie_icon from "../App/assets/icons/default-movie.svg";
 import classNames from "classnames";
 
 import getMovieGenresIDs from '../../functions/getMovieGenresIDs';
@@ -26,7 +26,7 @@ const MovieCard = (props) => {
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 	const addDefaultSrc = (event) => {
-		event.target.src = default_user_icon;
+		event.target.src = default_movie_icon;
 	}
 
 	const movieCardImageWrapClassNames = classNames('movie-card__image-wrap', {

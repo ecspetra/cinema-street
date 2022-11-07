@@ -24,21 +24,31 @@ const UpcomingMovieItem = (props) => {
 		'upcoming-movies__list-item--selected': props.isMoviePreviewSelected === props.movie.id,
 	});
 
-	const movieReleaseDate = moment(props.movie.release_date).format("MMM D");
+	const movieReleaseDate = {
+		releaseDay: moment(props.movie.release_date).format("D"),
+		releaseMonth: moment(props.movie.release_date).format("MMM"),
+		releaseYear: moment(props.movie.release_date).format("Y"),
+	}
 
 	return (
 		<div className={upcomingMovieListItemClassNames} onClick={() => {props.handleSetMoviePreview(props.movie);}}>
-			<div className="upcoming-movies__date-label">{movieReleaseDate}</div>
+			<div className="upcoming-movies__date-label">
+				<span className="upcoming-movies__date-day">{movieReleaseDate.releaseDay}</span>
+				<span className="upcoming-movies__date-month">{movieReleaseDate.releaseMonth}</span>
+			</div>
 			<div className="upcoming-movies__list-item-text-wrap">
 				<h3 className="upcoming-movies__list-item-title">{props.movie.title}</h3>
-				<div className="upcoming-movies__genres-wrap">
-					{
-						upcomingMovieGenresNames.map((genre, index) => {
-							if (index < 3) {
-								return <span className="upcoming-movies__genres-item" key={index}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
-							}
-						})
-					}
+				<div className="upcoming-movies__list-item-info">
+					<span className="upcoming-movies__date-year">{movieReleaseDate.releaseYear}</span>
+					<div className="upcoming-movies__genres-wrap">
+						{
+							upcomingMovieGenresNames.map((genre, index) => {
+								if (index < 3) {
+									return <span className="upcoming-movies__genres-item" key={index}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
+								}
+							})
+						}
+					</div>
 				</div>
 			</div>
 		</div>
