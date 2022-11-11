@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import Rating from "../Rating/Rating";
@@ -7,6 +7,7 @@ import classNames from "classnames";
 
 import getMovieGenresIDs from '../../functions/getMovieGenresIDs';
 import getComparedGenresIDs from '../../functions/getComparedGenresIDs';
+import MyMark from "../MyMark/MyMark";
 
 const MovieCard = (props) => {
 
@@ -45,6 +46,7 @@ const MovieCard = (props) => {
 				<span className="movie-card__title-wrap">
 					<h3 className="movie-card__title">{props.movie.title}</h3>
 					<Rating movie={props.movie} />
+					<MyMark movie={props.movie} />
 				</span>
 			</Link>
 			<div className="movie-card__genres-wrap">

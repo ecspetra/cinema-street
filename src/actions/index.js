@@ -1,5 +1,4 @@
 import * as actionTypes from './types';
-import {CLEAR_MOVIES} from "./types";
 
 export const setPersons = (persons) => {
 	return {
@@ -22,6 +21,22 @@ export const setMovies = (movies) => {
 export const clearMovies = () => {
 	return {
 		type: actionTypes.CLEAR_MOVIES,
+	}
+}
+
+export const setMyMark = (marks) => {
+	return {
+		type: actionTypes.SET_MY_MARK_FOR_MOVIE,
+		payload: {
+			uploadedMarks: marks
+		}
+	}
+}
+
+export const removeMyMark = (key) => {
+	return {
+		type: actionTypes.REMOVE_MY_MARK_FOR_MOVIE,
+		payload: key
 	}
 }
 

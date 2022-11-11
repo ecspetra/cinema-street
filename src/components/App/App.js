@@ -99,6 +99,10 @@ const App = (props) => {
         dispatch(setUpcomingMovies(movies));
     }
 
+    // const handleSetMyMark = (myMark) => {
+    //     dispatch(setMyMark(myMark));
+    // }
+
     const getCurrentMoviePage = (selectedMovie) => {
         console.log(selectedMovie.id);
         fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
@@ -252,39 +256,7 @@ const App = (props) => {
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
-    // const [currentResultsPage, setCurrentResultsPage] = useState(1);
-    // const [prevResultsPage, setPrevResultsPage] = useState(0);
-    // const [wasLastList, setWasLastList] = useState(false);
-    // const [isMovieListLoading, setIsMovieListLoading] = useState(false);
 
-    // const getMovies = async (linkToFetch) => {
-    //
-    //     console.log(linkToFetch);
-    //
-    //     setIsMovieListLoading(true);
-    //     // const response = await axios.get(
-    //     //     'https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce' + '&page=' + currentResultsPage
-    //     // );
-    //     const response = await axios.get(
-    //         linkToFetch + '&page=' + currentResultsPage
-    //     );
-    //     if (!response.data.results.length) {
-    //         setWasLastList(true);
-    //         return;
-    //     }
-    //     setPrevResultsPage(currentResultsPage);
-    //     setCurrentResultsPage(currentResultsPage + 1);
-    //     handleSetMovies(response.data.results);
-    //     setIsMovieListLoading(false);
-    // };
-
-    // const defaultLinkToFetch = 'https://api.themoviedb.org/3/discover/movie?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce';
-
-    // useEffect(() => {
-    //     if (!wasLastList && prevResultsPage !== currentResultsPage) {
-    //         getMovies(defaultLinkToFetch);
-    //     }
-    // }, []);
 
     ////////////////////////////////////////////////////////////////////////////////////////
 

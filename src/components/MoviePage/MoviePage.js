@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "../Button/Button";
 import ActorsList from "../ActorsList/ActorsList";
 import BackdropsList from "../BackdropsList/BackdropsList";
 import ReviewsList from "../ReviewsList/ReviewsList";
-import {useEffect, useRef} from "react";
 import MovieList from "../MovieList/MovieList";
 import ProductionCompany from "../ProductionCompany/ProductionCompany";
 import Rating from "../Rating/Rating";
 import { LINK_TO_FETCH_SIMILAR_MOVIES } from '../../functions/linksToFetch';
+import MyMark from "../MyMark/MyMark";
 
 const MoviePage = (props) => {
 
@@ -19,8 +19,6 @@ const MoviePage = (props) => {
 	useEffect(() => {
 		return () => onMoviePageUnmount.current();
 	}, []);
-
-	console.log('CurrentMovie Rating', Number(props.currentMoviePage.currentMovieInfo.vote_average.toFixed(1)), 'id', props.currentMoviePage.currentMovieInfo.id, 'name', props.currentMoviePage.currentMovieInfo.title);
 
 	return (
 		<div className="movie-page">
@@ -55,11 +53,7 @@ const MoviePage = (props) => {
 							}
 						</p>
 						<Rating movie={props.currentMoviePage.currentMovieInfo} isRatingCount isShowExtendRating />
-
-						<div className="movie-page__my-mark">
-
-						</div>
-
+						<MyMark movie={props.currentMoviePage.currentMovieInfo} isShowExtendMark />
 						<p className="movie-page__overview">{props.currentMoviePage.currentMovieInfo.overview}</p>
 						<div className="movie-page__production-companies-wrap">
 							<h3 className="movie-page__production-companies-title">Production companies:</h3>

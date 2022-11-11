@@ -10,6 +10,10 @@ const initialMoviesState = {
 	uploadedMovies: [],
 }
 
+const initialMarksState = {
+	uploadedMarks: [],
+}
+
 const initialUpcomingMoviesState = {
 	upcomingMovies: null,
 }
@@ -62,6 +66,23 @@ const movies_reducer = (state = initialMoviesState, action) => {
 			return {
 				...initialMoviesState,
 			}
+		default: return state;
+	}
+}
+
+const marks_reducer = (state = initialMarksState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_MY_MARK_FOR_MOVIE:
+			const markAlreadyExistsInState = state.uploadedMarks.some(item => item.key === action.payload.uploadedMarks.key);
+				if (markAlreadyExistsInState) {
+					return state;
+				}
+				return {
+					...state,
+					uploadedMarks: [...state.uploadedMarks, action.payload.uploadedMarks],
+				}
+		case actionTypes.REMOVE_MY_MARK_FOR_MOVIE:
+			return {...state, uploadedMarks: state.uploadedMarks.filter(item => item.key !== action.payload)}
 		default: return state;
 	}
 }
@@ -167,6 +188,7 @@ const rootReducer = combineReducers({
 	currentMoviePage: current_movie_page_reducer,
 	persons: person_reducer,
 	genres: genres_reducer,
+	myMarks: marks_reducer,
 });
 
 export default rootReducer;

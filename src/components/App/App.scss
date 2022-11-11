@@ -2,6 +2,7 @@ $main-background-color: #0E141C;
 $extra-dark-color: #040609;
 $wrap-background-color: #272B35;
 $main-color: #ff0062;
+$mark-color: #ff9100;
 
 $text-color-extra-light: #f3f1f0;
 $text-color-light: #a7a2b4;
@@ -307,14 +308,19 @@ button {
         justify-content: space-between;
         align-items: flex-start;
 
-        .rating {
+        .rating,
+        .my-mark {
             font-size: 12px;
             font-weight: 500;
             margin: 6px 0 0;
 
-            &__icon {
+            .star {
                 width: 12px;
                 height: 12px;
+            }
+
+            &__text {
+                margin-left: 4px;
             }
         }
     }
@@ -365,6 +371,63 @@ button {
     }
 }
 
+.rating,
+.my-mark {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 20px 0;
+
+    .star {
+        width: 30px;
+        height: 30px;
+
+        path {
+            fill: $main-color;
+        }
+    }
+
+    &__count {
+        font-size: 14px;
+        font-weight: 400;
+        color: $text-color-light;
+        margin: auto 0 4px 10px;
+    }
+
+    &__text {
+        margin-left: 10px;
+    }
+}
+
+.my-mark {
+
+    &__stars-item {
+        padding: 0;
+        color: transparent;
+        border-radius: 0;
+    }
+
+    .star {
+        display: block;
+
+        path {
+            fill: $mark-color;
+        }
+    }
+
+    &__remove {
+        font-size: 14px;
+        font-weight: 400;
+        color: $text-color-light;
+        margin: auto 0 4px 10px;
+        padding: 0;
+    }
+}
+
 .main-button {
     border: 2px solid $main-color;
     font-size: 12px;
@@ -394,41 +457,6 @@ button {
         width: auto;
         margin: 0 auto;
         background-color: $main-color;
-    }
-}
-
-.rating {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-shrink: 0;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1;
-    margin: 20px 0;
-
-    &__icon {
-        width: 30px;
-        height: 30px;
-        margin-right: 4px;
-
-        path {
-            fill: $main-color;
-        }
-
-        //&--empty {
-        //    path {
-        //        fill: transparent;
-        //        stroke: $main-color;
-        //    }
-        //}
-    }
-
-    &__count {
-        font-size: 14px;
-        font-weight: 400;
-        color: $text-color-light;
-        margin: auto 0 4px 10px;
     }
 }
 
