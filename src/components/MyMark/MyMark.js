@@ -56,17 +56,22 @@ const MyMark = (props) => {
 		handleSetMyMarkForMovie();
 	}, [props.myMarks]);
 
-	const [myMovieMark, setMyMovieMark] = useState();
-	const [myEmptyMovieMark, setMyEmptyMovieMark] = useState([]);
+	const [myMovieMark, setMyMovieMark] = useState([]);
+	const [isLoadingMark, setIsLoadingMark] = useState(false);
 
 	const renderShortMark = (myMarkFromStore) => {
+
+		setIsLoadingMark(true);
 
 		const myMarkShort = <><RatingIcon/><span>{myMarkFromStore.data.movie.myMark}</span></>;
 
 		setMyMovieMark(myMarkShort);
+		setIsLoadingMark(false);
 	}
 
 	const renderExtendedMark = (myMarkFromStore) => {
+
+		setIsLoadingMark(true);
 
 		const myMarkExtended = <>
 			{getRatingStars(myMarkFromStore.data.movie.myMark)}
@@ -75,13 +80,12 @@ const MyMark = (props) => {
 		</>;
 
 		setMyMovieMark(myMarkExtended);
+		setIsLoadingMark(false);
 	}
 
 	const renderEmptyMark = () => {
 
-		// setMyMovieMark(null);
-
-		console.log(myMovieMark);
+		setIsLoadingMark(true);
 
 		const emptyMarkArray = [];
 		const maxIconsAvailable = 10;
@@ -96,12 +100,11 @@ const MyMark = (props) => {
 				renderEmptyMark()
 			}} isEmpty /></button>
 
-			if (!myEmptyMovieMark.find(item => item.key === markButton.key) || myEmptyMovieMark.length === 0) {
-				emptyMarkArray.push(markButton);
-			}
+			emptyMarkArray.push(markButton);
 		}
 
-		setMyEmptyMovieMark(emptyMarkArray);
+		setMyMovieMark(emptyMarkArray);
+		setIsLoadingMark(false);
 	}
 
 	const handleRemoveMyMarkForMovie = (key) => {
@@ -110,10 +113,6 @@ const MyMark = (props) => {
 		remove(dbRef).then(() => console.log("Mark removed"));
 
 		props.handleRemoveMyMark(key);
-
-		// handleCheckIfMyMarkExists();
-
-		// renderEmptyMark();
 	}
 
 	const onHoverEmptyMark = (mark) => {
@@ -142,16 +141,12 @@ const MyMark = (props) => {
 			} else hoveredIconsArray.push(unhoveredMarkButton);
 		}
 
-		setMyEmptyMovieMark(hoveredIconsArray);
+		setMyMovieMark(hoveredIconsArray);
 	}
 
 	const handleCheckIfMyMarkExists = async () => {
 
 		const myMarkFromStore = await getMyMarks(props.movie.id, props.myMarks);
-
-		if (props.movie.id === 675054) {
-			console.log(props.movie.id);
-		}
 
 		if (myMarkFromStore && props.isShowExtendMark) {
 			renderExtendedMark(myMarkFromStore);
@@ -162,13 +157,13 @@ const MyMark = (props) => {
 		}
 	}
 
-	if (!props.isShowExtendMark && !!myEmptyMovieMark) return;
+	const extendedMarkInMovieCard = myMovieMark.length;
+
+	if (!props.isShowExtendMark && extendedMarkInMovieCard) return;
 
 	return (
 		<span className="my-mark">
-			{
-				myMovieMark ?? myEmptyMovieMark
-			}
+			{!isLoadingMark && myMovieMark}
 		</span>
 	)
 }
