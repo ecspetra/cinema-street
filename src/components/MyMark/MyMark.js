@@ -63,7 +63,7 @@ const MyMark = (props) => {
 
 		setIsLoadingMark(true);
 
-		const myMarkShort = <><RatingIcon/><span>{myMarkFromStore.data.movie.myMark}</span></>;
+		const myMarkShort = <><RatingIcon/><span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span></>;
 
 		setMyMovieMark(myMarkShort);
 		setIsLoadingMark(false);
