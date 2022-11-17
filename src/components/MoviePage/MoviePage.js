@@ -8,6 +8,7 @@ import ProductionCompany from "../ProductionCompany/ProductionCompany";
 import Rating from "../Rating/Rating";
 import { LINK_TO_FETCH_SIMILAR_MOVIES } from '../../functions/linksToFetch';
 import MyMark from "../MyMark/MyMark";
+import NewReviewForm from "../NewReviewForm/NewReviewForm";
 
 const MoviePage = (props) => {
 
@@ -48,12 +49,14 @@ const MoviePage = (props) => {
 						<p className="movie-page__details movie-page__details--production-countries">
 							{
 								props.currentMoviePage.currentMovieInfo && props.currentMoviePage.currentMovieInfo.production_countries.map((item, index) => {
-									return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={index}>{item.name + (index !== 'undefined' ? ', ' : '')}</span>
+									return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={index}>{item.name + (index !== props.currentMoviePage.currentMovieInfo.production_countries.length - 1 ? ', ' : '')}</span>
 								})
 							}
 						</p>
 						<Rating movie={props.currentMoviePage.currentMovieInfo} isRatingCount isShowExtendRating />
+						<h3 className="movie-page__my-mark-title">My mark:</h3>
 						<MyMark movie={props.currentMoviePage.currentMovieInfo} isShowExtendMark />
+						<h3 className="movie-page__overview-title">Overview:</h3>
 						<p className="movie-page__overview">{props.currentMoviePage.currentMovieInfo.overview}</p>
 						<div className="movie-page__production-companies-wrap">
 							<h3 className="movie-page__production-companies-title">Production companies:</h3>
@@ -91,9 +94,10 @@ const MoviePage = (props) => {
 					<div className="movie-page__reviews">
 						{
 							(props.currentMoviePage.currentMovieReviews && props.currentMoviePage.currentMovieReviews.results.length)
-								? <ReviewsList reviews={props.currentMoviePage.currentMovieReviews.results} />
+								? <ReviewsList movieID={props.currentMoviePage.currentMovieInfo.id} reviews={props.currentMoviePage.currentMovieReviews.results} />
 								: 'No reviews yet'
 						}
+						<NewReviewForm movieID={props.currentMoviePage.currentMovieInfo.id} />
 					</div>
 				</div>
 				<div className="movie-page__similar-movies-wrap">

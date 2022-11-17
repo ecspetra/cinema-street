@@ -320,7 +320,7 @@ button {
             }
 
             &__text {
-                margin-left: 4px;
+                margin-left: 2px;
             }
         }
 
@@ -659,7 +659,7 @@ button {
     }
 
     &__reviews {
-
+        margin-bottom: 40px;
     }
 
     &__production-companies-wrap {
@@ -668,6 +668,10 @@ button {
 
     &__production-companies-title {
         margin: 0 0 5px;
+    }
+
+    .my-mark {
+        margin-top: 0;
     }
 }
 
@@ -718,6 +722,13 @@ button {
     padding: 20px;
     border-radius: 8px;
 
+    &__actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
     &__user-wrap {
         display: flex;
         justify-content: flex-start;
@@ -726,7 +737,7 @@ button {
     }
 
     &__username {
-
+        font-weight: 600;
     }
 
     &__user-rating {
@@ -750,18 +761,33 @@ button {
         font-size: 14px;
         padding: 0;
     }
+
+    &__review-date {
+        color: $text-color-light;
+    }
+
+    &__user-label {
+        background-color: rgba($mark-color, .1);
+        color: $mark-color;
+        font-size: 12px;
+        font-weight: 400;
+        padding: 2px 4px;
+        border-radius: 3px;
+        margin-left: 10px;
+    }
 }
 
 .production-company {
     display: inline-block;
     line-height: 1;
     margin: 0 4px 4px 0;
-    background-color: rgba($main-background-color, .5);
     padding: 6px 8px;
     border-radius: 3px;
     font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
-    color: $text-color-light;
+    background-color: rgba($mark-color, .1);
+    color: $mark-color;
 }
 
 .upcoming-movies {
@@ -918,6 +944,61 @@ button {
         line-height: 1;
         margin: 0 4px 4px 0;
         color: $text-color-light;
+    }
+}
+
+.new-review-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: rgba($wrap-background-color, .9);
+    padding: 20px;
+    border-radius: 8px;
+
+    &__user-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 0 0 15px;
+    }
+
+    &__username {
+        font-weight: 600;
+    }
+
+    &__user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 0 10px 0 0;
+    }
+
+    &__textarea {
+        background-color: $main-background-color;
+        border: none;
+        outline: none;
+        color: $text-color-extra-light;
+        border-radius: 8px;
+        padding: 16px;
+        width: 100%;
+        resize: none;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    &__button {
+        min-width: 150px;
+        border: 2px solid transparent;
+        background-color: $main-color;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 10px 8px;
+        margin-left: auto;
+        text-transform: uppercase;
+        transition: .3s;
+
+        &:hover {
+            box-shadow: 0 0 15px rgba($main-color, .5);
+        }
     }
 }
 

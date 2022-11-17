@@ -24,6 +24,22 @@ export const clearMovies = () => {
 	}
 }
 
+export const setMyReview = (reviews) => {
+	return {
+		type: actionTypes.SET_MY_REVIEW_FOR_MOVIE,
+		payload: {
+			uploadedReviews: reviews
+		}
+	}
+}
+
+export const removeMyReview = (id) => {
+	return {
+		type: actionTypes.REMOVE_MY_REVIEW_FOR_MOVIE,
+		payload: id
+	}
+}
+
 export const setMyMark = (marks) => {
 	return {
 		type: actionTypes.SET_MY_MARK_FOR_MOVIE,

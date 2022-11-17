@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
+import {SET_MY_REVIEW_FOR_MOVIE} from "../actions/types";
 
 const initialUserState = {
 	currentUser: null,
@@ -12,6 +13,10 @@ const initialMoviesState = {
 
 const initialMarksState = {
 	uploadedMarks: [],
+}
+
+const initialReviewsState = {
+	uploadedReviews: [],
 }
 
 const initialUpcomingMoviesState = {
@@ -83,6 +88,23 @@ const marks_reducer = (state = initialMarksState, action) => {
 				}
 		case actionTypes.REMOVE_MY_MARK_FOR_MOVIE:
 			return {...state, uploadedMarks: state.uploadedMarks.filter(item => item.key !== action.payload)}
+		default: return state;
+	}
+}
+
+const reviews_reducer = (state = initialReviewsState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_MY_REVIEW_FOR_MOVIE:
+			const reviewAlreadyExistsInState = state.uploadedReviews.some(item => item.data.review.id === action.payload.uploadedReviews.data.review.id);
+				if (reviewAlreadyExistsInState) {
+					return state;
+				}
+				return {
+					...state,
+					uploadedReviews: [...state.uploadedReviews, action.payload.uploadedReviews],
+				}
+		case actionTypes.REMOVE_MY_REVIEW_FOR_MOVIE:
+			return {...state, uploadedReviews: state.uploadedReviews.filter(item => item.id !== action.payload)}
 		default: return state;
 	}
 }
@@ -189,6 +211,7 @@ const rootReducer = combineReducers({
 	persons: person_reducer,
 	genres: genres_reducer,
 	myMarks: marks_reducer,
+	reviews: reviews_reducer,
 });
 
 export default rootReducer;
