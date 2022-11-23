@@ -28,7 +28,7 @@ export const setMyReview = (reviews) => {
 	return {
 		type: actionTypes.SET_MY_REVIEW_FOR_MOVIE,
 		payload: {
-			uploadedReviews: reviews
+			uploadedReview: reviews
 		}
 	}
 }

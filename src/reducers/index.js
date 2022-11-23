@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
-import {SET_MY_REVIEW_FOR_MOVIE} from "../actions/types";
 
 const initialUserState = {
 	currentUser: null,
@@ -95,14 +94,28 @@ const marks_reducer = (state = initialMarksState, action) => {
 const reviews_reducer = (state = initialReviewsState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_MY_REVIEW_FOR_MOVIE:
-			const reviewAlreadyExistsInState = state.uploadedReviews.some(item => item.data.review.id === action.payload.uploadedReviews.data.review.id);
-				if (reviewAlreadyExistsInState) {
-					return state;
-				}
-				return {
-					...state,
-					uploadedReviews: [...state.uploadedReviews, action.payload.uploadedReviews],
-				}
+
+			let reviews = state.uploadedReviews;
+			let incomingReview = action.payload.uploadedReview;
+
+			const reviewAlreadyExistsInState = state.uploadedReviews.find(item => item.data.review.id === action.payload.uploadedReview.data.review.id);
+
+			if (reviewAlreadyExistsInState) {
+				reviews = reviews.map((review) => {
+					if (review.data.review.id === incomingReview.data.review.id) {
+						return incomingReview;
+					} else {
+						return review;
+					}
+				});
+			} else {
+				reviews.push(incomingReview);
+			}
+
+			return {
+				...state,
+				uploadedReviews: [...reviews],
+			}
 		case actionTypes.REMOVE_MY_REVIEW_FOR_MOVIE:
 			return {...state, uploadedReviews: state.uploadedReviews.filter(item => item.id !== action.payload)}
 		default: return state;

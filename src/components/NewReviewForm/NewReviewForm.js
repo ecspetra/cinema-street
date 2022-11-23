@@ -12,7 +12,7 @@ const NewReviewForm = (props) => {
 
 	let reviewTextRef = useRef();
 
-	const handleSubmitNewReview = (event) => {
+	const handleSubmitNewReview = async (event) => {
 		event.preventDefault();
 
 		set(reviewsPostRef, {
