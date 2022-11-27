@@ -729,6 +729,21 @@ button {
         align-items: center;
     }
 
+    &__action-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0;
+
+        &--active {
+            .reaction-icon {
+                path {
+                    stroke: $main-color;
+                }
+            }
+        }
+    }
+
     &__user-wrap {
         display: flex;
         justify-content: flex-start;
@@ -740,10 +755,6 @@ button {
         font-weight: 600;
     }
 
-    &__user-rating {
-
-    }
-
     &__user-avatar {
         width: 40px;
         height: 40px;
@@ -751,8 +762,86 @@ button {
         margin: 0 10px 0 0;
     }
 
-    &__text {
+    &__more-button {
+        display: inline-block;
+        color: $main-color;
+        font-size: 14px;
+        padding: 0;
+    }
 
+    &__review-date {
+        color: $text-color-light;
+    }
+
+    &__user-label {
+        background-color: rgba($mark-color, .1);
+        color: $mark-color;
+        font-size: 12px;
+        font-weight: 400;
+        padding: 2px 4px;
+        border-radius: 3px;
+        margin-left: 10px;
+    }
+}
+
+.reaction-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+}
+
+.reply-card {
+    width: 100%;
+    margin: 20px 0;
+    background-color: rgba($wrap-background-color, 1);
+    padding: 20px;
+    border-radius: 4px;
+
+    &__actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0;
+    }
+
+    &__action-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        &--active {
+            .reaction-icon {
+                path {
+                    stroke: $main-color;
+                }
+            }
+        }
+    }
+
+    &__user-info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__user-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 0 0 15px;
+    }
+
+    &__username {
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    &__user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin: 0 10px 0 0;
     }
 
     &__more-button {

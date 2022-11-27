@@ -14,8 +14,6 @@ const ReviewsList = (props) => {
 
 					const reviewFromAPI = apiReviews.find(review => review.id === item.data.review.id);
 
-					console.log(apiReviews);
-
 					if (reviewFromAPI) {
 						return null;
 					} else if (props.movieID === item.data.review.movieID && index <= 7) {
@@ -29,6 +27,7 @@ const ReviewsList = (props) => {
 							reviewDate={item.data.review.reviewDate}
 							likesCounter={item.data.review.likesCounter}
 							dislikesCounter={item.data.review.dislikesCounter}
+							replies={item.data.review.replies}
 							isProjectUser
 						/>
 					}
@@ -43,7 +42,9 @@ const ReviewsList = (props) => {
 							dislikesCounter: 0,
 						}
 
-						usersReviews.map((item, index) => {
+						const reviewReplies = [];
+
+						usersReviews.map((item) => {
 							if (review.id === item.data.review.id) {
 
 								reviewReactions.likesCounter = item.data.review.likesCounter;
@@ -51,6 +52,15 @@ const ReviewsList = (props) => {
 
 								return reviewReactions;
 							}
+						});
+
+						usersReviews.map((item, index) => {
+							if (item.data.review.replies.length && review.id === item.data.review.id) {
+								item.data.review.replies.map((reply) => {
+									return reviewReplies.push(reply);
+								})
+							}
+							return reviewReplies;
 						});
 
 						return <ReviewCard
@@ -61,8 +71,9 @@ const ReviewsList = (props) => {
 							userName={review.author_details.username}
 							reviewText={review.content}
 							reviewDate={review.created_at}
-							likesCounter={reviewReactions.likesCounter ? reviewReactions.likesCounter : null}
-							dislikesCounter={reviewReactions.dislikesCounter ? reviewReactions.dislikesCounter : null}
+							likesCounter={reviewReactions.likesCounter ?? 0}
+							dislikesCounter={reviewReactions.dislikesCounter ?? 0}
+							replies={reviewReplies.length ? reviewReplies : 0}
 						/>
 					}
 				})

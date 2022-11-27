@@ -106,7 +106,7 @@ const UpcomingMovies = (props) => {
 			<div className="upcoming-movies__list">
 				{
 					moviesSortedByReleaseDate && moviesSortedByReleaseDate.map((movie, index) => {
-						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={index} genres={props.genres} />
+						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={index} />
 					})
 				}
 			</div>

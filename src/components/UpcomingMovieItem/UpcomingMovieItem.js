@@ -4,6 +4,7 @@ import getMovieGenresIDs from "../../functions/getMovieGenresIDs";
 import getComparedGenresIDs from "../../functions/getComparedGenresIDs";
 import classNames from "classnames";
 import moment from "moment";
+import {connect} from "react-redux";
 
 const UpcomingMovieItem = (props) => {
 
@@ -11,13 +12,17 @@ const UpcomingMovieItem = (props) => {
 	const [upcomingMovieGenresNames, setUpcomingMovieGenresNames] = useState([]);
 
 	useEffect(() => {
-		const movieGenresIDsArray = getMovieGenresIDs(props.genres, props.movie);
-		setUpcomingMovieGenresIDs(movieGenresIDsArray);
+		if (props.genres) {
+			const movieGenresIDsArray = getMovieGenresIDs(props.genres, props.movie);
+			setUpcomingMovieGenresIDs(movieGenresIDsArray);
+		}
 	}, []);
 
 	useEffect(() => {
-		const comparedGenresNames = getComparedGenresIDs(props.genres, upcomingMovieGenresIDs);
-		setUpcomingMovieGenresNames(comparedGenresNames);
+		if (props.genres) {
+			const comparedGenresNames = getComparedGenresIDs(props.genres, upcomingMovieGenresIDs);
+			setUpcomingMovieGenresNames(comparedGenresNames);
+		}
 	}, [upcomingMovieGenresIDs]);
 
 	const upcomingMovieListItemClassNames = classNames('upcoming-movies__list-item', {
@@ -55,4 +60,8 @@ const UpcomingMovieItem = (props) => {
 	)
 }
 
-export default UpcomingMovieItem;
+const mapStateToProps = state => ({
+	genres: state.genres.uploadedGenres,
+});
+
+export default connect(mapStateToProps)(UpcomingMovieItem);

@@ -15,25 +15,45 @@ const NewReviewForm = (props) => {
 	const handleSubmitNewReview = async (event) => {
 		event.preventDefault();
 
-		set(reviewsPostRef, {
-			review: {
+		if (props.isReplyForm) {
+
+			const replyInfo = {
 				movieID: props.movieID,
 				id: uuidv1(),
 				likesCounter: 0,
 				dislikesCounter: 0,
 				userAvatar: props.currentUser.photoURL,
 				displayName: props.currentUser.displayName,
-				reviewText: reviewTextRef.current.value,
-				reviewDate: new Date().getTime(),
-			},
-		}).then(() => {
+				replyText: reviewTextRef.current.value,
+				replyDate: new Date().getTime(),
+			}
+
+			props.handleReplyOnReview(replyInfo, props.reviewID);
 			reviewTextRef.current.value = '';
-		});
+
+		} else {
+			set(reviewsPostRef, {
+				review: {
+					movieID: props.movieID,
+					id: uuidv1(),
+					likesCounter: 0,
+					dislikesCounter: 0,
+					userAvatar: props.currentUser.photoURL,
+					displayName: props.currentUser.displayName,
+					reviewText: reviewTextRef.current.value,
+					reviewDate: new Date().getTime(),
+				},
+			}).then(() => {
+				reviewTextRef.current.value = '';
+			});
+		}
 	}
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;
 	}
+
+	// const photoURL = props.currentUser.photoURL;
 
 	return (
 		<form onSubmit={handleSubmitNewReview} className="new-review-form">
