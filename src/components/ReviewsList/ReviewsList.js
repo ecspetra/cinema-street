@@ -25,8 +25,8 @@ const ReviewsList = (props) => {
 							userName={item.data.review.displayName}
 							reviewText={item.data.review.reviewText}
 							reviewDate={item.data.review.reviewDate}
-							likesCounter={item.data.review.likesCounter}
-							dislikesCounter={item.data.review.dislikesCounter}
+							likes={item.data.review.likes}
+							dislikes={item.data.review.dislikes}
 							replies={item.data.review.replies}
 							isProjectUser
 						/>
@@ -38,23 +38,27 @@ const ReviewsList = (props) => {
 					if (index <= 7) {
 
 						const reviewReactions = {
-							likesCounter: 0,
-							dislikesCounter: 0,
+							likes: 0,
+							dislikes: 0,
 						}
 
 						const reviewReplies = [];
 
 						usersReviews.map((item) => {
 							if (review.id === item.data.review.id) {
-
-								reviewReactions.likesCounter = item.data.review.likesCounter;
-								reviewReactions.dislikesCounter = item.data.review.dislikesCounter;
-
+								if (item.data.review.likes && item.data.review.dislikes) {
+									reviewReactions.likes = item.data.review.likes;
+									reviewReactions.dislikes = item.data.review.dislikes;
+								} else if (item.data.review.likes) {
+									reviewReactions.likes = item.data.review.likes;
+								} else if (item.data.review.dislikes) {
+									reviewReactions.dislikes = item.data.review.dislikes;
+								}
 								return reviewReactions;
 							}
 						});
 
-						usersReviews.map((item, index) => {
+						usersReviews.map((item) => {
 							if (item.data.review.replies.length && review.id === item.data.review.id) {
 								item.data.review.replies.map((reply) => {
 									return reviewReplies.push(reply);
@@ -71,8 +75,8 @@ const ReviewsList = (props) => {
 							userName={review.author_details.username}
 							reviewText={review.content}
 							reviewDate={review.created_at}
-							likesCounter={reviewReactions.likesCounter ?? 0}
-							dislikesCounter={reviewReactions.dislikesCounter ?? 0}
+							likes={reviewReactions.likes !== undefined ? reviewReactions.likes : 0}
+							dislikes={reviewReactions.dislikes !== undefined ? reviewReactions.dislikes : 0}
 							replies={reviewReplies.length ? reviewReplies : 0}
 						/>
 					}

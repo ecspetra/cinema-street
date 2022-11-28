@@ -49,14 +49,14 @@ const ReplyCard = (props) => {
 			{(isLongReplyText && !showMore) ? <span className="reply-card__text">{props.item.replyText.substring(0, 300) + ' '}</span> : <span className="review-card__text">{props.reply.replyText}</span>}
 			{isLongReplyText && <button className="reply-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>}
 			<div className="reply-card__actions">
-				<button className="reply-card__action-item" onClick={() => {handleReplyReactionLikeButtonClick(props.reply.id, props.reviewID, isLikedReply)}}><ReactionIcon isLike />Like
+				<button className="reply-card__action-item" onClick={() => {handleReplyReactionLikeButtonClick(props.reply.id, props.reviewID, props.userID, isLikedReply)}}><ReactionIcon isLike />Like
 					{
-						props.likesCounter !== 0 && <span className="review-card__likes-counter">{props.reply.likesCounter}</span>
+						props.likes !== 0 && <span className="review-card__likes-counter">{props.reply.likes}</span>
 					}
 				</button>
-				<button className="reply-card__action-item" onClick={() => {handleReplyReactionDislikeButtonClick(props.reply.id, props.reviewID, isDislikedReply)}}><ReactionIcon />Dislike
+				<button className="reply-card__action-item" onClick={() => {handleReplyReactionDislikeButtonClick(props.reply.id, props.reviewID, props.userID, isDislikedReply)}}><ReactionIcon />Dislike
 					{
-						props.dislikesCounter !== 0 && <span className="review-card__dislikes-counter">{props.reply.dislikesCounter}</span>
+						props.dislikes !== 0 && <span className="review-card__dislikes-counter">{props.reply.dislikes}</span>
 					}
 				</button>
 			</div>

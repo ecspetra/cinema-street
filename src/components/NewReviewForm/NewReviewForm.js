@@ -20,8 +20,8 @@ const NewReviewForm = (props) => {
 			const replyInfo = {
 				movieID: props.movieID,
 				id: uuidv1(),
-				likesCounter: 0,
-				dislikesCounter: 0,
+				likes: 0,
+				dislikes: 0,
 				userAvatar: props.currentUser.photoURL,
 				displayName: props.currentUser.displayName,
 				replyText: reviewTextRef.current.value,
@@ -36,8 +36,8 @@ const NewReviewForm = (props) => {
 				review: {
 					movieID: props.movieID,
 					id: uuidv1(),
-					likesCounter: 0,
-					dislikesCounter: 0,
+					likes: 0,
+					dislikes: 0,
 					userAvatar: props.currentUser.photoURL,
 					displayName: props.currentUser.displayName,
 					reviewText: reviewTextRef.current.value,
