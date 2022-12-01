@@ -9,12 +9,14 @@ import NewReviewForm from "../NewReviewForm/NewReviewForm";
 import ReactionIcon from "../App/assets/icons/ReactionIcon";
 import ReplyCard from "../ReplyCard/ReplyCard";
 import classNames from "classnames";
+import ReplyIcon from "../App/assets/icons/ReplyIcon";
+import getTextLengthForPost from "../../functions/getTextLengthForPost";
 
 const ReviewCard = (props) => {
 
 	const checkIfReviewLikedByCurrentUser = () => {
 		if (props.likes !== 0) {
-			const currentUsersLike = props.likes.some(like => like.userID === props.currentUser.uid);
+			const currentUsersLike = props.likes.some(like => like.userID === props.userID);
 			setIsLikedReview(currentUsersLike);
 		} else {
 			setIsLikedReview(false);
@@ -23,7 +25,7 @@ const ReviewCard = (props) => {
 
 	const checkIfReviewDislikedByCurrentUser = () => {
 		if (props.dislikes !== 0) {
-			const currentUsersDislike = props.dislikes.some(dislike => dislike.userID === props.currentUser.uid);
+			const currentUsersDislike = props.dislikes.some(dislike => dislike.userID === props.userID);
 			setIsDislikedReview(currentUsersDislike);
 		} else {
 			setIsDislikedReview(false);
@@ -34,15 +36,14 @@ const ReviewCard = (props) => {
 	const [isShowReplyForm, setIsShowReplyForm] = useState(false);
 	const [isLikedReview, setIsLikedReview] = useState(false);
 	const [isDislikedReview, setIsDislikedReview] = useState(false);
+	const [reviewText, setReviewText] = useState();
 
-	const REVIEW_TEXT = props.reviewText;
-	const isLongReviewText = REVIEW_TEXT.length > 300;
+	const maxReviewTextLength = 400;
+	const isLongReviewText = props.reviewText.length > maxReviewTextLength;
 
 	useEffect(() => {
-		if (isLongReviewText) {
-			REVIEW_TEXT.substring(0, 300);
-		}
-	}, [REVIEW_TEXT]);
+		setReviewText(getTextLengthForPost(props.reviewText, maxReviewTextLength, showMore));
+	}, [props.reviewText, showMore]);
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;
@@ -111,7 +112,7 @@ const ReviewCard = (props) => {
 		const reviewsWithLikesFromFirebase = [];
 
 		const likeInfo = {
-			userID: props.currentUser.uid
+			userID: props.userID,
 		};
 
 		if (props.usersReviews.length) {
@@ -127,6 +128,7 @@ const ReviewCard = (props) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
+					userID: props.userID,
 					movieID: props.movieID,
 					id: reviewID,
 					likes: [likeInfo],
@@ -152,10 +154,11 @@ const ReviewCard = (props) => {
 				if (newLike) {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
 							likes: [likeInfo],
-							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, props.currentUser.uid),
+							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, props.userID),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -166,10 +169,11 @@ const ReviewCard = (props) => {
 				} else {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? [...item.data.review.likes, likeInfo] : handleDeleteCurrentUsersLike(item, props.currentUser.uid),
-							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, props.currentUser.uid),
+							likes: isLikedReview === false ? [...item.data.review.likes, likeInfo] : handleDeleteCurrentUsersLike(item, props.userID),
+							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, props.userID),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -181,6 +185,7 @@ const ReviewCard = (props) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
+						userID: props.userID,
 						movieID: props.movieID,
 						id: reviewID,
 						likes: [likeInfo],
@@ -203,7 +208,7 @@ const ReviewCard = (props) => {
 		const reviewsWithDislikesFromFirebase = [];
 
 		const dislikeInfo = {
-			userID: props.currentUser.uid
+			userID: props.userID,
 		};
 
 		if (props.usersReviews.length) {
@@ -219,6 +224,7 @@ const ReviewCard = (props) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
+					userID: props.userID,
 					movieID: props.movieID,
 					id: reviewID,
 					likes: props.likes,
@@ -244,9 +250,10 @@ const ReviewCard = (props) => {
 				if (newDislike) {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, props.currentUser.uid),
+							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, props.userID),
 							dislikes: [dislikeInfo],
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
@@ -258,10 +265,11 @@ const ReviewCard = (props) => {
 				} else {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, props.currentUser.uid),
-							dislikes: isDislikedReview === false ? [...item.data.review.dislikes, dislikeInfo] : handleDeleteCurrentUsersDislike(item, props.currentUser.uid),
+							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, props.userID),
+							dislikes: isDislikedReview === false ? [...item.data.review.dislikes, dislikeInfo] : handleDeleteCurrentUsersDislike(item, props.userID),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -273,6 +281,7 @@ const ReviewCard = (props) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
+						userID: props.userID,
 						movieID: props.movieID,
 						id: reviewID,
 						likes: props.likes,
@@ -307,6 +316,7 @@ const ReviewCard = (props) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
+					userID: props.userID,
 					movieID: props.movieID,
 					id: reviewID,
 					likes: props.likes ?? 0,
@@ -332,6 +342,7 @@ const ReviewCard = (props) => {
 				if (newReply) {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
 							likes: item.data.review.likes ?? 0,
@@ -346,6 +357,7 @@ const ReviewCard = (props) => {
 				} else {
 					set(reviewRef, {
 						review: {
+							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
 							likes: item.data.review.likes ?? 0,
@@ -361,6 +373,7 @@ const ReviewCard = (props) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
+						userID: props.userID,
 						movieID: props.movieID,
 						id: reviewID,
 						likes: props.likes ?? 0,
@@ -379,8 +392,41 @@ const ReviewCard = (props) => {
 		getMyReviewsForMovies();
 	}
 
+	const handleDeleteCurrentUserReplyLike = (currentReply, userID) => {
 
-	const handleLikeReply = (replyID, reviewID, userID, isLikedReply) => {
+		let updatedLikes = [];
+		let emptyLikes = 0;
+
+		if (currentReply.likes && currentReply.likes.length > 1) {
+			Object.values(currentReply.likes).map((like) => {
+				if (like.userID !== userID) {
+					updatedLikes.push(like);
+				}
+			});
+			return updatedLikes;
+		} else {
+			return emptyLikes;
+		}
+	}
+
+	const handleDeleteCurrentUserReplyDislike = (currentReply, userID) => {
+
+		let updatedDislikes = [];
+		let emptyDislikes = 0;
+
+		if (currentReply.dislikes && currentReply.dislikes.length > 1) {
+			Object.values(currentReply.dislikes).map((dislike) => {
+				if (dislike.userID !== userID) {
+					updatedDislikes.push(dislike);
+				}
+			});
+			return updatedDislikes;
+		} else {
+			return emptyDislikes;
+		}
+	}
+
+	const handleLikeReply = (replyID, reviewID, isLikedReply, isDislikedReply) => {
 
 		let reviewToChange = props.usersReviews.find(item => item.data.review.id === reviewID);
 
@@ -389,27 +435,31 @@ const ReviewCard = (props) => {
 		let repliesUpdated = reviewToChange.data.review.replies.map((reply) => {
 
 			const likeInfo = {
-				userID: props.currentUser.uid
+				userID: props.currentUser.uid,
 			};
 
-			const handleDeleteCurrentUserReplyLike = (currentReplyID, userID) => {
+			const checkReplyForLikes = (reply) => {
 
-				let updatedLikes = [];
+				let updatedReplyLikes = [];
 
-				Object.values(reply.likes).map((like) => {
-					if (like.userID !== userID) {
-						updatedLikes.push(like);
+				if (reply.likes !== 0) {
+					if (isLikedReply === false) {
+						updatedReplyLikes = [...reply.likes, likeInfo];
+						return updatedReplyLikes;
+					} else {
+						return handleDeleteCurrentUserReplyLike(reply, props.userID);
 					}
-				});
-
-				return updatedLikes;
+				} else {
+					return [likeInfo];
+				}
 			}
 
 			const updatedReplyInfo = {
+				userID: reply.userID,
 				movieID: reply.movieID,
 				id: reply.id,
-				likes: isLikedReply === false ? [...reply.likes, likeInfo] : handleDeleteCurrentUserReplyLike(reply.id, userID),
-				dislikes: reply.dislikes ?? 0,
+				likes: checkReplyForLikes(reply),
+				dislikes: isDislikedReply === false ? reply.dislikes : handleDeleteCurrentUserReplyDislike(reply, props.userID),
 				userAvatar: reply.userAvatar,
 				displayName: reply.displayName,
 				replyText: reply.replyText,
@@ -425,6 +475,7 @@ const ReviewCard = (props) => {
 
 		set(reviewRef, {
 			review: {
+				userID: reviewToChange.data.review.userID,
 				movieID: reviewToChange.data.review.movieID,
 				id: reviewToChange.data.review.id,
 				likes: reviewToChange.data.review.likes ?? 0,
@@ -440,7 +491,7 @@ const ReviewCard = (props) => {
 		getMyReviewsForMovies();
 	}
 
-	const handleDislikeReply = (replyID, reviewID, userID, isDislikedReply) => {
+	const handleDislikeReply = (replyID, reviewID, isLikedReply, isDislikedReply) => {
 
 		let reviewToChange = props.usersReviews.find(item => item.data.review.id === reviewID);
 
@@ -449,27 +500,31 @@ const ReviewCard = (props) => {
 		let repliesUpdated = reviewToChange.data.review.replies.map((reply) => {
 
 			const dislikeInfo = {
-				userID: props.currentUser.uid
+				userID: props.currentUser.uid,
 			};
 
-			const handleDeleteCurrentUserReplyDislike = (currentReplyID, userID) => {
+			const checkReplyForDislikes = (reply) => {
 
-				let updatedDislikes = [];
+				let updatedReplyDislikes = [];
 
-				Object.values(reply.dislikes).map((dislike) => {
-					if (dislike.userID !== userID) {
-						updatedDislikes.push(dislike);
+				if (reply.dislikes !== 0) {
+					if (isDislikedReply === false) {
+						updatedReplyDislikes = [...reply.dislikes, dislikeInfo];
+						return updatedReplyDislikes;
+					} else {
+						return handleDeleteCurrentUserReplyDislike(reply, props.userID);
 					}
-				});
-
-				return updatedDislikes;
+				} else {
+					return [dislikeInfo];
+				}
 			}
 
 			const updatedReplyInfo = {
+				userID: reply.userID,
 				movieID: reply.movieID,
 				id: reply.id,
-				likes: reply.likes ?? 0,
-				dislikes: isDislikedReply === false ? [...reply.likes, dislikeInfo] : handleDeleteCurrentUserReplyDislike(reply.id, userID),
+				likes: isLikedReply === false ? reply.likes : handleDeleteCurrentUserReplyLike(reply, props.userID),
+				dislikes: checkReplyForDislikes(reply),
 				userAvatar: reply.userAvatar,
 				displayName: reply.displayName,
 				replyText: reply.replyText,
@@ -485,6 +540,7 @@ const ReviewCard = (props) => {
 
 		set(reviewRef, {
 			review: {
+				userID: reviewToChange.data.review.userID,
 				movieID: reviewToChange.data.review.movieID,
 				id: reviewToChange.data.review.id,
 				likes: reviewToChange.data.review.likes ?? 0,
@@ -532,23 +588,26 @@ const ReviewCard = (props) => {
 					<div className="review-card__review-date">{moment(props.reviewDate).format("M.D.Y")}</div>
 				</div>
 			</div>
-			{(isLongReviewText && !showMore) ? <span className="review-card__text">{REVIEW_TEXT.substring(0, 300) + ' '}</span> : <span className="review-card__text">{REVIEW_TEXT}</span>}
-			{isLongReviewText && <button className="review-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>}
+			<span className="review-card__text">{reviewText}</span>
+			{
+				isLongReviewText && <button className="review-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>
+
+			}
 			<div className="review-card__actions">
 				<button className={reviewLikeActionClassNames} onClick={() => {handleReviewReactionLikeButtonClick(props.reviewID)}}><ReactionIcon isLike />Like
 					{
-						props.likes !== 0 && <span className="review-card__likes-counter">{props.likes.length}</span>
+						props.likes !== 0 && <span className="review-card__action-counter">{props.likes.length}</span>
 					}
 				</button>
 				<button className={reviewDislikeActionClassNames} onClick={() => {handleReviewReactionDislikeButtonClick(props.reviewID)}}><ReactionIcon />Dislike
 					{
-						props.dislikes !== 0 && <span className="review-card__dislikes-counter">{props.dislikes.length}</span>
+						props.dislikes !== 0 && <span className="review-card__action-counter">{props.dislikes.length}</span>
 					}
 				</button>
-				<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(true)}}>Reply</button>
+				<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(true)}}><ReplyIcon />Reply</button>
 			</div>
 			{
-				props.replies && <div className="review-card__replies-list">
+				props.replies.length && <div className="review-card__replies-list">
 					{
 						props.replies.map((item, index) => {
 							return <ReplyCard

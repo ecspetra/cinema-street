@@ -18,6 +18,7 @@ const ReviewsList = (props) => {
 						return null;
 					} else if (props.movieID === item.data.review.movieID && index <= 7) {
 						return <ReviewCard
+							userID={props.currentUser.uid}
 							movieID={props.movieID}
 							reviewID={item.data.review.id}
 							key={index}
@@ -68,6 +69,7 @@ const ReviewsList = (props) => {
 						});
 
 						return <ReviewCard
+							userID={'userFromAPI'}
 							movieID={props.movieID}
 							reviewID={review.id}
 							key={index}
@@ -88,6 +90,7 @@ const ReviewsList = (props) => {
 
 const mapStateToProps = state => ({
 	usersReviews: state.reviews.uploadedReviews,
+	currentUser: state.user.currentUser,
 })
 
 export default connect(mapStateToProps)(ReviewsList);

@@ -18,6 +18,7 @@ const NewReviewForm = (props) => {
 		if (props.isReplyForm) {
 
 			const replyInfo = {
+				userID: props.currentUser.uid,
 				movieID: props.movieID,
 				id: uuidv1(),
 				likes: 0,
@@ -34,6 +35,7 @@ const NewReviewForm = (props) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
+					userID: props.currentUser.uid,
 					movieID: props.movieID,
 					id: uuidv1(),
 					likes: 0,
