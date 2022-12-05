@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Dropdown = () => {
+const Dropdown = ({ children }) => {
 
 	const [isDropdownOpened, setIsDropdownOpened] = useState(false);
 
@@ -10,9 +10,11 @@ const Dropdown = () => {
 
 	return (
 		<div className="dropdown" onMouseLeave={() => {setIsDropdownOpened(false)}}>
-			<button className="dropdown__button" onClick={() => {handleToggleDropdown()}}>Dropdown</button>
+			<button className="dropdown__button" onClick={() => {handleToggleDropdown()}} />
 			{
-				isDropdownOpened && <div className="dropdown-list">Option</div>
+				isDropdownOpened && (<div className="dropdown-list">
+					<div onClick={() => {handleToggleDropdown()}}>{children}</div>
+				</div>)
 			}
 		</div>
 	)

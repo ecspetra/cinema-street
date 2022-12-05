@@ -117,7 +117,7 @@ const reviews_reducer = (state = initialReviewsState, action) => {
 				uploadedReviews: [...reviews],
 			}
 		case actionTypes.REMOVE_MY_REVIEW_FOR_MOVIE:
-			return {...state, uploadedReviews: state.uploadedReviews.filter(item => item.id !== action.payload)}
+			return {...state, uploadedReviews: state.uploadedReviews.filter(item => item.data.review.id !== action.payload)}
 		default: return state;
 	}
 }

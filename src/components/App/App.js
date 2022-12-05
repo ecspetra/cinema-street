@@ -99,10 +99,6 @@ const App = (props) => {
         dispatch(setUpcomingMovies(movies));
     }
 
-    // const handleSetMyMark = (myMark) => {
-    //     dispatch(setMyMark(myMark));
-    // }
-
     const getCurrentMoviePage = (selectedMovie) => {
         console.log(selectedMovie.id);
         fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')

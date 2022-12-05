@@ -97,6 +97,8 @@ const MoviePage = (props) => {
 								? <ReviewsList movieID={props.currentMoviePage.currentMovieInfo.id} reviews={props.currentMoviePage.currentMovieReviews.results} />
 								: 'No reviews yet'
 						}
+						{/*<ReviewsList movieID={props.currentMoviePage.currentMovieInfo.id} />*/}
+
 						<NewReviewForm movieID={props.currentMoviePage.currentMovieInfo.id} />
 					</div>
 				</div>

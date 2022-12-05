@@ -5,6 +5,7 @@ $wrap-background-color-light: #24262b;
 $main-color: #7E5BF4;
 $secondary-color: #54ADF5;
 $mark-color: #ffaa34;
+$danger-color: #f14040;
 
 $text-color-extra-light: #f3f1f0;
 $text-color-light: #a7a2b4;
@@ -437,28 +438,6 @@ button {
     }
 }
 
-
-//.btn-grad {
-//    background-image: linear-gradient(to right, #2b5876 0%, #4e4376  51%, #2b5876  100%);
-//    margin: 10px;
-//    padding: 15px 45px;
-//    text-align: center;
-//    text-transform: uppercase;
-//    transition: 0.5s;
-//    background-size: 200% auto;
-//    color: white;
-//    box-shadow: 0 0 20px #eee;
-//    border-radius: 10px;
-//    display: block;
-//}
-//
-//.btn-grad:hover {
-//    background-position: right center; /* change the direction of the change here */
-//    color: #fff;
-//    text-decoration: none;
-//}
-
-
 .main-button {
     position: relative;
     border: 2px solid $main-color;
@@ -494,7 +473,8 @@ button {
         }
     }
 
-    &--remove {
+    &--remove,
+    &--cancel {
         border-color: transparent;
         color: $text-main-color;
 
@@ -512,7 +492,16 @@ button {
         }
     }
 
-    &--more-results {
+    &--cancel {
+
+        &:hover {
+            &:before {
+                opacity: 0;
+            }
+        }
+    }
+
+    &--filled {
         width: auto;
         margin: 0 auto;
 
@@ -779,6 +768,10 @@ button {
     padding: 20px;
     border-radius: 8px;
 
+    &__text {
+        word-break: break-word;
+    }
+
     &__actions {
         margin-top: 20px;
         display: flex;
@@ -835,7 +828,8 @@ button {
 
     &__more-button {
         display: inline-block;
-        color: $text-main-color;
+        color: $text-color-dark;
+        text-decoration: underline;
         font-size: 14px;
         padding: 0;
     }
@@ -844,15 +838,30 @@ button {
         color: $text-color-light;
     }
 
-    &__user-label {
-        background-color: rgba($mark-color, .1);
-        color: $mark-color;
-        font-size: 12px;
-        font-weight: 400;
-        padding: 2px 4px;
-        border-radius: 3px;
-        margin-left: 10px;
+    .new-review-form {
+        margin-top: 40px;
+        padding: 0;
+
+        &__user-avatar {
+            width: 24px;
+            height: 24px;
+        }
     }
+
+    .edit-review-form {
+        padding: 0;
+    }
+}
+
+.label {
+    background-color: rgba($main-color, .1);
+    box-shadow: 0 0 10px rgba($main-color, .1);
+    color: $main-color;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-left: 10px;
 }
 
 .reaction-icon,
@@ -875,6 +884,10 @@ button {
     box-shadow: 0 4px 15px $main-background-color;
     padding: 15px;
     border-radius: 8px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 
     &__actions {
         margin-top: 20px;
@@ -940,7 +953,8 @@ button {
 
     &__more-button {
         display: inline-block;
-        color: $text-main-color;
+        color: $text-color-dark;
+        text-decoration: underline;
         font-size: 14px;
         padding: 0;
     }
@@ -957,6 +971,16 @@ button {
         padding: 2px 4px;
         border-radius: 3px;
         margin-left: 10px;
+    }
+
+    &--own {
+        border-color: rgba($main-color, .15);
+        background-color: rgba($main-color, .05);
+    }
+
+    .dropdown {
+        top: 12px;
+        right: 10px;
     }
 }
 
@@ -1157,7 +1181,7 @@ button {
 
     &__textarea {
         background-color: $main-background-color;
-        border: none;
+        border: 1px solid $wrap-background-color-light;
         outline: none;
         color: $text-color-extra-light;
         border-radius: 8px;
@@ -1166,29 +1190,138 @@ button {
         resize: none;
         display: block;
         margin-bottom: 20px;
-    }
-
-    &__button {
-        min-width: 150px;
-        border: 2px solid transparent;
-        background-color: $main-color;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 10px 8px;
-        margin-left: auto;
-        text-transform: uppercase;
         transition: .3s;
 
-        &:hover {
-            box-shadow: 0 0 15px rgba($main-color, .5);
+        &:focus {
+            border-color: $main-color;
         }
     }
+
+    &__buttons-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .main-button {
+        max-width: 150px;
+        margin: 0 0 0 auto;
+        width: 100%;
+
+        + .main-button {
+            margin-left: 10px;
+        }
+    }
+}
+
+.edit-review-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+
+    &__textarea {
+        background-color: $main-background-color;
+        border: 1px solid $wrap-background-color-light;
+        outline: none;
+        color: $text-color-extra-light;
+        border-radius: 8px;
+        padding: 16px;
+        width: 100%;
+        resize: none;
+        display: block;
+        margin-bottom: 20px;
+        transition: .3s;
+
+        &:focus {
+            border-color: $main-color;
+        }
+    }
+
+    &__buttons-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .main-button {
+        max-width: 150px;
+        margin: 0;
+        width: 100%;
+
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+}
+
+.error {
+    color: $danger-color;
+    background-color: rgba($danger-color, .1);
+    border-radius: 4px;
+    display: inline-block;
+    padding: 2px 10px;
 }
 
 .dropdown {
     position: absolute;
     top: 20px;
     right: 20px;
+    z-index: 100;
+
+    &__button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        background-image: url("assets/icons/dropdown-icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px;
+    }
+
+    .dropdown-list {
+        position: relative;
+        min-width: 200px;
+        margin-top: 42px;
+        right: 0;
+        background-color: rgba($wrap-background-color-light, .7);
+        box-shadow: 0 4px 15px $extra-dark-color;
+        border-radius: 8px;
+        padding: 4px;
+    }
+
+    .dropdown-option {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: .3s;
+
+        &:hover {
+            background-color: $wrap-background-color;
+        }
+    }
+
+    &__icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+
+        path {
+            fill: $text-color-extra-light;
+        }
+
+        &--delete {
+            path {
+                fill: $danger-color;
+            }
+        }
+    }
 }
 
 @keyframes logo-animation {

@@ -1,88 +1,143 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import { connect } from "react-redux";
+import { onValue, push, ref } from "firebase/database";
+import { database } from "../../firebase";
+import { setMyReview } from "../../actions";
 
 const ReviewsList = (props) => {
 
+	const reviewsListRef = ref(database, 'reviews');
+	const reviewsPostRef = push(reviewsListRef);
 	const apiReviews = props.reviews;
 	const usersReviews = props.usersReviews;
+	const [maxResultsLength, setMaxResultsLength] = useState(5);
+
+	const fetchMoreReviews = () => {
+		setMaxResultsLength(maxResultsLength + 5);
+	}
+
+	const getMyReviewsForMovies = () => {
+		onValue(reviewsListRef, (snapshot) => {
+			snapshot.forEach((childSnapshot) => {
+				const review = {
+					key: childSnapshot.key,
+					data: childSnapshot.val(),
+				}
+				props.handleSetMyReview(review);
+			});
+		});
+	}
+
+	const getAPIReviews = (review, index) => {
+
+		const reviewReactions = {
+			likes: 0,
+			dislikes: 0,
+		}
+
+		const reviewReplies = [];
+
+		usersReviews.map((usersReview) => {
+			if (review.id === usersReview.data.review.id) {
+				if (usersReview.data.review.likes && usersReview.data.review.dislikes) {
+					reviewReactions.likes = usersReview.data.review.likes;
+					reviewReactions.dislikes = usersReview.data.review.dislikes;
+				} else if (usersReview.data.review.likes) {
+					reviewReactions.likes = usersReview.data.review.likes;
+				} else if (usersReview.data.review.dislikes) {
+					reviewReactions.dislikes = usersReview.data.review.dislikes;
+				}
+				return reviewReactions;
+			}
+		});
+
+		usersReviews.map((usersReview) => {
+			if (usersReview.data.review.replies && review.id === usersReview.data.review.id) {
+				usersReview.data.review.replies.map((reply) => {
+					return reviewReplies.push(reply);
+				})
+			}
+			return reviewReplies;
+		});
+
+		return <ReviewCard
+			getMyReviewsForMovies={getMyReviewsForMovies}
+			userID={'userFromAPI'}
+			movieID={props.movieID}
+			reviewID={review.id}
+			key={index}
+			userIconPath={review.author_details.avatar_path}
+			userName={review.author_details.username}
+			reviewText={review.content}
+			reviewDate={review.created_at}
+			likes={reviewReactions.likes !== undefined ? reviewReactions.likes : 0}
+			dislikes={reviewReactions.dislikes !== undefined ? reviewReactions.dislikes : 0}
+			replies={reviewReplies.length ? reviewReplies : 0}
+		/>
+	}
+
+	const getUsersReviews = (review, index) => {
+
+		return <ReviewCard
+			getMyReviewsForMovies={getMyReviewsForMovies}
+			userID={props.currentUser.uid}
+			movieID={props.movieID}
+			reviewID={review.data.review.id}
+			key={index}
+			userIconPath={review.data.review.userAvatar}
+			userName={review.data.review.displayName}
+			reviewText={review.data.review.reviewText}
+			reviewDate={review.data.review.reviewDate}
+			likes={review.data.review.likes}
+			dislikes={review.data.review.dislikes}
+			replies={review.data.review.replies}
+		/>
+	}
+
+	const getAllReviews = () => {
+
+		const allReviews = [];
+
+		usersReviews.map((review) => {
+			const reviewExistsInAPI = apiReviews.find(apiReview => apiReview.id === review.data.review.id);
+
+			if (props.movieID === review.data.review.movieID && !reviewExistsInAPI) {
+				allReviews.push(review);
+			}
+		});
+
+        allReviews.push(...apiReviews);
+
+		return allReviews;
+	}
+
+	const generalReviews = getAllReviews();
+	const isAllReviewsShown = generalReviews.length <= maxResultsLength;
+
+	useEffect(() => {
+		getMyReviewsForMovies();
+	}, []);
+
+	useEffect(() => {
+		getAllReviews();
+	}, []);
 
 	return (
 		<div className="reviews-list">
-			{
-				usersReviews && usersReviews.map((item, index) => {
-
-					const reviewFromAPI = apiReviews.find(review => review.id === item.data.review.id);
-
-					if (reviewFromAPI) {
-						return null;
-					} else if (props.movieID === item.data.review.movieID && index <= 7) {
-						return <ReviewCard
-							userID={props.currentUser.uid}
-							movieID={props.movieID}
-							reviewID={item.data.review.id}
-							key={index}
-							userIconPath={item.data.review.userAvatar}
-							userName={item.data.review.displayName}
-							reviewText={item.data.review.reviewText}
-							reviewDate={item.data.review.reviewDate}
-							likes={item.data.review.likes}
-							dislikes={item.data.review.dislikes}
-							replies={item.data.review.replies}
-							isProjectUser
-						/>
+			{generalReviews.length && generalReviews.map((review, index) => {
+				if (index < maxResultsLength) {
+					if (review.url) {
+						const apiReview = getAPIReviews(review, index);
+						return apiReview;
+					} else {
+						const userReview = getUsersReviews(review, index);
+						return userReview;
 					}
-				})
-			}
+				}
+			})}
 			{
-				apiReviews && apiReviews.map((review, index) => {
-					if (index <= 7) {
-
-						const reviewReactions = {
-							likes: 0,
-							dislikes: 0,
-						}
-
-						const reviewReplies = [];
-
-						usersReviews.map((item) => {
-							if (review.id === item.data.review.id) {
-								if (item.data.review.likes && item.data.review.dislikes) {
-									reviewReactions.likes = item.data.review.likes;
-									reviewReactions.dislikes = item.data.review.dislikes;
-								} else if (item.data.review.likes) {
-									reviewReactions.likes = item.data.review.likes;
-								} else if (item.data.review.dislikes) {
-									reviewReactions.dislikes = item.data.review.dislikes;
-								}
-								return reviewReactions;
-							}
-						});
-
-						usersReviews.map((item) => {
-							if (item.data.review.replies.length && review.id === item.data.review.id) {
-								item.data.review.replies.map((reply) => {
-									return reviewReplies.push(reply);
-								})
-							}
-							return reviewReplies;
-						});
-
-						return <ReviewCard
-							userID={'userFromAPI'}
-							movieID={props.movieID}
-							reviewID={review.id}
-							key={index}
-							userIconPath={review.author_details.avatar_path}
-							userName={review.author_details.username}
-							reviewText={review.content}
-							reviewDate={review.created_at}
-							likes={reviewReactions.likes !== undefined ? reviewReactions.likes : 0}
-							dislikes={reviewReactions.dislikes !== undefined ? reviewReactions.dislikes : 0}
-							replies={reviewReplies.length ? reviewReplies : 0}
-						/>
-					}
-				})
+				isAllReviewsShown ? 'No more reviews' : <button className="main-button main-button--filled" onClick={() => {fetchMoreReviews()}}>Show more reviews</button>
 			}
 		</div>
 	)
@@ -93,4 +148,10 @@ const mapStateToProps = state => ({
 	currentUser: state.user.currentUser,
 })
 
-export default connect(mapStateToProps)(ReviewsList);
+const mapDispatchToProps = (dispatch) => {
+	return {
+		handleSetMyReview: (review) => dispatch(setMyReview(review)),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReviewsList);

@@ -5,30 +5,37 @@ import ReactionIcon from "../App/assets/icons/ReactionIcon";
 import classNames from "classnames";
 import Dropdown from "../Dropdown/Dropdown";
 import getTextLengthForPost from "../../functions/getTextLengthForPost";
+import DropdownOption from "../DropdownOption/DropdownOption";
+import DeleteIcon from "../App/assets/icons/DeleteIcon";
+import EditReviewForm from "../EditReviewForm/EditReviewForm";
+import EditIcon from "../App/assets/icons/EditIcon";
 
 const ReplyCard = (props) => {
 
+	const { reply, userID, handleLikeReply, handleDislikeReply, deleteReplyFromReview, editReplyInReview, reviewID } = props;
+
 	const [showMore, setShowMore] = useState(false);
+	const [isShowEditReplyForm, setIsShowEditReplyForm] = useState(false);
 	const [isLikedReply, setIsLikedReply] = useState(false);
 	const [isDislikedReply, setIsDislikedReply] = useState(false);
-	const [replyText, setReplyText] = useState();
+	const [replyContent, setReplyContent] = useState();
 
 	const maxReplyTextLength = 400;
-	const isLongReplyText = props.replyText.length > maxReplyTextLength;
+	const isLongReplyText = reply.replyText.length > maxReplyTextLength;
 
-	const isCurrentUsersReply = props.reply.userID === props.userID;
+	const isCurrentUsersReply = reply.userID === userID;
 
 	useEffect(() => {
-		setReplyText(getTextLengthForPost(props.replyText, maxReplyTextLength, showMore));
-	}, [props.replyText, showMore]);
+		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, showMore));
+	}, [reply.replyText, showMore]);
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;
 	}
 
 	const checkIfReplyLikedByCurrentUser = () => {
-		if (props.likes !== 0) {
-			const currentUsersLike = props.likes.some(like => like.userID === props.userID);
+		if (reply.likes !== 0) {
+			const currentUsersLike = reply.likes.some(like => like.userID === userID);
 			setIsLikedReply(currentUsersLike);
 		} else {
 			setIsLikedReply(false);
@@ -36,8 +43,8 @@ const ReplyCard = (props) => {
 	};
 
 	const checkIfReplyDislikedByCurrentUser = () => {
-		if (props.dislikes !== 0) {
-			const currentUsersDislike = props.dislikes.some(dislike => dislike.userID === props.userID);
+		if (reply.dislikes !== 0) {
+			const currentUsersDislike = reply.dislikes.some(dislike => dislike.userID === userID);
 			setIsDislikedReply(currentUsersDislike);
 		} else {
 			setIsDislikedReply(false);
@@ -47,16 +54,21 @@ const ReplyCard = (props) => {
 	useEffect(() => {
 		checkIfReplyLikedByCurrentUser();
 		checkIfReplyDislikedByCurrentUser();
-	}, [props.likes, props.dislikes]);
+	}, [reply.likes, reply.dislikes]);
 
 	const handleReplyReactionLikeButtonClick = (itemID, reviewID, isLikedReply, isDislikedReply) => {
-		props.handleLikeReply(itemID, reviewID, isLikedReply, isDislikedReply);
+		handleLikeReply(itemID, reviewID, isLikedReply, isDislikedReply);
 		setIsLikedReply(prevState => !prevState);
 	}
 
 	const handleReplyReactionDislikeButtonClick = (itemID, reviewID, isLikedReply, isDislikedReply) => {
-		props.handleDislikeReply(itemID, reviewID, isLikedReply, isDislikedReply);
+		handleDislikeReply(itemID, reviewID, isLikedReply, isDislikedReply);
 		setIsDislikedReply(prevState => !prevState);
+	}
+
+	const handleDeleteReply = (replyID, reviewID) => {
+		setIsShowEditReplyForm(false);
+		deleteReplyFromReview(replyID, reviewID);
 	}
 
 	const replyLikeActionClassNames = classNames('reply-card__action-item', {
@@ -67,38 +79,57 @@ const ReplyCard = (props) => {
 		'reply-card__action-item--active': isDislikedReply,
 	});
 
+	const replyCardClassNames = classNames('reply-card', {
+		'reply-card--own': isCurrentUsersReply,
+	})
+
 	return (
-		<div className="reply-card">
+		<div className={replyCardClassNames}>
 			<div className="reply-card__user-wrap">
-				<img className="reply-card__user-avatar" onError={addDefaultSrc} src={props.userIconPath === null ? default_user_icon : props.userIconPath} alt="user-avatar" />
+				<img className="reply-card__user-avatar" onError={addDefaultSrc} src={reply.userAvatar === null ? default_user_icon : reply.userAvatar} alt="user-avatar" />
 				<div className="reply-card__user-info">
 					<div className="reply-card__username">
-						{props.reply.displayName}
+						{reply.displayName}
 						{
-							props.isProjectUser && <span className="reply-card__user-label">CinemaStreet user</span>
+							isCurrentUsersReply && <span className="label">my reply</span>
 						}
 					</div>
-					<div className="reply-card__review-date">{moment(props.reply.reviewDate).format("M.D.Y")}</div>
+					<div className="reply-card__review-date">{moment(reply.replyDate).format("M.D.Y")}</div>
 				</div>
 			</div>
-			<span className="reply-card__text">{replyText}</span>
 			{
-				isLongReplyText && <button className="reply-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>
+				isShowEditReplyForm
+					? <EditReviewForm reviewID={reviewID} replyID={reply.id} initialValue={replyContent} setIsShowEditReplyForm={setIsShowEditReplyForm} editReplyInReview={editReplyInReview} isEditReplyForm />
+					: <>
+					<span className="reply-card__text">{replyContent}</span>
+					{
+						isLongReplyText && <button className="reply-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>
+					}
+					<div className="reply-card__actions">
+						<button className={replyLikeActionClassNames} onClick={() => {handleReplyReactionLikeButtonClick(reply.id, reviewID, isLikedReply, isDislikedReply)}}><ReactionIcon isLike />Like
+							{
+								reply.likes !== 0 && <span className="review-card__action-counter">{reply.likes.length}</span>
+							}
+						</button>
+						<button className={replyDislikeActionClassNames} onClick={() => {handleReplyReactionDislikeButtonClick(reply.id, reviewID, isLikedReply, isDislikedReply)}}><ReactionIcon />Dislike
+							{
+								reply.dislikes !== 0 && <span className="review-card__action-counter">{reply.dislikes.length}</span>
+							}
+						</button>
+					</div>
+				</>
 			}
-			<div className="reply-card__actions">
-				<button className={replyLikeActionClassNames} onClick={() => {handleReplyReactionLikeButtonClick(props.reply.id, props.reviewID, isLikedReply, isDislikedReply)}}><ReactionIcon isLike />Like
-					{
-						props.likes !== 0 && <span className="review-card__action-counter">{props.reply.likes.length}</span>
-					}
-				</button>
-				<button className={replyDislikeActionClassNames} onClick={() => {handleReplyReactionDislikeButtonClick(props.reply.id, props.reviewID, isLikedReply, isDislikedReply)}}><ReactionIcon />Dislike
-					{
-						props.dislikes !== 0 && <span className="review-card__action-counter">{props.reply.dislikes.length}</span>
-					}
-				</button>
-			</div>
 			{
-				isCurrentUsersReply && <Dropdown />
+				isCurrentUsersReply && <Dropdown>
+					<DropdownOption onClickAction={() => {handleDeleteReply(reply.id, reviewID)}}>
+						<DeleteIcon className="dropdown__icon dropdown__icon--delete" />
+						Delete
+					</DropdownOption>
+					<DropdownOption onClickAction={() => {setIsShowEditReplyForm(true)}}>
+						<EditIcon className="dropdown__icon" />
+						Edit reply
+					</DropdownOption>
+				</Dropdown>
 			}
 		</div>
 	)

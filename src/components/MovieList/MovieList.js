@@ -1,12 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import MovieCard from "../MovieCard/MovieCard";
-import axios from "axios";
+import fetchMoreResults from "../../functions/fetchMoreResults";
 
 const MoviesList = (props) => {
 
+	const { genres, movies, favouriteMovies, linkToFetch, handleClearMovies, handleSetMovies, addMovieToMyCollection, handleRemoveFromFavouriteMovies, handleSetCurrentMoviePage } = props;
+
 	const onMovieListUnmount = useRef();
 	onMovieListUnmount.current = () => {
-		props.handleClearMovies();
+		handleClearMovies();
 	}
 
 	useEffect(() => {
@@ -14,41 +16,35 @@ const MoviesList = (props) => {
 	}, []);
 
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
+	const [isMovieListLoading, setIsMovieListLoading] = useState(false);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
 	const [wasLastList, setWasLastList] = useState(false);
-	const [isMovieListLoading, setIsMovieListLoading] = useState(false);
+	const [isShowLastListInfo, setIsShowLastListInfo] = useState(false);
 
-	const getMovies = async (linkToFetch) => {
-
-		console.log(linkToFetch);
-
-		setIsMovieListLoading(true);
-		const response = await axios.get(
-			linkToFetch + '&page=' + currentResultsPage
-		);
-		if (!response.data.results.length) {
-			setWasLastList(true);
-			return;
-		}
+	const getMovies = () => {
+		setWasLastList(fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
-		props.handleSetMovies(response.data.results);
-		setIsMovieListLoading(false);
-	};
+
+		if (wasLastList) {
+			setIsShowLastListInfo(true);
+		}
+	}
 
 	useEffect(() => {
 	    if (!wasLastList && prevResultsPage !== currentResultsPage) {
-	        getMovies(props.linkToFetch);
-	    }
+	        getMovies();
+		}
 	}, []);
 
 	return (
 		<div className="movie-list">
-			{props.genres && props.movies && props.movies.map((movie, index) => {
-				return <MovieCard movie={movie} key={index} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
+			{genres && movies && movies.map((movie, index) => {
+				return <MovieCard movie={movie} key={index} genres={genres} favouriteMovies={favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />
 			})}
-			<button className="main-button main-button--more-results" onClick={() => {getMovies(props.linkToFetch)}}>Show more movies</button>
-			{props.isMovieListLoading && <div style={{fontSize: '200px', color: 'red'}}>...Loading</div>}
+			{isShowLastListInfo && !isMovieListLoading ? <p>No more results</p> : <button className="main-button main-button--filled" onClick={() => {getMovies()}}>Show more movies</button>
+			}
+			{isMovieListLoading && <div style={{fontSize: '200px', color: 'red'}}>...Loading</div>}
 		</div>
 	)
 }
