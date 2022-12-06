@@ -1,19 +1,19 @@
 import axios from "axios";
 
-const fetchMoreResults = async (linkToFetch, currentResultsPage, handleSetMovies) => {
+const fetchMoreResults = async (linkToFetch, currentResultsPage, handleSetResults) => {
 
-	let wasLastList = false;
+	let isResultsExist = true;
 
 	const response = await axios.get(
 		linkToFetch + '&page=' + currentResultsPage
 	);
 
-	if (currentResultsPage >= 3) {
-		wasLastList = true;
+	if (!response.data.results.length) {
+		isResultsExist = false;
 		return;
 	} else {
-		handleSetMovies(response.data.results);
-		return wasLastList;
+		handleSetResults(response.data.results);
+		return isResultsExist;
 	}
 };
 

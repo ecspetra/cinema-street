@@ -29,7 +29,7 @@ const ReviewsList = (props) => {
 		});
 	}
 
-	const getAPIReviews = (review, index) => {
+	const getAPIReviews = (review) => {
 
 		const reviewReactions = {
 			likes: 0,
@@ -66,7 +66,7 @@ const ReviewsList = (props) => {
 			userID={'userFromAPI'}
 			movieID={props.movieID}
 			reviewID={review.id}
-			key={index}
+			key={review.id}
 			userIconPath={review.author_details.avatar_path}
 			userName={review.author_details.username}
 			reviewText={review.content}
@@ -77,14 +77,14 @@ const ReviewsList = (props) => {
 		/>
 	}
 
-	const getUsersReviews = (review, index) => {
+	const getUsersReviews = (review) => {
 
 		return <ReviewCard
 			getMyReviewsForMovies={getMyReviewsForMovies}
 			userID={props.currentUser.uid}
 			movieID={props.movieID}
 			reviewID={review.data.review.id}
-			key={index}
+			key={review.data.review.id}
 			userIconPath={review.data.review.userAvatar}
 			userName={review.data.review.displayName}
 			reviewText={review.data.review.reviewText}
@@ -128,16 +128,16 @@ const ReviewsList = (props) => {
 			{generalReviews.length && generalReviews.map((review, index) => {
 				if (index < maxResultsLength) {
 					if (review.url) {
-						const apiReview = getAPIReviews(review, index);
+						const apiReview = getAPIReviews(review);
 						return apiReview;
 					} else {
-						const userReview = getUsersReviews(review, index);
+						const userReview = getUsersReviews(review);
 						return userReview;
 					}
 				}
 			})}
 			{
-				isAllReviewsShown ? 'No more reviews' : <button className="main-button main-button--filled" onClick={() => {fetchMoreReviews()}}>Show more reviews</button>
+				!isAllReviewsShown && <button className="main-button main-button--filled" onClick={() => {fetchMoreReviews()}}>Show more reviews</button>
 			}
 		</div>
 	)

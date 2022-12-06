@@ -14,20 +14,19 @@ const ReplyCard = (props) => {
 
 	const { reply, userID, handleLikeReply, handleDislikeReply, deleteReplyFromReview, editReplyInReview, reviewID } = props;
 
-	const [showMore, setShowMore] = useState(false);
+	const maxReplyTextLength = 400;
+	const isLongReplyText = reply.replyText.length > maxReplyTextLength;
+	const [isReplyTextHidden, setIsReplyTextHidden] = useState(isLongReplyText);
 	const [isShowEditReplyForm, setIsShowEditReplyForm] = useState(false);
 	const [isLikedReply, setIsLikedReply] = useState(false);
 	const [isDislikedReply, setIsDislikedReply] = useState(false);
 	const [replyContent, setReplyContent] = useState();
 
-	const maxReplyTextLength = 400;
-	const isLongReplyText = reply.replyText.length > maxReplyTextLength;
-
 	const isCurrentUsersReply = reply.userID === userID;
 
 	useEffect(() => {
-		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, showMore));
-	}, [reply.replyText, showMore]);
+		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, isReplyTextHidden, isLongReplyText));
+	}, [reply.replyText, isReplyTextHidden]);
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;
@@ -103,7 +102,7 @@ const ReplyCard = (props) => {
 					: <>
 					<span className="reply-card__text">{replyContent}</span>
 					{
-						isLongReplyText && <button className="reply-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>
+						isLongReplyText && <button className="reply-card__more-button" onClick={() => {setIsReplyTextHidden(!isReplyTextHidden)}}>{isReplyTextHidden ? 'Show more' : 'Show less'}</button>
 					}
 					<div className="reply-card__actions">
 						<button className={replyLikeActionClassNames} onClick={() => {handleReplyReactionLikeButtonClick(reply.id, reviewID, isLikedReply, isDislikedReply)}}><ReactionIcon isLike />Like

@@ -16,7 +16,6 @@ import {
     setUser,
     setMovies,
     setFavouriteMovies,
-    setPersons,
     setGenres,
     removeFromFavouriteMovies,
     setCurrentMovieInfo,
@@ -53,14 +52,6 @@ const App = (props) => {
         dispatch(clearUser());
     }
 
-    const handleSetMovies = (movies) => {
-        dispatch(setMovies(movies));
-    }
-
-    const handleClearMovies = () => {
-        dispatch(clearMovies());
-    }
-
     const handleSetGenres = (genres) => {
         dispatch(setGenres(genres));
     }
@@ -77,10 +68,6 @@ const App = (props) => {
     const handleSetCurrentMoviePage = (selectedMovie) => {
         handleClearCurrentMoviePage();
         getCurrentMoviePage(selectedMovie);
-    }
-
-    const handleSetPersons = (movies) => {
-        dispatch(setPersons(movies));
     }
 
     const handleSetCurrentPersonPage = (selectedPerson) => {
@@ -144,14 +131,6 @@ const App = (props) => {
             });
     }
 
-    const getPersons = () => {
-        fetch('https://api.themoviedb.org/3/person/popular/?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                handleSetPersons(data.results);
-            });
-    }
-
     const getCurrentPersonInfo = (selectedPerson) => {
         handleClearCurrentPersonPage();
         fetch('https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
@@ -209,7 +188,6 @@ const App = (props) => {
         getMyMoviesFromDatabase();
         getGenres();
         getUpcomingMovies();
-        getPersons();
     }, []);
 
     useEffect(() => {
@@ -224,6 +202,7 @@ const App = (props) => {
             }
         });
     }, [onAuthStateChanged]);
+
 
     /////////////////////////////////////////////////// - set current movie page when click back button
 
@@ -247,30 +226,21 @@ const App = (props) => {
         }
     }, [location]);
 
-    ///////////////////////////////////////////////////
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-
     return (
         <div className="content-wrapper">
             <Menu auth={auth} />
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home handleClearMovies={handleClearMovies} upcomingMovieVideo={props.upcomingMovieVideo} handleSetMovies={handleSetMovies} movies={props.movies} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route exact path="/" element={<Home upcomingMovieVideo={props.upcomingMovieVideo} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
-                    <Route path="/actors" element={<Actors persons={props.persons.uploadedPersons} getCurrentPersonInfo={getCurrentPersonInfo} />} />
+                    <Route path="/actors" element={<Actors />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage.currentMovieInfo && "/movie/:id"} element={<MoviePage handleClearMovies={handleClearMovies} handleSetMovies={handleSetMovies} movies={props.movies} getCurrentPersonInfo={getCurrentPersonInfo} handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
-                    <Route path={props.persons.currentPersonInfo && "/person/:personID"} element={<ActorPage persons={props.persons} />} />
+                    <Route path={props.currentMoviePage.currentMovieInfo && "/movie/:id"} element={<MoviePage getCurrentPersonInfo={getCurrentPersonInfo} handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
+                    {/*<Route path={props.persons.currentPersonInfo && "/person/:personID"} element={<ActorPage persons={props.persons} />} />*/}
                 </Routes>
             </div>
         </div>
@@ -279,12 +249,11 @@ const App = (props) => {
 
 const mapStateToProps = state => ({
     currentUser: state.user.currentUser,
-    movies: state.movies.uploadedMovies,
+    // movies: state.movies.uploadedMovies,
     upcomingMovies: state.upcomingMovies.upcomingMovies,
     favouriteMovies: state.favouriteMovies.favouriteMovies,
     currentMoviePage: state.currentMoviePage,
-    persons: state.persons,
     genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setPersons, setMovies, setUpcomingMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieVideos, clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage, clearMovies })(App);
+export default connect(mapStateToProps, { setMovies, setUpcomingMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieVideos, clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage, clearMovies })(App);

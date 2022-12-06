@@ -1,11 +1,11 @@
-const getTextLengthForPost = (reviewText, maxLength, showMore) => {
+const getTextLengthForPost = (reviewText, maxLength, isTextHidden, isLongText) => {
 
 	const shortReviewText = reviewText.substring(0, maxLength) + '... ';
 
-	if (showMore) {
-		return reviewText;
-	} else {
+	if (isTextHidden && isLongText) {
 		return shortReviewText;
+	} else {
+		return reviewText + ' ';
 	}
 
 }

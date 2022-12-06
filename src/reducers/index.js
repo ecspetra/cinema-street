@@ -35,7 +35,7 @@ const initialCurrentMoviePageState = {
 }
 
 const initialPersonsState = {
-	uploadedPersons: null,
+	uploadedPersons: [],
 	currentPersonInfo: null,
 }
 
@@ -189,7 +189,12 @@ const person_reducer = (state = initialPersonsState, action) => {
 		case actionTypes.SET_PERSONS:
 			return {
 				...state,
-				uploadedPersons: action.payload.uploadedPersons,
+				uploadedPersons: [...state.uploadedPersons, ...action.payload.uploadedPersons],
+			}
+		case actionTypes.CLEAR_PERSONS:
+			return {
+				...state,
+				uploadedPersons: null,
 			}
 		case actionTypes.SET_CURRENT_PERSON_PAGE:
 			return {

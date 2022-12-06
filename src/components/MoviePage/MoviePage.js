@@ -75,7 +75,7 @@ const MoviePage = (props) => {
 					<h1>Cast</h1>
 					<div className="movie-page__credits">
 						{
-							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} getCurrentPersonInfo={props.getCurrentPersonInfo} isMovieCharacter />
+							props.currentMoviePage.currentMovieCredits && <ActorsList persons={props.currentMoviePage.currentMovieCredits.cast} getCurrentPersonInfo={props.getCurrentPersonInfo} maxResultsLength={7} isMovieCharacter />
 						}
 					</div>
 				</div>
@@ -97,8 +97,6 @@ const MoviePage = (props) => {
 								? <ReviewsList movieID={props.currentMoviePage.currentMovieInfo.id} reviews={props.currentMoviePage.currentMovieReviews.results} />
 								: 'No reviews yet'
 						}
-						{/*<ReviewsList movieID={props.currentMoviePage.currentMovieInfo.id} />*/}
-
 						<NewReviewForm movieID={props.currentMoviePage.currentMovieInfo.id} />
 					</div>
 				</div>
@@ -107,7 +105,7 @@ const MoviePage = (props) => {
 					<div className="movie-page__similar-movies">
 						{
 							props.movies
-								? <MovieList handleSetMovies={props.handleSetMovies} handleClearMovies={props.handleClearMovies} linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', props.currentMoviePage.currentMovieInfo.id)} getMovies={props.getMovies} movies={props.movies} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
+								? <MovieList linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', props.currentMoviePage.currentMovieInfo.id)} genres={props.genres} favouriteMovies={props.favouriteMovies} addMovieToMyCollection={props.addMovieToMyCollection} handleRemoveFromFavouriteMovies={props.handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={props.handleSetCurrentMoviePage} />
 								: 'No similar movies'
 						}
 					</div>

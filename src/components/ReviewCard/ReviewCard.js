@@ -39,7 +39,9 @@ const ReviewCard = (props) => {
 		}
 	};
 
-	const [showMore, setShowMore] = useState(false);
+	const maxReviewTextLength = 400;
+	const isLongReviewText = reviewText.length > maxReviewTextLength;
+	const [isReviewTextHidden, setIsReviewTextHidden] = useState(isLongReviewText);
 	const [isShowReplyForm, setIsShowReplyForm] = useState(false);
 	const [isShowEditReviewForm, setIsShowEditReviewForm] = useState(false);
 	const [isLikedReview, setIsLikedReview] = useState(false);
@@ -48,15 +50,17 @@ const ReviewCard = (props) => {
 
 	const isCurrentUsersReview = userID === currentUser.uid;
 
-	const maxReviewTextLength = 400;
-	const isLongReviewText = reviewText.length > maxReviewTextLength;
-
 	useEffect(() => {
-		setReviewContent(getTextLengthForPost(reviewText, maxReviewTextLength, showMore));
-	}, [reviewText, showMore]);
+		setReviewContent(getTextLengthForPost(reviewText, maxReviewTextLength, isReviewTextHidden, isLongReviewText));
+	}, [reviewText, isReviewTextHidden]);
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;
+	}
+
+	if (reviewID === '636de2bdd4653700b44daee9') {
+		console.log(isReviewTextHidden);
+		// console.log(reviewID);
 	}
 
 	const reviewsListRef = ref(database, 'reviews');
@@ -702,7 +706,7 @@ const ReviewCard = (props) => {
 					: (<>
 						<span className="review-card__text">{reviewContent}</span>
 						{
-							isLongReviewText && <button className="review-card__more-button" onClick={() => {setShowMore(!showMore)}}>{showMore ? 'Show less' : 'Show more'}</button>
+							isLongReviewText && <button className="review-card__more-button" onClick={() => {setIsReviewTextHidden(!isReviewTextHidden)}}>{isReviewTextHidden ? 'Show more' : 'Show less'}</button>
 						}
 						<div className="review-card__actions">
 							<button className={reviewLikeActionClassNames} onClick={() => {handleReviewReactionLikeButtonClick(reviewID)}}><ReactionIcon isLike />Like

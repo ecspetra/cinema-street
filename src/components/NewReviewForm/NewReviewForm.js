@@ -83,6 +83,9 @@ const NewReviewForm = (props) => {
 
 	return (
 		<form onSubmit={handleSubmitNewReview} className="new-review-form">
+			{
+				!isReplyForm && <h3 className="new-review-form__title">Leave your feedback</h3>
+			}
 			<div className="new-review-form__user-wrap">
 				<img className="new-review-form__user-avatar" onError={addDefaultSrc} src={currentUser.photoURL === null ? default_user_icon : currentUser.photoURL} alt="user-avatar" />
 				<div className="new-review-form__user-info">
@@ -96,7 +99,6 @@ const NewReviewForm = (props) => {
 			<div className="new-review-form__buttons-wrap">
 				{
 					isReplyForm && <button className="main-button main-button--cancel" onClick={() => {handleCancelButtonClick()}}>Cancel</button>
-
 				}
 				<button className="main-button main-button--filled" type="submit">{isReplyForm ? 'Send reply' : 'Send review'}</button>
 			</div>

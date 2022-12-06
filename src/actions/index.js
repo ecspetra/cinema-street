@@ -9,6 +9,12 @@ export const setPersons = (persons) => {
 	}
 }
 
+export const clearPersons = () => {
+	return {
+		type: actionTypes.CLEAR_PERSONS,
+	}
+}
+
 export const setMovies = (movies) => {
 	return {
 		type: actionTypes.SET_MOVIES,

@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
+import {clearMovies, setMovies } from "../../actions";
+import {connect} from "react-redux";
 
 const MoviesList = (props) => {
 
@@ -16,24 +18,23 @@ const MoviesList = (props) => {
 	}, []);
 
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
-	const [isMovieListLoading, setIsMovieListLoading] = useState(false);
+	const [isMovieListLoaded, setIsMovieListLoaded] = useState(true);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
-	const [wasLastList, setWasLastList] = useState(false);
-	const [isShowLastListInfo, setIsShowLastListInfo] = useState(false);
+	const [isResultsExist, setIsResultsExist] = useState(true);
 
 	const getMovies = () => {
-		setWasLastList(fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
+		setIsMovieListLoaded(false);
+		setIsResultsExist(fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
-
-		if (wasLastList) {
-			setIsShowLastListInfo(true);
-		}
+		setIsMovieListLoaded(true);
 	}
 
+	const isShowMoreButton = isResultsExist && isMovieListLoaded;
+
 	useEffect(() => {
-	    if (!wasLastList && prevResultsPage !== currentResultsPage) {
-	        getMovies();
+	    if (isResultsExist && prevResultsPage !== currentResultsPage) {
+			getMovies();
 		}
 	}, []);
 
@@ -42,11 +43,23 @@ const MoviesList = (props) => {
 			{genres && movies && movies.map((movie, index) => {
 				return <MovieCard movie={movie} key={index} genres={genres} favouriteMovies={favouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />
 			})}
-			{isShowLastListInfo && !isMovieListLoading ? <p>No more results</p> : <button className="main-button main-button--filled" onClick={() => {getMovies()}}>Show more movies</button>
+			{
+				isShowMoreButton && <button className="main-button main-button--filled" onClick={() => {getMovies()}}>Show more movies</button>
 			}
-			{isMovieListLoading && <div style={{fontSize: '200px', color: 'red'}}>...Loading</div>}
+			{!isMovieListLoaded && <div style={{fontSize: '200px', color: 'red'}}>...Loading</div>}
 		</div>
 	)
 }
 
-export default MoviesList;
+const mapStateToProps = state => ({
+	movies: state.movies.uploadedMovies,
+})
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		handleSetMovies: (movies) => dispatch(setMovies(movies)),
+		handleClearMovies: () => dispatch(clearMovies())
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoviesList);

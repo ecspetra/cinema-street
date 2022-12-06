@@ -488,14 +488,6 @@ button {
 
             &:before {
                 box-shadow: none;
-            }
-        }
-    }
-
-    &--cancel {
-
-        &:hover {
-            &:before {
                 opacity: 0;
             }
         }
@@ -758,6 +750,10 @@ button {
             height: 100%;
         }
     }
+}
+
+.reviews-list {
+    margin-bottom: 40px;
 }
 
 .review-card {
@@ -1160,6 +1156,10 @@ button {
     background-color: rgba($wrap-background-color, .9);
     padding: 20px;
     border-radius: 8px;
+
+    &__title {
+        margin-bottom: 20px;
+    }
 
     &__user-wrap {
         display: flex;

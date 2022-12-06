@@ -5,6 +5,8 @@ import classNames from "classnames";
 
 const ActorCard = (props) => {
 
+	const { person, getCurrentPersonInfo } = props;
+
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 	const isMovieCharacter = props.isMovieCharacter;
@@ -19,18 +21,17 @@ const ActorCard = (props) => {
 
 	return (
 		<div className="person-card">
-			<Link to={"/person/" + props.person.id} className="person-card__link" onClick={() => {props.getCurrentPersonInfo(props.person.id)}}>
+			<Link to={"/person/" + person.id} className="person-card__link" onClick={() => {getCurrentPersonInfo(person.id)}}>
 				<div className="person-card__content">
 					<div className={personCardImageWrapClassNames}>
-						<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={addDefaultSrc} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + props.person.profile_path} alt="person-photo" />
+						<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={addDefaultSrc} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + person.profile_path} alt="person-photo" />
 					</div>
-					<h3 className="person-card__title">{props.person.name}</h3>
+					<h3 className="person-card__title">{person.name}</h3>
 				</div>
 			</Link>
 			{
-				(isMovieCharacter && (props.person.character !== "")) && <span className="person-card__character">{props.person.character}</span>
+				(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character}</span>
 			}
-			{/*<p className="person-card__rating">{props.person.popularity}</p>*/}
 		</div>
 	)
 }
