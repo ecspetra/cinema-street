@@ -1,14 +1,37 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useState } from "react";
 import UpcomingMovieItem from "../UpcomingMovieItem/UpcomingMovieItem";
 import axios from "axios";
 import Plyr from "plyr-react"
 import "plyr-react/plyr.css"
+import { connect } from "react-redux";
+import { setUpcomingMovies } from "../../actions";
+import {API_KEY} from "../../functions/linksToFetch";
 
 const UpcomingMovies = (props) => {
 
+	const { upcomingMovies, handleSetUpcomingMovies } = props;
+
+	const [moviePreview, setMoviePreview] = useState({});
+	const [isMoviePreviewSelected, setIsMoviePreviewSelected] = useState();
+	const [moviesSortedByReleaseDate, setMoviesSortedByReleaseDate] = useState([]);
+
+	const getUpcomingMovies = async () => {
+		const response = await axios.get(
+			'https://api.themoviedb.org/3/movie/upcoming?api_key=' + API_KEY
+		);
+		handleSetUpcomingMovies(response.data.results);
+	}
+
+	const getMoviesSortedByReleaseDate = () => {
+		setMoviesSortedByReleaseDate(upcomingMovies.sort((a, b) => {
+			return new Date(a.release_date).getTime() -
+				new Date(b.release_date).getTime();
+		}));
+	}
+
 	const getUpcomingMovieVideo = async (selectedMovie) => {
 		const response = await axios.get(
-			'https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce'
+			'https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=' + API_KEY
 		);
 		if (response.data.results.length) {
 			const trailer = response.data.results.find(video => video.type === "Trailer");
@@ -18,7 +41,7 @@ const UpcomingMovies = (props) => {
 
 	const getInitialPreviewState = async () => {
 
-		const defaultMovie = props.movies[0];
+		const defaultMovie = moviesSortedByReleaseDate[0];
 
 		const defaultTrailerKey = await getUpcomingMovieVideo(defaultMovie);
 
@@ -32,9 +55,6 @@ const UpcomingMovies = (props) => {
 		);
 		setIsMoviePreviewSelected(defaultMovie.id);
 	}
-
-	const [moviePreview, setMoviePreview] = useState({});
-	const [isMoviePreviewSelected, setIsMoviePreviewSelected] = useState();
 
 	const handleSetMoviePreview = async (movie) => {
 
@@ -51,13 +71,20 @@ const UpcomingMovies = (props) => {
 		setIsMoviePreviewSelected(movie.id);
 	}
 
-	const moviesSortedByReleaseDate = props.movies.sort((a,b) => {
-		return new Date(a.release_date).getTime() -
-			new Date(b.release_date).getTime();
-	});
+	useEffect(() => {
+		getUpcomingMovies();
+	}, []);
+
+	useEffect( () => {
+		if (upcomingMovies.length > 0) {
+			getMoviesSortedByReleaseDate();
+		}
+	}, [upcomingMovies]);
 
 	useEffect(() => {
-		getInitialPreviewState();
+		if (moviesSortedByReleaseDate.length > 0) {
+			getInitialPreviewState();
+		}
 	}, [moviesSortedByReleaseDate]);
 
 	const videoSrc = {
@@ -105,7 +132,7 @@ const UpcomingMovies = (props) => {
 			</div>
 			<div className="upcoming-movies__list">
 				{
-					moviesSortedByReleaseDate && moviesSortedByReleaseDate.map((movie, index) => {
+					moviesSortedByReleaseDate.map((movie, index) => {
 						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={index} />
 					})
 				}
@@ -114,4 +141,14 @@ const UpcomingMovies = (props) => {
 	)
 }
 
-export default UpcomingMovies;
+const mapStateToProps = state => ({
+	upcomingMovies: state.upcomingMovies.upcomingMovies,
+})
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		handleSetUpcomingMovies: (movies) => dispatch(setUpcomingMovies(movies)),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpcomingMovies);

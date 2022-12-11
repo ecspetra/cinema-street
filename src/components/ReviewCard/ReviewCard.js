@@ -58,11 +58,6 @@ const ReviewCard = (props) => {
 		event.target.src = default_user_icon;
 	}
 
-	if (reviewID === '636de2bdd4653700b44daee9') {
-		console.log(isReviewTextHidden);
-		// console.log(reviewID);
-	}
-
 	const reviewsListRef = ref(database, 'reviews');
 	const reviewsPostRef = push(reviewsListRef);
 
@@ -678,12 +673,12 @@ const ReviewCard = (props) => {
 		setIsDislikedReview(prevState => !prevState);
 	}
 
-	const reviewLikeActionClassNames = classNames('review-card__action-item', {
-		'review-card__action-item--active': isLikedReview,
+	const reviewLikeActionClassNames = classNames('review-card__action-item-wrap', {
+		'review-card__action-item-wrap--active': isLikedReview,
 	});
 
-	const reviewDislikeActionClassNames = classNames('review-card__action-item', {
-		'review-card__action-item--active': isDislikedReview,
+	const reviewDislikeActionClassNames = classNames('review-card__action-item-wrap', {
+		'review-card__action-item-wrap--active': isDislikedReview,
 	});
 
 	return (
@@ -709,17 +704,24 @@ const ReviewCard = (props) => {
 							isLongReviewText && <button className="review-card__more-button" onClick={() => {setIsReviewTextHidden(!isReviewTextHidden)}}>{isReviewTextHidden ? 'Show more' : 'Show less'}</button>
 						}
 						<div className="review-card__actions">
-							<button className={reviewLikeActionClassNames} onClick={() => {handleReviewReactionLikeButtonClick(reviewID)}}><ReactionIcon isLike />Like
-								{
-									likes !== 0 && <span className="review-card__action-counter">{likes.length}</span>
-								}
-							</button>
-							<button className={reviewDislikeActionClassNames} onClick={() => {handleReviewReactionDislikeButtonClick(reviewID)}}><ReactionIcon />Dislike
-								{
-									dislikes !== 0 && <span className="review-card__action-counter">{dislikes.length}</span>
-								}
-							</button>
-							<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(!isShowReplyForm)}}><ReplyIcon />Reply</button>
+							<div className={reviewLikeActionClassNames}>
+								<button className="review-card__action-item" onClick={() => {handleReviewReactionLikeButtonClick(reviewID)}}><ReactionIcon isLike />Like
+									{
+										likes !== 0 && <span className="review-card__action-counter">{likes.length}</span>
+									}
+								</button>
+							</div>
+							<div className={reviewDislikeActionClassNames}>
+								<button className="review-card__action-item" onClick={() => {handleReviewReactionDislikeButtonClick(reviewID)}}><ReactionIcon />Dislike
+									{
+										dislikes !== 0 && <span className="review-card__action-counter">{dislikes.length}</span>
+									}
+								</button>
+							</div>
+							<div className="review-card__action-item-wrap">
+								<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(!isShowReplyForm)}}><ReplyIcon />Reply</button>
+
+							</div>
 						</div>
 					</>)
 			}

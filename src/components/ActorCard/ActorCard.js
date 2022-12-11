@@ -9,7 +9,7 @@ const ActorCard = (props) => {
 
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-	const isMovieCharacter = props.isMovieCharacter;
+	const isMovieCharacter = props.isCurrentMovieCharacter;
 
 	const addDefaultSrc = (event) => {
 		event.target.src = default_user_icon;

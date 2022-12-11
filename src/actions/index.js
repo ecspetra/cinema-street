@@ -80,6 +80,12 @@ export const setFavouriteMovies = (movies) => {
 	}
 }
 
+export const clearFavouriteMovies = () => {
+	return {
+		type: actionTypes.CLEAR_FAVOURITE_MOVIES,
+	}
+}
+
 export const removeFromFavouriteMovies = (id) => {
 	return {
 		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
@@ -87,48 +93,10 @@ export const removeFromFavouriteMovies = (id) => {
 	}
 }
 
-export const setCurrentMovieInfo = (selectedMovie) => {
+export const setCurrentMovie = (selectedMovie) => {
 	return {
-		type: actionTypes.SET_CURRENT_MOVIE_INFO,
-		payload: {
-			currentMovieInfo: selectedMovie,
-		}
-	}
-}
-
-export const setCurrentMovieCredits = (movieCredits) => {
-	return {
-		type: actionTypes.SET_CURRENT_MOVIE_CREDITS,
-		payload: {
-			currentMovieCredits: movieCredits,
-		}
-	}
-}
-
-export const setCurrentMovieImages = (movieImages) => {
-	return {
-		type: actionTypes.SET_CURRENT_MOVIE_IMAGES,
-		payload: {
-			currentMovieImages: movieImages,
-		}
-	}
-}
-
-export const setCurrentMovieReviews = (movieReviews) => {
-	return {
-		type: actionTypes.SET_CURRENT_MOVIE_REVIEWS,
-		payload: {
-			currentMovieReviews: movieReviews,
-		}
-	}
-}
-
-export const setCurrentMovieVideos = (movieVideos) => {
-	return {
-		type: actionTypes.SET_CURRENT_MOVIE_VIDEOS,
-		payload: {
-			currentMovieVideos: movieVideos,
-		}
+		type: actionTypes.SET_CURRENT_MOVIE,
+		payload: selectedMovie
 	}
 }
 

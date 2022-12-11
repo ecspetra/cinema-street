@@ -8,13 +8,17 @@ import { setMyReview } from "../../actions";
 const ReviewsList = (props) => {
 
 	const reviewsListRef = ref(database, 'reviews');
-	const reviewsPostRef = push(reviewsListRef);
 	const apiReviews = props.reviews;
 	const usersReviews = props.usersReviews;
-	const [maxResultsLength, setMaxResultsLength] = useState(5);
+	const initialListLength = 4;
+	const [maxResultsLength, setMaxResultsLength] = useState(initialListLength);
 
-	const fetchMoreReviews = () => {
-		setMaxResultsLength(maxResultsLength + 5);
+	const getReviewsList = () => {
+		if (generalReviews.length >= maxResultsLength) {
+			setMaxResultsLength(maxResultsLength + 5);
+		} else {
+			setMaxResultsLength(initialListLength);
+		}
 	}
 
 	const getMyReviewsForMovies = () => {
@@ -113,7 +117,8 @@ const ReviewsList = (props) => {
 	}
 
 	const generalReviews = getAllReviews();
-	const isAllReviewsShown = generalReviews.length <= maxResultsLength;
+	const buttonText = generalReviews.length >= maxResultsLength ? 'Show more' : 'Show less';
+	const isShowMoreButton = generalReviews.length !== 0;
 
 	useEffect(() => {
 		getMyReviewsForMovies();
@@ -137,7 +142,7 @@ const ReviewsList = (props) => {
 				}
 			})}
 			{
-				!isAllReviewsShown && <button className="main-button main-button--filled" onClick={() => {fetchMoreReviews()}}>Show more reviews</button>
+				isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getReviewsList()}}>{buttonText}</button>
 			}
 		</div>
 	)

@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect } from "react";
 import './App.scss';
-import {Route, Routes, matchPath, BrowserRouter} from "react-router-dom";
+import { Route, Routes, matchPath, BrowserRouter } from "react-router-dom";
 import Home from "../Home/Home";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
@@ -16,14 +16,12 @@ import {
     setUser,
     setMovies,
     setFavouriteMovies,
-    setGenres,
-    removeFromFavouriteMovies,
-    setCurrentMovieInfo,
-    setCurrentMovieCredits,
-    setCurrentMovieImages,
-    setCurrentMovieReviews,
-    setCurrentMovieVideos,
-    clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage, setUpcomingMovies, clearMovies
+    setCurrentPersonPage,
+    clearCurrentPersonPage,
+    setUpcomingMovies,
+    clearMovies,
+    setCurrentMovie,
+    clearCurrentMoviePage
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -31,12 +29,14 @@ import Menu from "../Menu/Menu";
 import TopBanner from "../TopBanner/TopBanner";
 import MoviePage from "../MoviePage/MoviePage";
 import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
-import { database } from "../../firebase";
-import {getDatabase, ref, push, set, onValue, remove} from "firebase/database";
-import {useLocation} from "react-router";
-import axios from 'axios';
+import { useLocation } from "react-router";
+import { API_KEY } from "../../functions/linksToFetch";
+import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
+import axios from "axios";
 
 const App = (props) => {
+
+    const { currentUser, currentMoviePage, handleSetCurrentMoviePage, handleClearCurrentMoviePage } = props;
 
     const dispatch = useDispatch();
 
@@ -52,23 +52,7 @@ const App = (props) => {
         dispatch(clearUser());
     }
 
-    const handleSetGenres = (genres) => {
-        dispatch(setGenres(genres));
-    }
 
-    const handleSetFavouriteMovies = (selectedMovie) => {
-        dispatch(setFavouriteMovies(selectedMovie));
-    }
-
-    const handleRemoveFromFavouriteMovies = (selectedMovie, key) => {
-        dispatch(removeFromFavouriteMovies(selectedMovie));
-        removeMovieFromMyCollection(key);
-    }
-
-    const handleSetCurrentMoviePage = (selectedMovie) => {
-        handleClearCurrentMoviePage();
-        getCurrentMoviePage(selectedMovie);
-    }
 
     const handleSetCurrentPersonPage = (selectedPerson) => {
         dispatch(setCurrentPersonPage(selectedPerson));
@@ -78,117 +62,27 @@ const App = (props) => {
         dispatch(clearCurrentPersonPage());
     }
 
-    const handleClearCurrentMoviePage = () => {
-        dispatch(clearCurrentMoviePage());
-    }
 
-    const handleSetUpcomingMovies = (movies) => {
-        dispatch(setUpcomingMovies(movies));
-    }
 
-    const getCurrentMoviePage = (selectedMovie) => {
-        console.log(selectedMovie.id);
-        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                dispatch(setCurrentMovieInfo(data));
-            });
-        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/credits?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                dispatch(setCurrentMovieCredits(data));
-            });
-        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/images?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                dispatch(setCurrentMovieImages(data));
-            });
-        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/reviews?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                dispatch(setCurrentMovieReviews(data));
-            });
-        fetch('https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                dispatch(setCurrentMovieVideos(data.results));
-            });
-    }
 
-    const getGenres = () => {
-        fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                handleSetGenres(data);
-            });
-    }
 
-    const getUpcomingMovies = () => {
-        fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                handleSetUpcomingMovies(data.results);
-            });
-    }
 
-    const getCurrentPersonInfo = (selectedPerson) => {
+
+    const getCurrentPersonInfo = async (selectedPerson) => {
         handleClearCurrentPersonPage();
-        fetch('https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=1fdbb7205b3bf878ede960ab5c9bc7ce')
-            .then(response => response.json())
-            .then(data => {
-                handleSetCurrentPersonPage(data);
-            });
-    }
 
-    const getMyMoviesFromDatabase = () => {
-        onValue(postListRef, (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                const favouriteMovie = {
-                    key: childSnapshot.key,
-                    data: childSnapshot.val(),
-                }
-                handleSetFavouriteMovies(favouriteMovie);
-            });
-        });
+        const response = await axios.get(
+            'https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=' + API_KEY
+        );
+
+        handleSetCurrentPersonPage(response.data);
     }
 
     ///////////////////////////////////////////////////
 
-    const database = getDatabase();
-    const postListRef = ref(database, 'movies');
-    const newPostRef = push(postListRef);
 
-    const postMoviesToDataBase = (selectedMovie) => {
-        set(newPostRef, {
-            movie: {
-                poster_path: 'https://image.tmdb.org/t/p/w440_and_h660_face' + selectedMovie.poster_path,
-                title: selectedMovie.title,
-                id: selectedMovie.id,
-                vote_average: selectedMovie.vote_average,
-                genre_ids: selectedMovie.genre_ids ?? selectedMovie.genres.map((genre) => {
-                    return genre.id;
-                }),
-            },
-        }).then(() => {
-            console.log("Movie saved");
-        })
-    }
 
-    const removeMovieFromMyCollection = (key) => {
-        const dbRef = ref(database, "/movies/" + key);
-        remove(dbRef).then(() => console.log("Movie removed"));
-    }
 
-    const addMovieToMyCollection = (selectedMovie) => {
-        postMoviesToDataBase(selectedMovie);
-        getMyMoviesFromDatabase();
-    }
-
-    useEffect(() => {
-        getMyMoviesFromDatabase();
-        getGenres();
-        getUpcomingMovies();
-    }, []);
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -213,7 +107,7 @@ const App = (props) => {
         const match = matchPath({ path: '/movie/:id' }, location.pathname);
 
         if (match) {
-            handleSetCurrentMoviePage(match.params);
+            handleChooseCurrentMoviePage(match.params, handleSetCurrentMoviePage, handleClearCurrentMoviePage)
         }
     }, [location]);
 
@@ -232,15 +126,15 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home upcomingMovieVideo={props.upcomingMovieVideo} upcomingMovies={props.upcomingMovies} genres={props.genres} favouriteMovies={props.favouriteMovies} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} addMovieToMyCollection={addMovieToMyCollection} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route exact path="/" element={<Home favouriteMovies={props.favouriteMovies} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
-                    <Route path="/favourite-movies" element={<FavouriteMovies favouriteMovies={props.favouriteMovies} genres={props.genres} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} handleSetCurrentMoviePage={handleSetCurrentMoviePage} />} />
+                    <Route path="/favourite-movies" element={<FavouriteMovies />} />
                     <Route path="/actors" element={<Actors />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={props.currentMoviePage.currentMovieInfo && "/movie/:id"} element={<MoviePage getCurrentPersonInfo={getCurrentPersonInfo} handleSetCurrentMoviePage={handleSetCurrentMoviePage} handleClearCurrentMoviePage={handleClearCurrentMoviePage} currentMoviePage={props.currentMoviePage} favouriteMovies={props.favouriteMovies} genres={props.genres} addMovieToMyCollection={addMovieToMyCollection} handleRemoveFromFavouriteMovies={handleRemoveFromFavouriteMovies} />} />
-                    {/*<Route path={props.persons.currentPersonInfo && "/person/:personID"} element={<ActorPage persons={props.persons} />} />*/}
+                    <Route path={"/movie/:id"} element={<MoviePage getCurrentPersonInfo={getCurrentPersonInfo} />} />
+                    <Route path={props.persons.currentPersonInfo && "/person/:personID"} element={<ActorPage persons={props.persons} />} />
                 </Routes>
             </div>
         </div>
@@ -249,11 +143,22 @@ const App = (props) => {
 
 const mapStateToProps = state => ({
     currentUser: state.user.currentUser,
-    // movies: state.movies.uploadedMovies,
-    upcomingMovies: state.upcomingMovies.upcomingMovies,
-    favouriteMovies: state.favouriteMovies.favouriteMovies,
     currentMoviePage: state.currentMoviePage,
-    genres: state.genres.uploadedGenres,
 })
 
-export default connect(mapStateToProps, { setMovies, setUpcomingMovies, setFavouriteMovies, setUser, clearUser, setGenres, removeFromFavouriteMovies, setCurrentMovieInfo, setCurrentMovieCredits, setCurrentMovieImages, setCurrentMovieReviews, setCurrentMovieVideos, clearCurrentMoviePage, setCurrentPersonPage, clearCurrentPersonPage, clearMovies })(App);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleSetCurrentMoviePage: (selectedMovie) => dispatch(setCurrentMovie(selectedMovie)),
+        handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
+        setMovies,
+        setUpcomingMovies,
+        setFavouriteMovies,
+        setUser,
+        clearUser,
+        setCurrentPersonPage,
+        clearCurrentPersonPage,
+        clearMovies
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

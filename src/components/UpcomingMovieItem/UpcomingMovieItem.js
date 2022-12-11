@@ -8,41 +8,43 @@ import {connect} from "react-redux";
 
 const UpcomingMovieItem = (props) => {
 
+	const { genres, movie, isMoviePreviewSelected, handleSetMoviePreview } = props;
+
 	const [upcomingMovieGenresIDs, setUpcomingMovieGenresIDs] = useState([]);
 	const [upcomingMovieGenresNames, setUpcomingMovieGenresNames] = useState([]);
 
 	useEffect(() => {
-		if (props.genres) {
-			const movieGenresIDsArray = getMovieGenresIDs(props.genres, props.movie);
+		if (genres) {
+			const movieGenresIDsArray = getMovieGenresIDs(genres, movie);
 			setUpcomingMovieGenresIDs(movieGenresIDsArray);
 		}
 	}, []);
 
 	useEffect(() => {
-		if (props.genres) {
-			const comparedGenresNames = getComparedGenresIDs(props.genres, upcomingMovieGenresIDs);
+		if (genres) {
+			const comparedGenresNames = getComparedGenresIDs(genres, upcomingMovieGenresIDs);
 			setUpcomingMovieGenresNames(comparedGenresNames);
 		}
 	}, [upcomingMovieGenresIDs]);
 
 	const upcomingMovieListItemClassNames = classNames('upcoming-movies__list-item', {
-		'upcoming-movies__list-item--selected': props.isMoviePreviewSelected === props.movie.id,
+		'upcoming-movies__list-item--selected': isMoviePreviewSelected === movie.id,
 	});
 
 	const movieReleaseDate = {
-		releaseDay: moment(props.movie.release_date).format("D"),
-		releaseMonth: moment(props.movie.release_date).format("MMM"),
-		releaseYear: moment(props.movie.release_date).format("Y"),
+		releaseDay: moment(movie.release_date).format("D"),
+		releaseMonth: moment(movie.release_date).format("MMM"),
+		releaseYear: moment(movie.release_date).format("Y"),
 	}
 
 	return (
-		<div className={upcomingMovieListItemClassNames} onClick={() => {props.handleSetMoviePreview(props.movie);}}>
+		<div className={upcomingMovieListItemClassNames} onClick={() => {handleSetMoviePreview(movie);}}>
 			<div className="upcoming-movies__date-label">
 				<span className="upcoming-movies__date-day">{movieReleaseDate.releaseDay}</span>
 				<span className="upcoming-movies__date-month">{movieReleaseDate.releaseMonth}</span>
 			</div>
 			<div className="upcoming-movies__list-item-text-wrap">
-				<h3 className="upcoming-movies__list-item-title">{props.movie.title}</h3>
+				<h3 className="upcoming-movies__list-item-title">{movie.title}</h3>
 				<div className="upcoming-movies__list-item-info">
 					<span className="upcoming-movies__date-year">{movieReleaseDate.releaseYear}</span>
 					<div className="upcoming-movies__genres-wrap">

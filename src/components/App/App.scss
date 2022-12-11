@@ -11,6 +11,7 @@ $text-color-extra-light: #f3f1f0;
 $text-color-light: #a7a2b4;
 $text-color-dark: #5a5862;
 $text-main-color: #8071ff;
+$text-main-color-light: #9284ff;
 
 html, body {
     padding: 0;
@@ -102,37 +103,56 @@ button {
     left: 50%;
     transform: translateX(-50%);
 
-    &__item {
-        color: $text-color-extra-light;
+    &__item-wrap {
         position: relative;
+        display: inline-block;
+        transition: .3s;
 
         &:not(:last-child) {
             margin-right: 24px;
         }
 
-        &:not(.project-menu__item--auth) {
-            &:before {
-                content: '';
-                position: absolute;
-                bottom: -2px;
-                left: 0;
-                width: 0;
-                height: 2px;
-                background-color: $main-color;
-                transition: .3s;
-            }
+        &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 120px;
+            background-image: radial-gradient(rgba($main-color, .5) 0%, rgba($main-color, .18) 20%,  rgba($main-color, .07) 35%, rgba($main-color, .035) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+            opacity: 0;
+            transition: .3s;
+            pointer-events: none;
+            z-index: -1;
         }
 
         &:hover {
-            &:before {
-                width: 100%;
+            .project-menu {
+                &__item {
+                    color: white;
+                    text-shadow: 0 0 20px $main-color;
+                }
+            }
+
+            &:after {
+                opacity: 1;
             }
         }
+    }
+
+    &__item {
+        color: $text-color-extra-light;
+        font-size: 14px;
+        font-weight: 600;
+        transition: .3s;
+        text-shadow: 0 0 20px $extra-dark-color;
 
         &--auth {
-            background-color: rgba($main-background-color, .4);
             padding: 6px 10px;
             border-radius: 4px;
+            background-image: linear-gradient(to right, rgba($main-color, .3), rgba($secondary-color, .3));
         }
     }
 
@@ -251,6 +271,10 @@ button {
     margin: 0 -10px;
 }
 
+.backdrops-list {
+    margin-bottom: 40px;
+}
+
 .movie-card {
     display: flex;
     flex-direction: column;
@@ -301,7 +325,7 @@ button {
         &:hover {
             .movie-card {
                 &__image {
-                    box-shadow: 0 0 30px 10px $extra-dark-color;
+                    box-shadow: 0 0 50px 10px rgba($main-color, .3);
                 }
             }
         }
@@ -440,7 +464,7 @@ button {
 
 .main-button {
     position: relative;
-    border: 2px solid $main-color;
+    border: 1px solid $main-color;
     font-size: 12px;
     font-weight: 600;
     padding: 10px 8px;
@@ -485,6 +509,42 @@ button {
 
         &:hover {
             color: $text-color-extra-light;
+            border-color: rgba($main-color, .4);
+
+            &:before {
+                box-shadow: none;
+                opacity: 0;
+            }
+        }
+    }
+
+    &--more {
+        width: auto;
+        margin: 0 auto;
+        border-color: transparent;
+        color: $text-main-color;
+
+        &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 120px;
+            background-image: radial-gradient(rgba($main-color, .3) 0%, rgba($main-color, .08) 20%,  rgba($main-color, .04) 35%, rgba($main-color, .025) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+            opacity: 0;
+            transition: .3s;
+            pointer-events: none;
+        }
+
+        &:hover {
+            box-shadow: none;
+
+            &:after {
+                opacity: 1;
+            }
 
             &:before {
                 box-shadow: none;
@@ -494,9 +554,6 @@ button {
     }
 
     &--filled {
-        width: auto;
-        margin: 0 auto;
-
         &:before {
             opacity: 1;
         }
@@ -510,6 +567,14 @@ button {
 
     &__link {
         display: block;
+
+        &:hover {
+            .person-card {
+                &__image {
+                    box-shadow: 0 0 50px 10px rgba($main-color, .3);
+                }
+            }
+        }
     }
 
     &__title {
@@ -555,6 +620,7 @@ button {
     &__image {
         display: block;
         border-radius: 8px;
+        transition: .3s;
     }
 
     &__character {
@@ -655,7 +721,7 @@ button {
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
-        margin-bottom: 40px;
+        margin-bottom: 60px;
         background-color: rgba($wrap-background-color, .8);
         padding: 20px;
         border-radius: 10px;
@@ -679,11 +745,12 @@ button {
     &__info-wrap {
     }
 
-    &__credits {
+    &__credits-wrap {
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
         flex-wrap: wrap;
+        margin-bottom: 40px;
 
         .person-card {
             width: 125px;
@@ -696,7 +763,7 @@ button {
     }
 
     &__reviews {
-        margin-bottom: 40px;
+        margin-bottom: 60px;
     }
 
     &__production-companies-wrap {
@@ -719,6 +786,7 @@ button {
         width: 270px;
         margin: 0 10px 20px;
         border-radius: 8px;
+        display: block;
     }
 
     &--loading {
@@ -753,7 +821,7 @@ button {
 }
 
 .reviews-list {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .review-card {
@@ -779,6 +847,64 @@ button {
         margin-left: 4px;
     }
 
+    &__action-item-wrap {
+        transition: .3s;
+        position: relative;
+
+        &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 120px;
+            background-image: radial-gradient(rgba($main-color, .3) 0%, rgba($main-color, .08) 20%,  rgba($main-color, .04) 35%, rgba($main-color, .025) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+            opacity: 0;
+            transition: .3s;
+            pointer-events: none;
+        }
+
+        &:hover {
+            .review-card {
+                &__action-item {
+                    color: white;
+                }
+            }
+            
+            &:after {
+                opacity: 1;
+            }
+        }
+
+        &:not(:last-child) {
+            margin-right: 16px;
+        }
+
+        &--active {
+            .review-card {
+                &__action-item {
+                    color: $text-main-color;
+                }
+            }
+
+            &:hover {
+                .review-card {
+                    &__action-item {
+                        color: $text-main-color;
+                    }
+                }
+            }
+
+            .reaction-icon {
+                path {
+                    fill: $text-main-color;
+                }
+            }
+        }
+    }
+
     &__action-item {
         display: flex;
         justify-content: flex-start;
@@ -787,21 +913,8 @@ button {
         font-size: 14px;
         line-height: 1;
         font-weight: 500;
-        transition: .3s;
-
-        &:not(:last-child) {
-            margin-right: 16px;
-        }
-
-        &--active {
-            color: $text-main-color;
-
-            .reaction-icon {
-                path {
-                    fill: $text-main-color;
-                }
-            }
-        }
+        position: relative;
+        z-index: 1;
     }
 
     &__user-wrap {
@@ -1010,6 +1123,7 @@ button {
         border-radius: 10px;
         overflow: hidden;
         position: relative;
+        background-color: rgba($extra-dark-color, .9);
         box-shadow: 0 0 30px $extra-dark-color;
 
         &:before {
@@ -1045,6 +1159,7 @@ button {
         text-align: center;
         flex: 0 0 40px;
         background-color: $wrap-background-color;
+        background-image: linear-gradient(to top right, rgba($main-color, .4), rgba($secondary-color, .4));
         border-radius: 4px;
         display: flex;
         flex-direction: column;
@@ -1097,6 +1212,19 @@ button {
         cursor: pointer;
         display: flex;
         align-items: center;
+        color: $text-color-extra-light;
+
+        &:hover {
+            color: $text-main-color;
+
+            .upcoming-movies {
+                &__date-label {
+                    background-image: linear-gradient(to top right, $main-color, $secondary-color);
+                    box-shadow: 0 0 20px $main-color;
+                    color: $text-color-extra-light;
+                }
+            }
+        }
 
         &:not(:last-child) {
             padding-bottom: 10px;
@@ -1109,8 +1237,9 @@ button {
 
             .upcoming-movies {
                 &__date-label {
-                    background-color: $main-color;
-                    color: $main-background-color;
+                    background-image: linear-gradient(to top right, $main-color, $secondary-color);
+                    box-shadow: 0 0 20px $main-color;
+                    color: $text-color-extra-light;
                 }
             }
         }
