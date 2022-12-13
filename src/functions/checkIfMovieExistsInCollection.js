@@ -6,14 +6,14 @@ const checkIfMovieExistsInCollection = (postListRef, movieID, isMovieNeeded = fa
 			let movie = false;
 
 			snapshot.forEach((childSnapshot) => {
-				const favouriteMovie = {
+				const favoriteMovie = {
 					key: childSnapshot.key,
 					data: childSnapshot.val(),
 				}
 
-				if (movieID === favouriteMovie.data.movie.id && isMovieNeeded === true) {
-					movie = favouriteMovie;
-				} else if (movieID === favouriteMovie.data.movie.id && isMovieNeeded === false) {
+				if (movieID === favoriteMovie.data.movie.id && isMovieNeeded === true) {
+					movie = favoriteMovie;
+				} else if (movieID === favoriteMovie.data.movie.id && isMovieNeeded === false) {
 					movie = true;
 				}
 			});

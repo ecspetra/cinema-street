@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { removeFromFavouriteMovies } from "../../actions";
+import { removeFromFavoriteMovies } from "../../actions";
 import { connect } from "react-redux";
 import { getDatabase, onValue, push, ref, remove, set } from "firebase/database";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
 
 const Button = (props) => {
 
-	const { movie, handleRemoveFromFavouriteMovies, isMovieFromCollection, setIsMovieFromCollection } = props;
+	const { movie, handleRemoveFromFavoriteMovies, isMovieFromCollection, setIsMovieFromCollection } = props;
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
@@ -14,9 +14,9 @@ const Button = (props) => {
 
 	const handleCollectionButtonOnClick = () => {
 		if (isMovieFromCollection) {
-			return <button className="main-button main-button--remove" onClick={() => {removeMovieFromCollection(movie)}}>Remove from collection</button>
+			return <button className="main-button main-button--remove" onClick={() => {removeMovieFromCollection(movie)}}>Remove from favorite</button>
 		} else {
-			return <button className="main-button" onClick={() => {addMovieToMyCollection(movie)}}>Add to collection</button>
+			return <button className="main-button" onClick={() => {addMovieToMyCollection(movie)}}>Add to favorite</button>
 		}
 	}
 
@@ -46,7 +46,7 @@ const Button = (props) => {
 
 		let movieFromCollection = await checkIfMovieExistsInCollection(postListRef, selectedMovie.id, true);
 
-		handleRemoveFromFavouriteMovies(selectedMovie.id);
+		handleRemoveFromFavoriteMovies(selectedMovie.id);
 
 		const dbRef = ref(database, "/movies/" + movieFromCollection.key);
 		remove(dbRef);
@@ -62,7 +62,7 @@ const Button = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		handleRemoveFromFavouriteMovies: (key) => dispatch(removeFromFavouriteMovies(key)),
+		handleRemoveFromFavoriteMovies: (key) => dispatch(removeFromFavoriteMovies(key)),
 	}
 }
 

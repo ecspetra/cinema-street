@@ -71,24 +71,24 @@ export const setUpcomingMovies = (movies) => {
 	}
 }
 
-export const setFavouriteMovies = (movies) => {
+export const setFavoriteMovies = (movies) => {
 	return {
-		type: actionTypes.SET_FAVOURITE_MOVIES,
+		type: actionTypes.SET_FAVORITE_MOVIES,
 		payload: {
-			favouriteMovies: movies
+			favoriteMovies: movies
 		}
 	}
 }
 
-export const clearFavouriteMovies = () => {
+export const clearFavoriteMovies = () => {
 	return {
-		type: actionTypes.CLEAR_FAVOURITE_MOVIES,
+		type: actionTypes.CLEAR_FAVORITE_MOVIES,
 	}
 }
 
-export const removeFromFavouriteMovies = (id) => {
+export const removeFromFavoriteMovies = (id) => {
 	return {
-		type: actionTypes.REMOVE_FROM_FAVOURITE_MOVIES,
+		type: actionTypes.REMOVE_FROM_FAVORITE_MOVIES,
 		payload: id
 	}
 }

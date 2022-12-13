@@ -15,7 +15,7 @@ import {
     clearUser,
     setUser,
     setMovies,
-    setFavouriteMovies,
+    setFavoriteMovies,
     setCurrentPersonPage,
     clearCurrentPersonPage,
     setUpcomingMovies,
@@ -28,15 +28,16 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Menu from "../Menu/Menu";
 import TopBanner from "../TopBanner/TopBanner";
 import MoviePage from "../MoviePage/MoviePage";
-import FavouriteMovies from "../FavouriteMovies/FavouriteMovies";
+import FavoriteMovies from "../FavoriteMovies/FavoriteMovies";
 import { useLocation } from "react-router";
 import { API_KEY } from "../../functions/linksToFetch";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import axios from "axios";
+import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
 
 const App = (props) => {
 
-    const { currentUser, currentMoviePage, handleSetCurrentMoviePage, handleClearCurrentMoviePage } = props;
+    const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage } = props;
 
     const dispatch = useDispatch();
 
@@ -51,38 +52,6 @@ const App = (props) => {
     const handleClearUser = () => {
         dispatch(clearUser());
     }
-
-
-
-    const handleSetCurrentPersonPage = (selectedPerson) => {
-        dispatch(setCurrentPersonPage(selectedPerson));
-    }
-
-    const handleClearCurrentPersonPage = () => {
-        dispatch(clearCurrentPersonPage());
-    }
-
-
-
-
-
-
-
-    const getCurrentPersonInfo = async (selectedPerson) => {
-        handleClearCurrentPersonPage();
-
-        const response = await axios.get(
-            'https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=' + API_KEY
-        );
-
-        handleSetCurrentPersonPage(response.data);
-    }
-
-    ///////////////////////////////////////////////////
-
-
-
-
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -116,7 +85,7 @@ const App = (props) => {
         const match = matchPath({ path: '/person/:personID' }, location.pathname);
 
         if (match) {
-            getCurrentPersonInfo(match.params.personID);
+            getCurrentPersonPage(match.params.personID, handleSetCurrentPersonPage, handleClearCurrentPersonPage);
         }
     }, [location]);
 
@@ -126,15 +95,15 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home favouriteMovies={props.favouriteMovies} />} />
+                    <Route exact path="/" element={<Home favoriteMovies={props.favoriteMovies} />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
-                    <Route path="/favourite-movies" element={<FavouriteMovies />} />
+                    <Route path="/favorite-movies" element={<FavoriteMovies />} />
                     <Route path="/actors" element={<Actors />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
-                    <Route path={"/movie/:id"} element={<MoviePage getCurrentPersonInfo={getCurrentPersonInfo} />} />
-                    <Route path={props.persons.currentPersonInfo && "/person/:personID"} element={<ActorPage persons={props.persons} />} />
+                    <Route path={"/movie/:id"} element={<MoviePage />} />
+                    <Route path={"/person/:personID"} element={<ActorPage />} />
                 </Routes>
             </div>
         </div>
@@ -150,9 +119,11 @@ const mapDispatchToProps = (dispatch) => {
     return {
         handleSetCurrentMoviePage: (selectedMovie) => dispatch(setCurrentMovie(selectedMovie)),
         handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
+        handleSetCurrentPersonPage: (selectedPerson) => dispatch(setCurrentPersonPage(selectedPerson)),
+        handleClearCurrentPersonPage: () => dispatch(clearCurrentPersonPage()),
         setMovies,
         setUpcomingMovies,
-        setFavouriteMovies,
+        setFavoriteMovies,
         setUser,
         clearUser,
         setCurrentPersonPage,

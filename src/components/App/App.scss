@@ -260,7 +260,7 @@ button {
 }
 
 .movie-list,
-.favourite-movie-list,
+.favorite-movie-list,
 .persons-list,
 .backdrops-list
 {
@@ -328,6 +328,10 @@ button {
                     box-shadow: 0 0 50px 10px rgba($main-color, .3);
                 }
             }
+
+            .my-mark {
+                box-shadow: none;
+            }
         }
     }
 
@@ -336,8 +340,7 @@ button {
         justify-content: space-between;
         align-items: flex-start;
 
-        .rating,
-        .my-mark {
+        .rating {
             font-size: 12px;
             font-weight: 500;
             margin: 6px 0 0;
@@ -351,11 +354,34 @@ button {
                 margin-left: 2px;
             }
         }
+    }
 
-        .rating {
-            + .my-mark {
-                margin-left: 4px;
+    .my-mark {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0;
+        color: $main-color;
+        background-image: linear-gradient(to top right, white, white);
+        box-shadow: 0 0 20px $main-color;
+        border-radius: 8px;
+        justify-content: center;
+        position: absolute;
+        top: -10px;
+        right: 10px;
+
+        .star {
+            width: 12px;
+            height: 12px;
+
+            path {
+                fill: $main-color;
             }
+        }
+
+        &__text {
+            margin-left: 2px;
         }
     }
 
@@ -415,6 +441,7 @@ button {
     font-weight: 700;
     line-height: 1;
     margin: 20px 0;
+    transition: .3s;
 
     .star {
         width: 30px;
@@ -709,14 +736,6 @@ button {
         }
     }
 
-    &__overview {
-
-    }
-
-    &__content {
-
-    }
-
     &__movie-info {
         display: flex;
         justify-content: flex-start;
@@ -740,9 +759,6 @@ button {
         border-radius: 8px;
         display: block;
         box-shadow: 0 0 30px $main-background-color;
-    }
-
-    &__info-wrap {
     }
 
     &__credits-wrap {
@@ -1103,7 +1119,7 @@ button {
     font-weight: 600;
     text-transform: uppercase;
     background-color: rgba($mark-color, .1);
-    color: $mark-color;
+    color: $text-color-extra-light;
 }
 
 .upcoming-movies {
@@ -1451,6 +1467,111 @@ button {
             }
         }
     }
+}
+
+.person-page {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 60px;
+    background-color: rgba($wrap-background-color, .8);
+    padding: 20px;
+    border-radius: 10px;
+
+    &__image-wrap {
+        margin: 0 35px 0 0;
+    }
+
+    &__image {
+        width: 320px;
+        border-radius: 8px;
+        display: block;
+        box-shadow: 0 0 30px $main-background-color;
+    }
+
+    &__name {
+        margin: 15px 0 15px;
+    }
+
+    &__dates-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__biography {
+
+    }
+
+    &__birthday {
+
+    }
+
+    &__deathday {
+
+    }
+
+    &__role {
+        margin-bottom: 20px;
+    }
+
+    &__country {
+    }
+
+    &__gender {
+
+    }
+
+    &__details {
+        color: $text-color-light;
+        margin-bottom: 20px;
+
+        &:not(:last-child) {
+            margin: 0 0 5px;
+        }
+
+        &--country {
+            padding-left: 30px;
+            position: relative;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                width: 20px;
+                height: 20px;
+                background-image: url("../App/assets/icons/flag-icon.svg");
+                background-repeat: no-repeat;
+                background-size: 15px 17px;
+                background-position: center;
+            }
+        }
+
+        &--dates-wrap {
+            padding-left: 30px;
+            position: relative;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                width: 20px;
+                height: 20px;
+                background-image: url("../App/assets/icons/calendar-icon.svg");
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+            }
+        }
+    }
+}
+
+.reviews-list-empty {
+    margin-bottom: 60px;
 }
 
 @keyframes logo-animation {

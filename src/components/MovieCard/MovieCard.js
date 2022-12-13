@@ -55,12 +55,12 @@ const MovieCard = (props) => {
 			}}>
 				<div className={movieCardImageWrapClassNames}>
 					<img className="movie-card__image" onError={addDefaultSrc} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
+					<MyMark movie={movie} />
 				</div>
 				<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
 				<span className="movie-card__title-wrap">
 					<h3 className="movie-card__title">{movie.title}</h3>
 					<Rating movie={movie} />
-					<MyMark movie={movie} />
 				</span>
 			</Link>
 			<div className="movie-card__genres-wrap">

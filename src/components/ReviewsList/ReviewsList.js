@@ -129,22 +129,30 @@ const ReviewsList = (props) => {
 	}, []);
 
 	return (
-		<div className="reviews-list">
-			{generalReviews.length && generalReviews.map((review, index) => {
-				if (index < maxResultsLength) {
-					if (review.url) {
-						const apiReview = getAPIReviews(review);
-						return apiReview;
-					} else {
-						const userReview = getUsersReviews(review);
-						return userReview;
-					}
-				}
-			})}
+		<>
 			{
-				isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getReviewsList()}}>{buttonText}</button>
+				generalReviews.length !== 0 ? (
+					<div className="reviews-list">
+						{generalReviews.length && generalReviews.map((review, index) => {
+							if (index < maxResultsLength) {
+								if (review.url) {
+									const apiReview = getAPIReviews(review);
+									return apiReview;
+								} else {
+									const userReview = getUsersReviews(review);
+									return userReview;
+								}
+							}
+						})}
+						{
+							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getReviewsList()}}>{buttonText}</button>
+						}
+					</div>
+				)
+					: <p className="reviews-list-empty">No reviews yet</p>
 			}
-		</div>
+		</>
+
 	)
 }
 

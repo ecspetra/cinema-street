@@ -21,20 +21,25 @@ const BackdropsList = (props) => {
 	}
 
 	return (
-		<div className="backdrops-list">
+		<>
 			{
-				backdrops.length === 0
-					? <p>No backdrops yet</p>
-					: (backdrops && backdrops.map((item, index) => {
-						if (index < maxListLength) {
-							return <Backdrops backdrops={item} key={index} />
+				backdrops.length !== 0 ? (
+					<div className="backdrops-list">
+						{(backdrops && backdrops.map((item, index) => {
+							if (index < maxListLength) {
+								return <Backdrops backdrops={item} key={index} />
+							}
+						}))
 						}
-					}))
+						{
+							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getBackdrops()}}>{buttonText}</button>
+						}
+					</div>
+				)
+					: <p className="backdrops-list-empty">No backdrops yet</p>
 			}
-			{
-				isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getBackdrops()}}>{buttonText}</button>
-			}
-		</div>
+		</>
+
 	)
 }
 

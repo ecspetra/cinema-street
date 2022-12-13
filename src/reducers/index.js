@@ -22,8 +22,8 @@ const initialUpcomingMoviesState = {
 	upcomingMovies: [],
 }
 
-const initialFavouriteMoviesState = {
-	favouriteMovies: [],
+const initialFavoriteMoviesState = {
+	favoriteMovies: [],
 }
 
 const initialCurrentMoviePageState = {
@@ -134,25 +134,25 @@ const upcoming_movies_reducer = (state = initialUpcomingMoviesState, action) => 
 	}
 }
 
-const favourite_movies_reducer = (state = initialFavouriteMoviesState, action) => {
+const favorite_movies_reducer = (state = initialFavoriteMoviesState, action) => {
 	switch (action.type) {
-		case actionTypes.SET_FAVOURITE_MOVIES:
-			const movieAlreadyExistsInState = state.favouriteMovies.some(item => item.key === action.payload.favouriteMovies.key);
+		case actionTypes.SET_FAVORITE_MOVIES:
+			const movieAlreadyExistsInState = state.favoriteMovies.some(item => item.key === action.payload.favoriteMovies.key);
 			if (movieAlreadyExistsInState) {
 				return state;
 			}
 			return {
 				...state,
-				favouriteMovies: [...state.favouriteMovies, ...action.payload.favouriteMovies],
+				favoriteMovies: [...state.favoriteMovies, ...action.payload.favoriteMovies],
 			}
-		case actionTypes.CLEAR_FAVOURITE_MOVIES:
+		case actionTypes.CLEAR_FAVORITE_MOVIES:
 			return {
-				...initialFavouriteMoviesState
+				...initialFavoriteMoviesState
 			}
-		case actionTypes.REMOVE_FROM_FAVOURITE_MOVIES:
+		case actionTypes.REMOVE_FROM_FAVORITE_MOVIES:
 			return {
 				...state,
-				favouriteMovies: state.favouriteMovies.filter(item => item.data.movie.id !== action.payload)
+				favoriteMovies: state.favoriteMovies.filter(item => item.data.movie.id !== action.payload)
 			}
 		default: return state;
 	}
@@ -213,7 +213,7 @@ const rootReducer = combineReducers({
 	user: user_reducer,
 	movies: movies_reducer,
 	upcomingMovies: upcoming_movies_reducer,
-	favouriteMovies: favourite_movies_reducer,
+	favoriteMovies: favorite_movies_reducer,
 	currentMoviePage: current_movie_page_reducer,
 	persons: person_reducer,
 	genres: genres_reducer,

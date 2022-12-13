@@ -27,7 +27,7 @@ const Menu = (props) => {
 					<Link className="project-menu__item" to="/">Main</Link>
 				</div>
 				<div className="project-menu__item-wrap">
-					<Link className="project-menu__item" to="/favourite-movies">Favourite movies</Link>
+					<Link className="project-menu__item" to="/favorite-movies">Favorite movies</Link>
 				</div>
 				<div className="project-menu__item-wrap">
 					<Link className="project-menu__item" to="/actors">Actors</Link>

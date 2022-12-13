@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
-import {clearFavouriteMovies, clearMovies, setFavouriteMovies, setGenres, setMovies} from "../../actions";
+import {clearFavoriteMovies, clearMovies, setFavoriteMovies, setGenres, setMovies} from "../../actions";
 import { connect } from "react-redux";
 
 import getMyMoviesFromDatabase from "../../functions/getMoviesFromMyCollection";
@@ -12,14 +12,14 @@ import axios from "axios";
 
 const MoviesList = (props) => {
 
-	const { isFavouriteMoviesList, handleSetFavouriteMovies, handleClearFavouriteMovies, genres, movies, favouriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleChooseCurrentMoviePage, handleSetGenres } = props;
+	const { isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleChooseCurrentMoviePage, handleSetGenres } = props;
 
-	const moviesList = isFavouriteMoviesList ? favouriteMovies : movies;
+	const moviesList = isFavoriteMoviesList ? favoriteMovies : movies;
 
 	const onMovieListUnmount = useRef();
 	onMovieListUnmount.current = () => {
-		if (isFavouriteMoviesList) {
-			handleClearFavouriteMovies();
+		if (isFavoriteMoviesList) {
+			handleClearFavoriteMovies();
 		} else handleClearMovies();
 	}
 
@@ -38,14 +38,14 @@ const MoviesList = (props) => {
 	const getMovies = () => {
 		setIsMovieListLoaded(false);
 
-		if (isFavouriteMoviesList) {
-			let receivedFavouriteMoviesKeys = [];
-			if (favouriteMovies.length > 0) {
-				receivedFavouriteMoviesKeys = favouriteMovies.map((movie) => {
+		if (isFavoriteMoviesList) {
+			let receivedFavoriteMoviesKeys = [];
+			if (favoriteMovies.length > 0) {
+				receivedFavoriteMoviesKeys = favoriteMovies.map((movie) => {
 					return movie.key;
 				})
 			}
-			getMyMoviesFromDatabase(postListRef, receivedFavouriteMoviesKeys, handleSetFavouriteMovies);
+			getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies);
 		} else setIsResultsExist(fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
 
 		setPrevResultsPage(currentResultsPage);
@@ -77,7 +77,7 @@ const MoviesList = (props) => {
 				moviesList.length > 0
 					? <>
 						{genres && moviesList && moviesList.map((movie, index) => {
-							return <MovieCard movie={isFavouriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
+							return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
 						})}
 						{
 							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getMovies()}}>Show more</button>
@@ -94,7 +94,7 @@ const MoviesList = (props) => {
 const mapStateToProps = state => ({
 	movies: state.movies.uploadedMovies,
 	genres: state.genres.uploadedGenres,
-	favouriteMovies: state.favouriteMovies.favouriteMovies,
+	favoriteMovies: state.favoriteMovies.favoriteMovies,
 })
 
 const mapDispatchToProps = (dispatch) => {
@@ -102,8 +102,8 @@ const mapDispatchToProps = (dispatch) => {
 		handleSetMovies: (movies) => dispatch(setMovies(movies)),
 		handleClearMovies: () => dispatch(clearMovies()),
 		handleSetGenres: (genres) => dispatch(setGenres(genres)),
-		handleSetFavouriteMovies: (selectedMovie) => dispatch(setFavouriteMovies(selectedMovie)),
-		handleClearFavouriteMovies: () => dispatch(clearFavouriteMovies()),
+		handleSetFavoriteMovies: (selectedMovie) => dispatch(setFavoriteMovies(selectedMovie)),
+		handleClearFavoriteMovies: () => dispatch(clearFavoriteMovies()),
 	}
 }
 

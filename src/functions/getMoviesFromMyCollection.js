@@ -1,25 +1,25 @@
 import { get } from "firebase/database";
 
-const getMyMoviesFromDatabase = (postListRef, receivedFavouriteMoviesKeys, handleSetFavouriteMovies) => {
+const getMyMoviesFromDatabase = (postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies) => {
 	get(postListRef).then((snapshot) => {
 		const receivedMovies = [];
 
 		snapshot.forEach((childSnapshot) => {
-			const favouriteMovie = {
+			const favoriteMovie = {
 				key: childSnapshot.key,
 				data: childSnapshot.val(),
 			}
 
-			if (receivedMovies.length < 20 && receivedFavouriteMoviesKeys.length === 0) {
-				receivedMovies.push(favouriteMovie);
-			} else if (receivedFavouriteMoviesKeys.length > 0) {
-				if (receivedMovies.length < 20 && !receivedFavouriteMoviesKeys.includes(favouriteMovie.key)) {
-					receivedMovies.push(favouriteMovie);
+			if (receivedMovies.length < 20 && receivedFavoriteMoviesKeys.length === 0) {
+				receivedMovies.push(favoriteMovie);
+			} else if (receivedFavoriteMoviesKeys.length > 0) {
+				if (receivedMovies.length < 20 && !receivedFavoriteMoviesKeys.includes(favoriteMovie.key)) {
+					receivedMovies.push(favoriteMovie);
 				}
 			}
 		});
 
-		handleSetFavouriteMovies(receivedMovies);
+		handleSetFavoriteMovies(receivedMovies);
 	});
 }
 
