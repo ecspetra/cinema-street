@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { onValue, push, ref } from "firebase/database";
 import { database } from "../../firebase";
 import { setMyReview } from "../../actions";
+import MoreButton from "../MoreButton/MoreButton";
 
 const ReviewsList = (props) => {
 
@@ -117,8 +118,7 @@ const ReviewsList = (props) => {
 	}
 
 	const generalReviews = getAllReviews();
-	const buttonText = generalReviews.length >= maxResultsLength ? 'Show more' : 'Show less';
-	const isShowMoreButton = generalReviews.length !== 0;
+	const isShowMoreButton = generalReviews.length !== 0 && generalReviews.length > initialListLength;
 
 	useEffect(() => {
 		getMyReviewsForMovies();
@@ -145,7 +145,7 @@ const ReviewsList = (props) => {
 							}
 						})}
 						{
-							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getReviewsList()}}>{buttonText}</button>
+							isShowMoreButton && <MoreButton listLength={generalReviews.length} maxListLength={maxResultsLength} moreButtonOnClickFunction={getReviewsList} />
 						}
 					</div>
 				)

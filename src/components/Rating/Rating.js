@@ -4,16 +4,18 @@ import getRatingStars from "../../functions/getRatingStars";
 
 const Rating = (props) => {
 
-	const extendRating = getRatingStars(props.movie.vote_average);
+	const { movie, isShowExtendRating, isRatingCount } = props;
+
+	const extendRating = getRatingStars(movie.vote_average);
 
 	return (
 		<span className="rating">
 			{
-				props.isShowExtendRating ? extendRating : <RatingIcon className="rating__icon" />
+				isShowExtendRating ? extendRating : <RatingIcon className="rating__icon" />
 			}
-			<span className="rating__text">{(props.movie.vote_average).toFixed(1)}</span>
+			<span className="rating__text">{(movie.vote_average).toFixed(1)}</span>
 			{
-				props.isRatingCount && <span className="rating__count">{props.movie.vote_count} voters</span>
+				isRatingCount && <span className="rating__count">{movie.vote_count} voters</span>
 			}
 		</span>
 	)

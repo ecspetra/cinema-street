@@ -3,7 +3,8 @@ import { push, ref, set } from "firebase/database";
 import { database } from "../../firebase";
 import { v1 as uuidv1 } from 'uuid';
 import { connect } from "react-redux";
-import default_user_icon from "../App/assets/icons/default-user.svg";
+import { addDefaultImage } from "../../functions/addDefaultImage";
+import defaultUserImage from "../App/assets/icons/default-user.svg";
 
 const NewReviewForm = (props) => {
 
@@ -61,10 +62,6 @@ const NewReviewForm = (props) => {
 		}
 	}
 
-	const addDefaultSrc = (event) => {
-		event.target.src = default_user_icon;
-	}
-
 	useEffect(() => {
 		if (isShowReplyForm) {
 			reviewTextRef.current.focus();
@@ -87,7 +84,7 @@ const NewReviewForm = (props) => {
 				!isReplyForm && <h3 className="new-review-form__title">Leave your feedback</h3>
 			}
 			<div className="new-review-form__user-wrap">
-				<img className="new-review-form__user-avatar" onError={addDefaultSrc} src={currentUser.photoURL === null ? default_user_icon : currentUser.photoURL} alt="user-avatar" />
+				<img className="new-review-form__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={currentUser.photoURL === null ? defaultUserImage : currentUser.photoURL} alt="user-avatar" />
 				<div className="new-review-form__user-info">
 					<div className="new-review-form__username">{currentUser.displayName}</div>
 				</div>

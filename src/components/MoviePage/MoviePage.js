@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import Button from "../Button/Button";
-import ActorsList from "../ActorsList/ActorsList";
+import CollectionButton from "../CollectionButton/CollectionButton";
+import PersonsList from "../PersonsList/PersonsList";
 import BackdropsList from "../BackdropsList/BackdropsList";
 import ReviewsList from "../ReviewsList/ReviewsList";
 import MovieList from "../MovieList/MovieList";
@@ -10,13 +10,16 @@ import { LINK_TO_FETCH_PERSONS, LINK_TO_FETCH_SIMILAR_MOVIES } from '../../funct
 import MyMark from "../MyMark/MyMark";
 import NewReviewForm from "../NewReviewForm/NewReviewForm";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
-import { getDatabase, ref } from "firebase/database";
+import { getDatabase, push, ref } from "firebase/database";
 import { connect } from "react-redux";
-import { clearCurrentMoviePage } from "../../actions";
+import { clearCurrentMoviePage, removeFromFavoriteMovies } from "../../actions";
+import postMovieToDataBase from "../../functions/postMovieToDataBase";
+import removeMovieFromCollection from "../../functions/removeMovieFromCollection";
+import Loader from "../Loader/Loader";
 
 const MoviePage = (props) => {
 
-	const { currentMoviePage, getCurrentPersonInfo, handleClearCurrentMoviePage } = props;
+	const { currentUser, currentMoviePage, getCurrentPersonInfo, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
 	const isCurrentMovieLoaded = currentMoviePage !== null && Object.values(currentMoviePage) !== null;
 
@@ -36,6 +39,7 @@ const MoviePage = (props) => {
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
+	const newPostRef = push(postListRef);
 
 	const [isMovieFromCollection, setIsMovieFromCollection] = useState(false);
 
@@ -43,6 +47,18 @@ const MoviePage = (props) => {
 	onMoviePageUnmount.current = () => {
 		handleClearCurrentMoviePage();
 	}
+
+	const handleAddMovieToMyCollection = () => {
+		postMovieToDataBase(newPostRef, currentMovieInfo, currentUser.uid);
+		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(data => setIsMovieFromCollection(data));
+	}
+
+	const handleRemoveMovieFromCollection = async () => {
+		await removeMovieFromCollection(postListRef, currentMovieInfo, handleRemoveFromFavoriteMovies);
+		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(data => setIsMovieFromCollection(data));
+	}
+
+	const collectionButtonOnClickFunction = isMovieFromCollection ? handleRemoveMovieFromCollection : handleAddMovieToMyCollection;
 
 	useEffect(() => {
 		return () => onMoviePageUnmount.current();
@@ -91,7 +107,7 @@ const MoviePage = (props) => {
 									</p>
 									<Rating movie={currentMovieInfo} isRatingCount isShowExtendRating />
 									<h3 className="movie-page__my-mark-title">My mark:</h3>
-									<MyMark movie={currentMovieInfo} isShowExtendMark />
+									<MyMark movie={currentMovieInfo} userID={currentUser.uid} isShowExtendMark />
 									<h3 className="movie-page__overview-title">Overview:</h3>
 									<p className="movie-page__overview">{currentMovieInfo.overview}</p>
 									<div className="movie-page__production-companies-wrap">
@@ -104,12 +120,12 @@ const MoviePage = (props) => {
 											}
 										</div>
 									</div>
-									<Button movie={currentMovieInfo} isMovieFromCollection={isMovieFromCollection} setIsMovieFromCollection={setIsMovieFromCollection} />
+									<CollectionButton isExistsInCollection={isMovieFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isMovieFromCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
 								</div>
 							</div>
 							<div className="movie-page__credits-wrap">
 								<h1>Cast</h1>
-								<ActorsList linkToFetch={LINK_TO_FETCH_PERSONS} currentMoviePersons={currentMovieCredits.cast} getCurrentPersonInfo={getCurrentPersonInfo} maxResultsLength={7} isCurrentMovieCharacter />
+								<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} currentMoviePersons={currentMovieCredits.cast} getCurrentPersonInfo={getCurrentPersonInfo} maxResultsLength={7} isCurrentMovieCharacter />
 							</div>
 							<div className="movie-page__images-wrap">
 								<h1>Backdrops</h1>
@@ -129,7 +145,7 @@ const MoviePage = (props) => {
 						</div>
 					</div>
 				)
-					: 'Loading'
+					: <div className="movie-page-empty"><Loader>Loading movie</Loader></div>
 			}
 		</>
 	)
@@ -137,11 +153,13 @@ const MoviePage = (props) => {
 
 const mapStateToProps = state => ({
 	currentMoviePage: state.currentMoviePage.currentMoviePage,
+	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
+		handleRemoveFromFavoriteMovies: (key) => dispatch(removeFromFavoriteMovies(key)),
 	}
 }
 

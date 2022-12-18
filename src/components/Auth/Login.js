@@ -35,13 +35,11 @@ const Login = () => {
             setIsLoading(true);
             signInWithEmailAndPassword(auth, userEmail, userPassword)
                 .then((currentUser) => {
-                    console.log(auth.currentUser);
                     setIsLoading(false);
             })
                 .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode, errorMessage);
             });
             setFormError('');
         }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import default_user_icon from "../App/assets/icons/default-user.svg";
 import moment from "moment";
 import ReactionIcon from "../App/assets/icons/ReactionIcon";
 import classNames from "classnames";
@@ -9,6 +8,8 @@ import DropdownOption from "../DropdownOption/DropdownOption";
 import DeleteIcon from "../App/assets/icons/DeleteIcon";
 import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
+import { addDefaultImage } from "../../functions/addDefaultImage";
+import defaultUserImage from "../App/assets/icons/default-user.svg";
 
 const ReplyCard = (props) => {
 
@@ -27,10 +28,6 @@ const ReplyCard = (props) => {
 	useEffect(() => {
 		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, isReplyTextHidden, isLongReplyText));
 	}, [reply.replyText, isReplyTextHidden]);
-
-	const addDefaultSrc = (event) => {
-		event.target.src = default_user_icon;
-	}
 
 	const checkIfReplyLikedByCurrentUser = () => {
 		if (reply.likes !== 0) {
@@ -85,7 +82,7 @@ const ReplyCard = (props) => {
 	return (
 		<div className={replyCardClassNames}>
 			<div className="reply-card__user-wrap">
-				<img className="reply-card__user-avatar" onError={addDefaultSrc} src={reply.userAvatar === null ? default_user_icon : reply.userAvatar} alt="user-avatar" />
+				<img className="reply-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={reply.userAvatar === null ? defaultUserImage : reply.userAvatar} alt="user-avatar" />
 				<div className="reply-card__user-info">
 					<div className="reply-card__username">
 						{reply.displayName}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Backdrops from '../Backdrops/Backdrops';
+import MoreButton from "../MoreButton/MoreButton";
 
 const BackdropsList = (props) => {
 
@@ -24,17 +25,19 @@ const BackdropsList = (props) => {
 		<>
 			{
 				backdrops.length !== 0 ? (
-					<div className="backdrops-list">
-						{(backdrops && backdrops.map((item, index) => {
-							if (index < maxListLength) {
-								return <Backdrops backdrops={item} key={index} />
+					<>
+						<div className="backdrops-list">
+							{(backdrops && backdrops.map((item, index) => {
+								if (index < maxListLength) {
+									return <Backdrops backdrops={item} key={index} />
+								}
+							}))
 							}
-						}))
-						}
+						</div>
 						{
-							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getBackdrops()}}>{buttonText}</button>
+							isShowMoreButton && <MoreButton listLength={backdrops.length} maxListLength={maxListLength} moreButtonOnClickFunction={getBackdrops} />
 						}
-					</div>
+					</>
 				)
 					: <p className="backdrops-list-empty">No backdrops yet</p>
 			}

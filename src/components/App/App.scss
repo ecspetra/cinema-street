@@ -169,7 +169,7 @@ button {
     width: calc(100% - 32px);
     max-width: 1140px;
     margin: 0 auto;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
 }
 
 .top-banner {
@@ -260,7 +260,6 @@ button {
 }
 
 .movie-list,
-.favorite-movie-list,
 .persons-list,
 .backdrops-list
 {
@@ -271,8 +270,40 @@ button {
     margin: 0 -10px;
 }
 
+.persons {
+    &__favorite-list {
+
+        .persons-list {
+
+            .person-card {
+                width: 125px;
+                padding: 0;
+                margin: 0 10px 20px;
+
+                &__image-wrap {
+                    position: relative;
+                    min-height: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                &__image {
+                    width: 125px;
+                    height: 125px;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+
+.persons-list {
+    margin-bottom: 20px;
+}
+
 .backdrops-list {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .movie-card {
@@ -283,43 +314,28 @@ button {
     width: 232px;
     padding: 0 10px 0;
     margin: 0 0 40px;
+    position: relative;
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 
     &__image-wrap {
         position: relative;
-
-        &--loading {
-            &:before {
-                content: '';
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: url("../App/assets/icons/logo.svg");
-                background-position: center;
-                background-size: 24px;
-                background-repeat: no-repeat;
-                animation: logo-animation 4s infinite linear;
-            }
-            &:after {
-                content: 'Loading...';
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: 26px;
-                left: 0;
-                width: 100%;
-                height: 100%;
-            }
-        }
+        min-height: 318px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     &__link {
         position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
         margin-bottom: 10px;
 
         &:hover {
@@ -358,7 +374,7 @@ button {
 
     .my-mark {
         width: 40px;
-        height: 40px;
+        height: 32px;
         font-size: 12px;
         font-weight: 600;
         margin: 0;
@@ -491,10 +507,14 @@ button {
 
 .main-button {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid $main-color;
     font-size: 12px;
     font-weight: 600;
     padding: 10px 8px;
+    min-height: 34px;
     margin: auto 0 0;
     width: 100%;
     text-transform: uppercase;
@@ -585,15 +605,46 @@ button {
             opacity: 1;
         }
     }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
 
 .person-card {
     display: flex;
     flex-direction: column;
-    margin: 0 10px 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 232px;
+    padding: 0 10px 0;
+    margin: 0 0 20px;
+    position: relative;
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &__image-wrap {
+        position: relative;
+        min-height: 318px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
     &__link {
+        position: relative;
         display: block;
+        width: 100%;
+        height: 100%;
+        margin-bottom: 10px;
 
         &:hover {
             .person-card {
@@ -604,50 +655,25 @@ button {
         }
     }
 
+    &__image {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: block;
+        transition: .3s;
+    }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     &__title {
         margin: 10px 0 5px;
         line-height: 18px;
         font-weight: 500;
-    }
-
-    &__image-wrap {
-        position: relative;
-
-        &--loading {
-            &:before {
-                content: '';
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: url("../App/assets/icons/logo.svg");
-                background-position: center;
-                background-size: 24px;
-                background-repeat: no-repeat;
-                animation: logo-animation 4s infinite linear;
-            }
-            &:after {
-                content: 'Loading...';
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: 26px;
-                left: 0;
-                width: 100%;
-                height: 100%;
-            }
-        }
-    }
-
-    &__image {
-        display: block;
-        border-radius: 8px;
-        transition: .3s;
     }
 
     &__character {
@@ -661,7 +687,6 @@ button {
 }
 
 .movie-page {
-
     &__title {
         margin: 15px 0 15px;
     }
@@ -762,18 +787,25 @@ button {
     }
 
     &__credits-wrap {
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        margin-bottom: 40px;
+        margin-bottom: 60px;
 
-        .person-card {
-            width: 125px;
-            &__image {
+        .persons-list {
+
+            .person-card {
+
                 width: 125px;
-                height: 125px;
-                object-fit: cover;
+                padding: 0;
+                margin: 0 10px 20px;
+
+                &__image-wrap {
+                    min-height: 125px;
+                }
+
+                &__image {
+                    width: 125px;
+                    height: 125px;
+                    object-fit: cover;
+                }
             }
         }
     }
@@ -790,6 +822,10 @@ button {
         margin: 0 0 5px;
     }
 
+    &__images-wrap {
+        margin-bottom: 60px;
+    }
+
     .my-mark {
         margin-top: 0;
     }
@@ -798,41 +834,18 @@ button {
 .backdrops {
     position: relative;
 
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     &__image {
         width: 270px;
         margin: 0 10px 20px;
         border-radius: 8px;
         display: block;
-    }
-
-    &--loading {
-        &:before {
-            content: '';
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("../App/assets/icons/logo.svg");
-            background-position: center;
-            background-size: 24px;
-            background-repeat: no-repeat;
-            animation: logo-animation 4s infinite linear;
-        }
-        &:after {
-            content: 'Loading...';
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 26px;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
     }
 }
 
@@ -1129,7 +1142,7 @@ button {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 
     &__preview {
         width: 100%;
@@ -1426,7 +1439,7 @@ button {
         background-size: 20px;
     }
 
-    .dropdown-list {
+    &__list {
         position: relative;
         min-width: 200px;
         margin-top: 42px;
@@ -1470,13 +1483,16 @@ button {
 }
 
 .person-page {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-bottom: 60px;
-    background-color: rgba($wrap-background-color, .8);
-    padding: 20px;
-    border-radius: 10px;
+
+    &__content {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 60px;
+        background-color: rgba($wrap-background-color, .8);
+        padding: 20px;
+        border-radius: 10px;
+    }
 
     &__image-wrap {
         margin: 0 35px 0 0;
@@ -1570,8 +1586,174 @@ button {
     }
 }
 
+.search {
+    &__title-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__title {
+        margin-bottom: 0;
+    }
+}
+
+.select {
+    //background-image: linear-gradient(to right, rgba($main-color, .6), rgba($secondary-color, .6));
+    background-color: transparent;
+    border: 1px solid $main-color;
+    color: $text-color-extra-light;
+    outline: 0;
+    border-radius: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0 10px;
+    min-height: 34px;
+    transition: .3s;
+    -webkit-appearance: none;
+
+    position: relative;
+
+    &__list {
+        position: relative;
+        min-width: 200px;
+        margin-top: 42px;
+        right: 0;
+        background-color: rgba($wrap-background-color-light, .7);
+        box-shadow: 0 4px 15px $extra-dark-color;
+        border-radius: 8px;
+        padding: 4px;
+    }
+
+    .select-option {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: .3s;
+
+        &:hover {
+            background-color: $wrap-background-color;
+        }
+    }
+
+    //&:hover {
+    //    box-shadow: 0 0 15px rgba($main-color, .5);
+    //
+    //    &:before {
+    //        opacity: 1;
+    //    }
+    //}
+    //
+    //&--remove,
+    //&--cancel {
+    //    border-color: transparent;
+    //    color: $text-main-color;
+    //
+    //    &:before {
+    //        opacity: .2;
+    //        box-shadow: 0 0 15px rgba($main-color, .8);
+    //    }
+    //
+    //    &:hover {
+    //        color: $text-color-extra-light;
+    //        border-color: rgba($main-color, .4);
+    //
+    //        &:before {
+    //            box-shadow: none;
+    //            opacity: 0;
+    //        }
+    //    }
+    //}
+    //
+    //&--more {
+    //    width: auto;
+    //    margin: 0 auto;
+    //    border-color: transparent;
+    //    color: $text-main-color;
+    //
+    //    &:after {
+    //        content: '';
+    //        display: block;
+    //        position: absolute;
+    //        top: 50%;
+    //        left: 50%;
+    //        transform: translate(-50%, -50%);
+    //        width: 240px;
+    //        height: 120px;
+    //        background-image: radial-gradient(rgba($main-color, .3) 0%, rgba($main-color, .08) 20%,  rgba($main-color, .04) 35%, rgba($main-color, .025) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+    //        opacity: 0;
+    //        transition: .3s;
+    //        pointer-events: none;
+    //    }
+    //
+    //    &:hover {
+    //        box-shadow: none;
+    //
+    //        &:after {
+    //            opacity: 1;
+    //        }
+    //
+    //        &:before {
+    //            box-shadow: none;
+    //            opacity: 0;
+    //        }
+    //    }
+    //}
+    //
+    //&--filled {
+    //    &:before {
+    //        opacity: 1;
+    //    }
+    //}
+    //
+    //.loader {
+    //    position: absolute;
+    //    top: 50%;
+    //    left: 50%;
+    //    transform: translate(-50%, -50%);
+    //}
+}
+
 .reviews-list-empty {
     margin-bottom: 60px;
+}
+
+.loader {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 auto;
+
+    &__icon {
+        display: block;
+        width: 20px;
+        height: 20px;
+        background-image: url("../App/assets/icons/loader-icon.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        animation: default-loader-animation 1s infinite linear;
+    }
+
+    &__text {
+        text-align: center;
+        font-size: 14px;
+        line-height: 20px;
+        margin-top: 10px;
+    }
+}
+
+@keyframes default-loader-animation {
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes logo-animation {

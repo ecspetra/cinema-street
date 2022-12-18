@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import default_user_icon from "../App/assets/icons/default-user.svg";
 import { removeMyReview, setMyReview } from "../../actions";
 import { connect } from "react-redux";
-import {onValue, push, set, ref, remove} from "firebase/database";
+import { onValue, push, set, ref, remove } from "firebase/database";
 import { database } from "../../firebase";
 import moment from "moment";
 import NewReviewForm from "../NewReviewForm/NewReviewForm";
@@ -16,6 +16,9 @@ import DropdownOption from "../DropdownOption/DropdownOption";
 import DeleteIcon from "../App/assets/icons/DeleteIcon";
 import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
+import { addDefaultImage } from "../../functions/addDefaultImage";
+import defaultUserImage from "../App/assets/icons/default-user.svg";
+import MoreButton from "../MoreButton/MoreButton";
 
 const ReviewCard = (props) => {
 
@@ -40,8 +43,10 @@ const ReviewCard = (props) => {
 	};
 
 	const maxReviewTextLength = 400;
+	const initialRepliesListLength = 2;
 	const isLongReviewText = reviewText.length > maxReviewTextLength;
 	const [isReviewTextHidden, setIsReviewTextHidden] = useState(isLongReviewText);
+	const [maxRepliesListLength, setMaxRepliesListLength] = useState(initialRepliesListLength);
 	const [isShowReplyForm, setIsShowReplyForm] = useState(false);
 	const [isShowEditReviewForm, setIsShowEditReviewForm] = useState(false);
 	const [isLikedReview, setIsLikedReview] = useState(false);
@@ -53,10 +58,6 @@ const ReviewCard = (props) => {
 	useEffect(() => {
 		setReviewContent(getTextLengthForPost(reviewText, maxReviewTextLength, isReviewTextHidden, isLongReviewText));
 	}, [reviewText, isReviewTextHidden]);
-
-	const addDefaultSrc = (event) => {
-		event.target.src = default_user_icon;
-	}
 
 	const reviewsListRef = ref(database, 'reviews');
 	const reviewsPostRef = push(reviewsListRef);
@@ -681,10 +682,20 @@ const ReviewCard = (props) => {
 		'review-card__action-item-wrap--active': isDislikedReview,
 	});
 
+	const getRepliesListLength = () => {
+		if (replies.length > maxRepliesListLength) {
+			setMaxRepliesListLength(replies.length);
+		} else {
+			setMaxRepliesListLength(initialRepliesListLength);
+		}
+	}
+
+	const isShowMoreButton = replies.length !== 0 && replies.length > initialRepliesListLength;
+
 	return (
 		<div className="review-card">
 			<div className="review-card__user-wrap">
-				<img className="review-card__user-avatar" onError={addDefaultSrc} src={userIconPath === null ? default_user_icon : userIconPath} alt="user-avatar" />
+				<img className="review-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={userIconPath === null ? default_user_icon : userIconPath} alt="user-avatar" />
 				<div className="review-card__user-info">
 					<div className="review-card__username">
 						{userName}
@@ -720,7 +731,6 @@ const ReviewCard = (props) => {
 							</div>
 							<div className="review-card__action-item-wrap">
 								<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(!isShowReplyForm)}}><ReplyIcon />Reply</button>
-
 							</div>
 						</div>
 					</>)
@@ -729,17 +739,22 @@ const ReviewCard = (props) => {
 				replies.length && <div className="review-card__replies-list">
 					{
 						replies.map((item, index) => {
-							return <ReplyCard
-								reply={item}
-								userID={currentUser.uid}
-								handleLikeReply={handleLikeReply}
-								handleDislikeReply={handleDislikeReply}
-								deleteReplyFromReview={deleteReplyFromReview}
-								editReplyInReview={editReplyInReview}
-								reviewID={reviewID}
-								key={index}
-							/>
+							if (index < maxRepliesListLength) {
+								return <ReplyCard
+									reply={item}
+									userID={currentUser.uid}
+									handleLikeReply={handleLikeReply}
+									handleDislikeReply={handleDislikeReply}
+									deleteReplyFromReview={deleteReplyFromReview}
+									editReplyInReview={editReplyInReview}
+									reviewID={reviewID}
+									key={index}
+								/>
+							}
 						})
+					}
+					{
+						isShowMoreButton && <MoreButton listLength={replies.length} maxListLength={maxRepliesListLength} moreButtonOnClickFunction={getRepliesListLength} />
 					}
 				</div>
 			}

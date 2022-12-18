@@ -10,6 +10,10 @@ const initialMoviesState = {
 	uploadedMovies: [],
 }
 
+const initialSearchResultsState = {
+	searchResults: [],
+}
+
 const initialMarksState = {
 	uploadedMarks: [],
 }
@@ -32,6 +36,7 @@ const initialCurrentMoviePageState = {
 
 const initialPersonsState = {
 	uploadedPersons: [],
+	favoritePersons: [],
 	currentPersonInfo: null,
 }
 
@@ -65,6 +70,21 @@ const movies_reducer = (state = initialMoviesState, action) => {
 		case actionTypes.CLEAR_MOVIES:
 			return {
 				...initialMoviesState,
+			}
+		default: return state;
+	}
+}
+
+const search_results_reducer = (state = initialSearchResultsState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_SEARCH_RESULTS:
+			return {
+				...state,
+				searchResults: [...state.searchResults, ...action.payload.searchResults],
+			}
+		case actionTypes.CLEAR_SEARCH_RESULTS:
+			return {
+				...initialSearchResultsState,
 			}
 		default: return state;
 	}
@@ -195,6 +215,25 @@ const person_reducer = (state = initialPersonsState, action) => {
 				...state,
 				currentPersonInfo: null,
 			}
+		case actionTypes.SET_FAVORITE_PERSONS:
+			const personAlreadyExistsInState = state.favoritePersons.some(item => item.key === action.payload.favoritePerson.key);
+			if (personAlreadyExistsInState) {
+				return state;
+			}
+			return {
+				...state,
+				favoritePersons: [...state.favoritePersons, ...action.payload.favoritePerson],
+			}
+		case actionTypes.CLEAR_FAVORITE_PERSONS:
+			return {
+				...state,
+				favoritePersons: [],
+			}
+		case actionTypes.REMOVE_FROM_FAVORITE_PERSONS:
+			return {
+				...state,
+				favoritePersons: state.favoritePersons.filter(item => item.data.person.id !== action.payload)
+			}
 		default: return state;
 	}
 }
@@ -219,6 +258,7 @@ const rootReducer = combineReducers({
 	genres: genres_reducer,
 	myMarks: marks_reducer,
 	reviews: reviews_reducer,
+	searchResults: search_results_reducer,
 });
 
 export default rootReducer;

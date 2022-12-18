@@ -5,7 +5,7 @@ import Plyr from "plyr-react"
 import "plyr-react/plyr.css"
 import { connect } from "react-redux";
 import { setUpcomingMovies } from "../../actions";
-import {API_KEY} from "../../functions/linksToFetch";
+import { API_KEY } from "../../functions/linksToFetch";
 
 const UpcomingMovies = (props) => {
 

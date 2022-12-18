@@ -1,33 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
-import Button from "../Button/Button";
+import CollectionButton from "../CollectionButton/CollectionButton";
 import Rating from "../Rating/Rating";
-import default_movie_icon from "../App/assets/icons/default-movie.svg";
-import classNames from "classnames";
-
 import getMovieGenresIDs from '../../functions/getMovieGenresIDs';
 import getComparedGenresIDs from '../../functions/getComparedGenresIDs';
 import MyMark from "../MyMark/MyMark";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, push, ref } from "firebase/database";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
-import { clearCurrentMoviePage, setCurrentMovie } from "../../actions";
+import { clearCurrentMoviePage, removeFromFavoriteMovies, setCurrentMovie } from "../../actions";
 import { connect } from "react-redux";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
+import removeMovieFromCollection from "../../functions/removeMovieFromCollection";
+import postMovieToDataBase from "../../functions/postMovieToDataBase";
+import Loader from "../Loader/Loader";
+import { addDefaultImage } from "../../functions/addDefaultImage";
+import defaultMovieImage from "../App/assets/icons/default-movie.svg";
 
 const MovieCard = (props) => {
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
+	const newPostRef = push(postListRef);
 
-	const { genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage } = props;
+	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 	const [isMovieFromCollection, setIsMovieFromCollection] = useState(false);
 
-	const addDefaultSrc = (event) => {
-		event.target.src = default_movie_icon;
+	const handleAddMovieToMyCollection = () => {
+		postMovieToDataBase(newPostRef, movie, currentUser.uid);
+		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+	}
+
+	const handleRemoveMovieFromCollection = async () => {
+		await removeMovieFromCollection(postListRef, movie, handleRemoveFromFavoriteMovies);
+		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
 	}
 
 	useEffect(() => {
@@ -44,17 +53,17 @@ const MovieCard = (props) => {
 		setMovieGenresNames(comparedGenresNames);
 	}, [movieGenresIDs]);
 
-	const movieCardImageWrapClassNames = classNames('movie-card__image-wrap', {
-		'movie-card__image-wrap--loading': !isImageLoaded,
-	});
+	const collectionButtonOnClickFunction = isMovieFromCollection ? handleRemoveMovieFromCollection : handleAddMovieToMyCollection;
 
 	return (
 		<div className="movie-card">
 			<Link to={"/movie/" + movie.id} className="movie-card__link" onClick={() => {
 				handleChooseCurrentMoviePage(movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage)
 			}}>
-				<div className={movieCardImageWrapClassNames}>
-					<img className="movie-card__image" onError={addDefaultSrc} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
+				<div className="movie-card__image-wrap">
+					<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
+					{!isImageLoaded && <Loader>Loading image</Loader>
+					}
 					<MyMark movie={movie} />
 				</div>
 				<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
@@ -72,16 +81,21 @@ const MovieCard = (props) => {
 					})
 				}
 			</div>
-			<Button movie={movie} isMovieFromCollection={isMovieFromCollection} setIsMovieFromCollection={setIsMovieFromCollection} />
+			<CollectionButton isExistsInCollection={isMovieFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isMovieFromCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
 		</div>
 	)
 }
+
+const mapStateToProps = state => ({
+	currentUser: state.user.currentUser,
+})
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleSetCurrentMoviePage: (selectedMovie) => dispatch(setCurrentMovie(selectedMovie)),
 		handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
+		handleRemoveFromFavoriteMovies: (key) => dispatch(removeFromFavoriteMovies(key)),
 	}
 }
 
-export default connect(null, mapDispatchToProps)(MovieCard);
+export default connect(mapStateToProps, mapDispatchToProps)(MovieCard);

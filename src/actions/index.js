@@ -144,3 +144,40 @@ export const clearCurrentPersonPage = () => {
 		type: actionTypes.CLEAR_CURRENT_PERSON_PAGE,
 	}
 }
+
+export const setFavoritePersons = (person) => {
+	return {
+		type: actionTypes.SET_FAVORITE_PERSONS,
+		payload: {
+			favoritePerson: person
+		}
+	}
+}
+
+export const removeFromFavoritePersons = (id) => {
+	return {
+		type: actionTypes.REMOVE_FROM_FAVORITE_PERSONS,
+		payload: id
+	}
+}
+
+export const clearFavoritePersons = () => {
+	return {
+		type: actionTypes.CLEAR_FAVORITE_PERSONS,
+	}
+}
+
+export const setSearchResults = (result) => {
+	return {
+		type: actionTypes.SET_SEARCH_RESULTS,
+		payload: {
+			searchResults: result
+		}
+	}
+}
+
+export const clearSearchResults = () => {
+	return {
+		type: actionTypes.CLEAR_SEARCH_RESULTS,
+	}
+}

@@ -3,6 +3,7 @@ import { get } from "firebase/database";
 const checkIfMovieExistsInCollection = (postListRef, movieID, isMovieNeeded = false) => {
 	return new Promise(function(resolve) {
 		get(postListRef).then((snapshot) => {
+
 			let movie = false;
 
 			snapshot.forEach((childSnapshot) => {

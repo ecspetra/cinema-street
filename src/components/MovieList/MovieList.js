@@ -1,18 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
-import {clearFavoriteMovies, clearMovies, setFavoriteMovies, setGenres, setMovies} from "../../actions";
+import { clearFavoriteMovies, clearMovies, setFavoriteMovies, setGenres, setMovies } from "../../actions";
 import { connect } from "react-redux";
-
-import getMyMoviesFromDatabase from "../../functions/getMoviesFromMyCollection";
+import getMyMoviesFromDatabase from "../../functions/getMoviesFromDatabase";
 import { getDatabase, ref } from "firebase/database";
-import {API_KEY} from "../../functions/linksToFetch";
-import axios from "axios";
+import MoreButton from "../MoreButton/MoreButton";
+import Loader from "../Loader/Loader";
+import getGenres from "../../functions/getGenres";
 
 
 const MoviesList = (props) => {
 
-	const { isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleChooseCurrentMoviePage, handleSetGenres } = props;
+	const { currentUser, isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleChooseCurrentMoviePage, handleSetGenres } = props;
 
 	const moviesList = isFavoriteMoviesList ? favoriteMovies : movies;
 
@@ -31,11 +31,12 @@ const MoviesList = (props) => {
 	const [isMovieListLoaded, setIsMovieListLoaded] = useState(true);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
 	const [isResultsExist, setIsResultsExist] = useState(true);
+	const maxListLength = 20;
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
 
-	const getMovies = () => {
+	const getMovies = async () => {
 		setIsMovieListLoaded(false);
 
 		if (isFavoriteMoviesList) {
@@ -45,49 +46,41 @@ const MoviesList = (props) => {
 					return movie.key;
 				})
 			}
-			getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies);
-		} else setIsResultsExist(fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
+			await getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies, currentUser.uid);
+		} else setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
 
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
 		setIsMovieListLoaded(true);
 	}
 
-	const getGenres = async () => {
-
-		const response = await axios.get(
-			'https://api.themoviedb.org/3/genre/movie/list?api_key=' + API_KEY
-		);
-
-		handleSetGenres(response.data);
-	}
-
-	const isShowMoreButton = isResultsExist && isMovieListLoaded;
+	const isShowMoreButton = isResultsExist && isMovieListLoaded && moviesList.length >= maxListLength;
 
 	useEffect(() => {
 	    if (isResultsExist && prevResultsPage !== currentResultsPage) {
 			getMovies();
 		}
-		getGenres();
+		getGenres(handleSetGenres);
 	}, []);
 
 	return (
-		<div className="movie-list">
+		<>
 			{
 				moviesList.length > 0
 					? <>
-						{genres && moviesList && moviesList.map((movie, index) => {
-							return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
-						})}
+						<div className="movie-list">
+							{genres && moviesList && moviesList.map((movie, index) => {
+								return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
+							})}
+							{!isMovieListLoaded && <Loader>Loading movies</Loader>}
+						</div>
 						{
-							isShowMoreButton && <button className="main-button main-button--more" onClick={() => {getMovies()}}>Show more</button>
+							(isShowMoreButton && isMovieListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getMovies} />
 						}
-						{!isMovieListLoaded && <div style={{fontSize: '200px', color: 'red'}}>...Loading</div>}
 					</>
-					: 'Movie list is empty'
+					: <p className="movie-list-empty">Movie list is empty</p>
 			}
-
-		</div>
+		</>
 	)
 }
 
@@ -95,6 +88,7 @@ const mapStateToProps = state => ({
 	movies: state.movies.uploadedMovies,
 	genres: state.genres.uploadedGenres,
 	favoriteMovies: state.favoriteMovies.favoriteMovies,
+	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

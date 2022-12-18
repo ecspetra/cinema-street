@@ -4,24 +4,19 @@ import { Route, Routes, matchPath, BrowserRouter } from "react-router-dom";
 import Home from "../Home/Home";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
-import Actors from "../Actors/Actors";
+import Persons from "../Persons/Persons";
 import Genres from "../Genres/Genres";
 import Profile from "../Profile/Profile";
-import ActorPage from "../ActorPage/ActorPage";
-import { useDispatch } from "react-redux";
+import PersonPage from "../PersonPage/PersonPage";
 import '../../firebase';
 import { connect } from "react-redux";
 import {
     clearUser,
     setUser,
-    setMovies,
-    setFavoriteMovies,
-    setCurrentPersonPage,
-    clearCurrentPersonPage,
-    setUpcomingMovies,
-    clearMovies,
     setCurrentMovie,
-    clearCurrentMoviePage
+    clearCurrentMoviePage,
+    clearCurrentPersonPage,
+    setCurrentPersonPage
 } from "../../actions";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -30,36 +25,25 @@ import TopBanner from "../TopBanner/TopBanner";
 import MoviePage from "../MoviePage/MoviePage";
 import FavoriteMovies from "../FavoriteMovies/FavoriteMovies";
 import { useLocation } from "react-router";
-import { API_KEY } from "../../functions/linksToFetch";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
-import axios from "axios";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
+import axios from "axios";
+import {API_KEY} from "../../functions/linksToFetch";
 
 const App = (props) => {
 
-    const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage } = props;
-
-    const dispatch = useDispatch();
+    const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
 
     const history = useNavigate();
 
     const auth = getAuth();
-
-    const handleSetUser = (user) => {
-        dispatch(setUser(user));
-    }
-
-    const handleClearUser = () => {
-        dispatch(clearUser());
-    }
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 handleSetUser(user);
                 history('/');
-            }
-            else {
+            } else {
                 history('/login');
                 handleClearUser();
             }
@@ -95,15 +79,15 @@ const App = (props) => {
             <TopBanner />
             <div className="content">
                 <Routes>
-                    <Route exact path="/" element={<Home favoriteMovies={props.favoriteMovies} />} />
+                    <Route exact path="/" element={<Home />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favorite-movies" element={<FavoriteMovies />} />
-                    <Route path="/actors" element={<Actors />} />
+                    <Route path="/actors" element={<Persons />} />
                     <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
                     <Route path={"/movie/:id"} element={<MoviePage />} />
-                    <Route path={"/person/:personID"} element={<ActorPage />} />
+                    <Route path={"/person/:personID"} element={<PersonPage />} />
                 </Routes>
             </div>
         </div>
@@ -121,14 +105,8 @@ const mapDispatchToProps = (dispatch) => {
         handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
         handleSetCurrentPersonPage: (selectedPerson) => dispatch(setCurrentPersonPage(selectedPerson)),
         handleClearCurrentPersonPage: () => dispatch(clearCurrentPersonPage()),
-        setMovies,
-        setUpcomingMovies,
-        setFavoriteMovies,
-        setUser,
-        clearUser,
-        setCurrentPersonPage,
-        clearCurrentPersonPage,
-        clearMovies
+        handleSetUser: (user) => dispatch(setUser(user)),
+        handleClearUser: () => dispatch(clearUser()),
     }
 }
 
