@@ -60,7 +60,10 @@ const MoviesList = (props) => {
 	    if (isResultsExist && prevResultsPage !== currentResultsPage) {
 			getMovies();
 		}
-		getGenres(handleSetGenres);
+	}, []);
+
+	useEffect(() => {
+		getGenres().then((data) => {handleSetGenres(data)});
 	}, []);
 
 	return (

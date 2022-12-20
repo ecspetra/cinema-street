@@ -7,7 +7,7 @@ import Loader from "../Loader/Loader";
 import {addDefaultImage} from "../../functions/addDefaultImage";
 import defaultPersonImage from "../App/assets/icons/default-person.svg";
 
-const ActorCard = (props) => {
+const PersonCard = (props) => {
 
 	const { person, handleSetCurrentPersonPage, handleClearCurrentPersonPage } = props;
 
@@ -40,4 +40,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(null, mapDispatchToProps)(ActorCard);
+export default connect(null, mapDispatchToProps)(PersonCard);

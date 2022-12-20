@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import ActorCard from "../ActorCard/ActorCard";
+import PersonCard from "../PersonCard/PersonCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
 import { setPersons, clearPersons, setFavoritePersons, clearFavoritePersons } from "../../actions";
 import { connect } from "react-redux";
@@ -68,12 +68,12 @@ const PersonsList = (props) => {
 		if (isCurrentMovieCharacter) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <ActorCard person={person} key={index} isCurrentMovieCharacter={isCurrentMovieCharacter} />
+					return <PersonCard person={person} key={index} isCurrentMovieCharacter={isCurrentMovieCharacter} />
 				}
 			})
 		} else {
 			persons = personsList && personsList.map((person, index) => {
-				return <ActorCard person={isFavoritePersonsList ? person.data.person : person} key={index} />
+				return <PersonCard person={isFavoritePersonsList ? person.data.person : person} key={index} />
 			})
 		}
 

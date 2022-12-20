@@ -2,8 +2,8 @@ const getComparedGenresIDs = (uploadedGenres, movieGenresIDs) => {
 
 	const comparedGenres = [];
 
-	uploadedGenres.genres.map((genre) => {
-		if ((movieGenresIDs.includes(genre.id)) && (!comparedGenres.includes(genre.name))) {
+	uploadedGenres.map((genre) => {
+		if ((!movieGenresIDs.some(movieGenre => movieGenre.id === genre.id)) && (!comparedGenres.includes(genre.name))) {
 			comparedGenres.push(genre.name);
 		}
 	});

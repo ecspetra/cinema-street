@@ -5,6 +5,9 @@ import { v1 as uuidv1 } from 'uuid';
 import { connect } from "react-redux";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultUserImage from "../App/assets/icons/default-user.svg";
+import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
+import classNames from "classnames";
+import Error from "../Error/Error";
 
 const NewReviewForm = (props) => {
 
@@ -78,6 +81,10 @@ const NewReviewForm = (props) => {
 		setIsShowReplyForm(false);
 	}
 
+	const textAreaClassNames = classNames('new-review-form__textarea', {
+		'new-review-form__textarea--error': isShowError,
+	});
+
 	return (
 		<form onSubmit={handleSubmitNewReview} className="new-review-form">
 			{
@@ -89,9 +96,9 @@ const NewReviewForm = (props) => {
 					<div className="new-review-form__username">{currentUser.displayName}</div>
 				</div>
 			</div>
-			<textarea className="new-review-form__textarea" cols="10" rows="8" ref={reviewTextRef} onChange={() => {handleChangeTextareaValue()}}></textarea>
+			<textarea className={textAreaClassNames} cols="10" rows="8" ref={reviewTextRef} onChange={() => {handleChangeInputValue(reviewTextRef, setIsShowError)}}></textarea>
 			{
-				isShowError && <p className="error">Form field shouldn't be empty</p>
+				isShowError && <Error>Text field shouldn't be empty</Error>
 			}
 			<div className="new-review-form__buttons-wrap">
 				{

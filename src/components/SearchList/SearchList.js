@@ -3,10 +3,11 @@ import { clearSearchResults, setSearchResults } from "../../actions";
 import { connect } from "react-redux";
 import fetchMoreResults from "../../functions/fetchMoreResults";
 import MoreButton from "../MoreButton/MoreButton";
+import SearchCard from "../SearchCard/SearchCard";
 
 const SearchList = (props) => {
 
-	const { searchResults, linkToFetch, handleSetSearchResults, handleClearSearchResults } = props;
+	const { searchResults, linkToFetch, handleSetSearchResults, handleClearSearchResults, setIsShowSearchList } = props;
 
 	const onSearchListUnmount = useRef();
 	onSearchListUnmount.current = () => {
@@ -39,23 +40,24 @@ const SearchList = (props) => {
 
 	const isShowMoreButton = isResultsExist && isSearchListLoaded;
 
-	console.log(linkToFetch);
-
 	return (
-		<div>
-			{
-				searchResults.length > 0 && searchResults.map((item, index) => {
-					return (
-						<div className="searched-movie" key={index}>
-							<h3 className="searched-movie__title">{item.title}</h3>
-						</div>
-					)
-				})
-			}
-			{
-				(isShowMoreButton && isSearchListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getSearchResults} />
-			}
-		</div>
+		<>
+			<div className="search-list">
+				{
+					searchResults.length > 0 && searchResults.map((result, index) => {
+						return (
+							<SearchCard result={result} key={index} isMovieCard/>
+						)
+					})
+				}
+			</div>
+			<div className="search-list-buttons-wrap">
+				{
+					(isShowMoreButton && isSearchListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getSearchResults} />
+				}
+				<button className="search-list-buttons-wrap__clear-button" onClick={() => {setIsShowSearchList(false)}}>Clear search results</button>
+			</div>
+		</>
 	)
 }
 

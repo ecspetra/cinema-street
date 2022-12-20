@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import classNames from "classnames";
+import ArrowIcon from "../App/assets/icons/ArrowIcon";
 
 const Select = (props) => {
 
@@ -28,7 +29,10 @@ const Select = (props) => {
 
 	return (
 		<div className={classNames(className, 'select')} onMouseLeave={() => {setIsSelectOpened(false)}}>
-			<button className="select__button" onClick={(event) => {handleToggleSelect(event)}}>{currentOption}</button>
+			<button className="select__button" onClick={(event) => {handleToggleSelect(event)}}>
+				{currentOption}
+				<ArrowIcon />
+			</button>
 			{
 				isSelectOpened && (<div className="select__list">
 					<div onClick={(event) => {handleToggleSelect(event)}}>{childrenWithProps}</div>

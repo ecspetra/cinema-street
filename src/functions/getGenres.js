@@ -6,11 +6,8 @@ const getGenres = async () => {
 		const response = await axios.get(
 			'https://api.themoviedb.org/3/genre/movie/list?api_key=' + API_KEY
 		);
-		resolve(response);
+		resolve(response.data.genres);
 	})
-
-
-	// handleSetGenres(response.data);
 }
 
 export default getGenres;

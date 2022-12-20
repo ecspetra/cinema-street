@@ -29,8 +29,12 @@ const UpcomingMovieItem = (props) => {
 		}
 	}, [upcomingMovieGenresIDs]);
 
+	// useEffect(() => {
+	// 	getGenres(handleSetGenres);
+	// }, []);
+
 	useEffect(() => {
-		getGenres(handleSetGenres);
+		getGenres().then((data) => {handleSetGenres(data)});
 	}, []);
 
 	const upcomingMovieListItemClassNames = classNames('upcoming-movies__list-item', {
