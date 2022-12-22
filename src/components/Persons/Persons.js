@@ -1,6 +1,7 @@
 import React from "react";
 import PersonsList from "../PersonsList/PersonsList";
 import { LINK_TO_FETCH_PERSONS } from "../../functions/linksToFetch";
+import SearchPerson from "../SearchPerson/SearchPerson";
 
 const Persons = () => {
 
@@ -10,6 +11,7 @@ const Persons = () => {
 				<h1>Favorite persons</h1>
 				<PersonsList isFavoritePersonsList />
 			</div>
+			<SearchPerson />
 			<div className="persons__general-list">
 				<h1>All persons</h1>
 				<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} />

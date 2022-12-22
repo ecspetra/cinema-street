@@ -1,7 +1,7 @@
 import { get } from "firebase/database";
 
-const checkIfPersonExistsInCollection = (postListRef, personID, isPersonNeeded = false) => {
-	return new Promise(function(resolve) {
+const checkIfPersonExistsInCollection = (postListRef, personID, userID, isPersonNeeded = false) => {
+	return new Promise((resolve) => {
 		get(postListRef).then((snapshot) => {
 
 			let person = false;
@@ -12,9 +12,9 @@ const checkIfPersonExistsInCollection = (postListRef, personID, isPersonNeeded =
 					data: childSnapshot.val(),
 				}
 
-				if (personID === favoritePerson.data.person.id && isPersonNeeded === true) {
+				if (userID === favoritePerson.data.person.userID && personID === favoritePerson.data.person.id && isPersonNeeded === true) {
 					person = favoritePerson;
-				} else if (personID === favoritePerson.data.person.id && isPersonNeeded === false) {
+				} else if (userID === favoritePerson.data.person.userID && personID === favoritePerson.data.person.id && isPersonNeeded === false) {
 					person = true;
 				}
 			});

@@ -8,11 +8,12 @@ import { getDatabase, ref } from "firebase/database";
 import MoreButton from "../MoreButton/MoreButton";
 import Loader from "../Loader/Loader";
 import getGenres from "../../functions/getGenres";
+import InfoText from "../InfoText/InfoText";
 
 
 const MoviesList = (props) => {
 
-	const { currentUser, isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleChooseCurrentMoviePage, handleSetGenres } = props;
+	const { currentUser, isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleSetGenres } = props;
 
 	const moviesList = isFavoriteMoviesList ? favoriteMovies : movies;
 
@@ -47,8 +48,11 @@ const MoviesList = (props) => {
 				})
 			}
 			await getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies, currentUser.uid);
-		} else setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage, handleSetMovies));
-
+		} else setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
+			if (!data.length) {
+				return false;
+			} else handleSetMovies(data);
+		}));
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
 		setIsMovieListLoaded(true);
@@ -81,7 +85,7 @@ const MoviesList = (props) => {
 							(isShowMoreButton && isMovieListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getMovies} />
 						}
 					</>
-					: <p className="movie-list-empty">Movie list is empty</p>
+					: <InfoText>Movie list is empty</InfoText>
 			}
 		</>
 	)

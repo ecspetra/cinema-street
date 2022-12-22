@@ -5,13 +5,10 @@ import defaultPersonImage from "../App/assets/icons/default-person.svg";
 import moment from "moment";
 import Loader from "../Loader/Loader";
 import CollectionButton from "../CollectionButton/CollectionButton";
-import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
 import { getDatabase, push, ref } from "firebase/database";
 import postPersonToDataBase from "../../functions/postPersonToDataBase";
 import removePersonFromCollection from "../../functions/removePersonFromCollection";
 import checkIfPersonExistsInCollection from "../../functions/checkIfPersonExistsInCollection";
-import axios from "axios";
-import { API_KEY } from "../../functions/linksToFetch";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 
 const PersonPage = (props) => {
@@ -20,16 +17,14 @@ const PersonPage = (props) => {
 
 	const isCurrentPersonLoaded = persons.currentPersonInfo !== null;
 
-	const getActorGender = () => {
-		if (isCurrentPersonLoaded) {
-			if (persons.currentPersonInfo.gender === 1) {
-				setPersonGender('Female');
-			} else setPersonGender('Male');
-		}
+	const getPersonGender = () => {
+		if (persons.currentPersonInfo.gender === 1) {
+			setPersonGender('Female');
+		} else setPersonGender('Male');
 	}
 
 	const [isExistsInCollection, setIsExistsInCollection] = useState(false);
-	const [personGender, setPersonGender] = useState(() => getActorGender());
+	const [personGender, setPersonGender] = useState();
 
 	let currentPerson;
 
@@ -48,8 +43,8 @@ const PersonPage = (props) => {
 
 	useEffect(() => {
 		if (isCurrentPersonLoaded) {
-			checkIfPersonExistsInCollection(postListRef, currentPerson.id).then(data => setIsExistsInCollection(data));
-			// getPersonMovies();
+			getPersonGender();
+			checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
 		}
 	}, [isCurrentPersonLoaded]);
 
@@ -59,24 +54,16 @@ const PersonPage = (props) => {
 
 	const handleAddPersonToMyCollection = () => {
 		postPersonToDataBase(newPostRef, currentPerson, currentUser.uid);
-		checkIfPersonExistsInCollection(postListRef, currentPerson.id).then(data => setIsExistsInCollection(data));
+		checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
 	}
 
 	const handleRemovePersonFromCollection = async () => {
-		await removePersonFromCollection(postListRef, currentPerson, handleRemoveFromFavoritePersons);
-		checkIfPersonExistsInCollection(postListRef, currentPerson.id).then(data => setIsExistsInCollection(data));
+		await removePersonFromCollection(postListRef, currentPerson, currentUser.uid, handleRemoveFromFavoritePersons);
+		checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
 	}
 
 	const collectionButtonOnClickFunction = isExistsInCollection ? handleRemovePersonFromCollection : handleAddPersonToMyCollection;
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-	// const getPersonMovies = async () => {
-	// 	const response = await axios.get(
-	// 		'https://api.themoviedb.org/3/discover/movie?api_key=' + API_KEY + '&with_genres=28'
-	// 	);
-	//
-	// 	console.log(response);
-	// }
 
 	return (
 		<>

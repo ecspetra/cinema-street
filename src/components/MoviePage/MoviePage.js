@@ -125,7 +125,7 @@ const MoviePage = (props) => {
 							</div>
 							<div className="movie-page__credits-wrap">
 								<h1>Cast</h1>
-								<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} currentMoviePersons={currentMovieCredits.cast} getCurrentPersonInfo={getCurrentPersonInfo} maxResultsLength={7} isCurrentMovieCharacter />
+								<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} currentMoviePersons={currentMovieCredits.cast} getCurrentPersonInfo={getCurrentPersonInfo} isCurrentMovieCharacter />
 							</div>
 							<div className="movie-page__images-wrap">
 								<h1>Backdrops</h1>

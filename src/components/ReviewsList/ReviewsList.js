@@ -5,6 +5,7 @@ import { onValue, push, ref } from "firebase/database";
 import { database } from "../../firebase";
 import { setMyReview } from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";
+import InfoText from "../InfoText/InfoText";
 
 const ReviewsList = (props) => {
 
@@ -149,7 +150,7 @@ const ReviewsList = (props) => {
 						}
 					</div>
 				)
-					: <p className="reviews-list-empty">No reviews yet</p>
+					: <InfoText>No reviews yet</InfoText>
 			}
 		</>
 

@@ -1,14 +1,16 @@
 import axios from "axios";
 import { API_KEY } from "./linksToFetch";
 
-const getCurrentPersonPage = async (selectedPerson, setCurrentPersonPageFunction, clearCurrentPersonPageFunction) => {
+const getCurrentPersonPage = async (selectedPerson, clearCurrentPersonPageFunction) => {
 	clearCurrentPersonPageFunction();
 
-	const response = await axios.get(
-		'https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=' + API_KEY
-	);
+	return new Promise(async (resolve) => {
+		const response = await axios.get(
+			'https://api.themoviedb.org/3/person/' + selectedPerson + '?api_key=' + API_KEY
+		);
 
-	setCurrentPersonPageFunction(response.data);
+		resolve(response.data);
+	})
 }
 
 export default getCurrentPersonPage;

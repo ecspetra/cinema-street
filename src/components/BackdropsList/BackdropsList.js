@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Backdrops from '../Backdrops/Backdrops';
 import MoreButton from "../MoreButton/MoreButton";
+import InfoText from "../InfoText/InfoText";
 
 const BackdropsList = (props) => {
 
@@ -39,7 +40,7 @@ const BackdropsList = (props) => {
 						}
 					</>
 				)
-					: <p className="backdrops-list-empty">No backdrops yet</p>
+					: <InfoText>No backdrops yet</InfoText>
 			}
 		</>
 

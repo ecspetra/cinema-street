@@ -6,12 +6,12 @@ import { connect } from "react-redux";
 import { getDatabase, ref } from "firebase/database";
 import getMyPersonsFromDatabase from "../../functions/getMyPersonsFromDatabase";
 import MoreButton from "../MoreButton/MoreButton";
+import InfoText from "../InfoText/InfoText";
+import Loader from "../Loader/Loader";
 
 const PersonsList = (props) => {
 
 	const { currentUser, persons, isFavoritePersonsList, currentMoviePersons, isCurrentMovieCharacter, linkToFetch, handleSetPersons, handleClearPersons, handleSetFavoritePersons, handleClearFavoritePersons } = props;
-
-	const personsList = isCurrentMovieCharacter ? currentMoviePersons : (!isCurrentMovieCharacter && !isFavoritePersonsList) ? persons.uploadedPersons : persons.favoritePersons;
 
 	const onPersonsListUnmount = useRef();
 	onPersonsListUnmount.current = () => {
@@ -25,43 +25,70 @@ const PersonsList = (props) => {
 	}, []);
 
 	const initialListLength = 8;
-
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
-	const [isPersonsListLoaded, setIsPersonsListLoaded] = useState(true);
+	const [isPersonsListLoaded, setIsPersonsListLoaded] = useState(false);
+	const [isShowMoreButton, setIsShowMoreButton] = useState(false);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
 	const [isResultsExist, setIsResultsExist] = useState(true);
+	const [isLastData, setIsLastData] = useState(false);
 	const [maxListLength, setMaxListLength] = useState(initialListLength);
-	const isShowMoreButton = isResultsExist && isPersonsListLoaded && personsList.length !== 0 && personsList.length >= maxListLength;
+	const [personsList, setPersonsList] = useState([]);
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'persons');
 
-	const getPersons = async () => {
-		setIsPersonsListLoaded(false);
+	const getPersons = () => {
+		return new Promise (async (resolve) => {
 
-		if (isFavoritePersonsList) {
-			let receivedFavoritePersonsKeys = [];
-			if (persons.favoritePersons.length > 0) {
+			let isPersonsListLoaded = false;
+
+			if (isFavoritePersonsList) {
+				let receivedFavoritePersonsKeys = [];
 				receivedFavoritePersonsKeys = persons.favoritePersons.map((person) => {
 					return person.key;
 				})
-			}
-			await getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, handleSetFavoritePersons, currentUser.uid);
-		} else if (!isCurrentMovieCharacter && !isFavoritePersonsList) {
-			setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage, handleSetPersons));
-			setPrevResultsPage(currentResultsPage);
-			setCurrentResultsPage(currentResultsPage + 1);
-			setIsPersonsListLoaded(true);
-		} else {
-			if (personsList.length !== maxListLength) {
-				setMaxListLength(personsList.length);
+				await getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+					if (!data.dataFromResponse.length) {
+						setIsResultsExist(false);
+						return false;
+					} else {
+						handleSetFavoritePersons(data.dataFromResponse);
+						setIsResultsExist(true);
+						setMaxListLength(prevState => (prevState + data.dataFromResponse.length));
+						if (data.isLastData === true) {
+							setIsLastData(true);
+						}
+					}
+				})
+			} else if (!isCurrentMovieCharacter && !isFavoritePersonsList) {
+				await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
+					if (!data.dataFromResponse.data.results.length) {
+						setIsResultsExist(false);
+						return false;
+					} else if (data.isLastData === true) {
+						setIsShowMoreButton(false);
+					} else {
+						handleSetPersons(data.dataFromResponse.data.results);
+						setIsResultsExist(true);
+					}
+				})
+				setPrevResultsPage(currentResultsPage);
+				setCurrentResultsPage(currentResultsPage + 1);
 			} else {
-				setMaxListLength(initialListLength);
+				if (personsList.length !== maxListLength) {
+					setMaxListLength(personsList.length);
+				} else {
+					setMaxListLength(initialListLength);
+				}
 			}
-		}
+
+			isPersonsListLoaded = true;
+
+			resolve(isPersonsListLoaded);
+		})
 	}
 
-	const renderPersonsList = () => {
+	const getPersonsList = () => {
 
 		let persons;
 
@@ -71,36 +98,79 @@ const PersonsList = (props) => {
 					return <PersonCard person={person} key={index} isCurrentMovieCharacter={isCurrentMovieCharacter} />
 				}
 			})
+		} else if (isFavoritePersonsList) {
+			persons = personsList && personsList.map((person, index) => {
+				if (index < maxListLength) {
+					return <PersonCard person={person.data.person} key={index} currentUser={currentUser} isFavoritePerson />
+				}
+			})
 		} else {
 			persons = personsList && personsList.map((person, index) => {
-				return <PersonCard person={isFavoritePersonsList ? person.data.person : person} key={index} />
+				return <PersonCard person={person} key={index} />
 			})
 		}
 
 		return persons;
 	}
 
-	const uploadedPersons = renderPersonsList();
+	const handleIsShowMoreButton = () => {
+		if (isPersonsListLoaded === true && personsList.length !== 0 && !isLastData && personsList.length > initialListLength) {
+			return true;
+		} else return false;
+	}
 
 	useEffect(() => {
-		if (isResultsExist && prevResultsPage !== currentResultsPage && !isCurrentMovieCharacter) {
-			getPersons();
+		if (isResultsExist && prevResultsPage !== currentResultsPage && !isCurrentMovieCharacter && !isFavoritePersonsList) {
+			getPersons().then((data) => {
+				setIsPersonsListLoaded(data);
+			})
+		} else if (isCurrentMovieCharacter) {
+			setIsPersonsListLoaded(true);
+		} else if (isFavoritePersonsList) {
+			let receivedFavoritePersonsKeys = [];
+			getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+				if (!data.dataFromResponse.length) {
+					setIsResultsExist(false);
+					return false;
+				} else {
+					handleSetFavoritePersons(data.dataFromResponse);
+					setIsResultsExist(true);
+					if (data.isLastData === true) {
+						setIsLastData(true);
+					}
+				}
+				setIsPersonsListLoaded(true);
+			})
 		}
 	}, []);
+
+	useEffect(() => {
+		setPersonsList(isCurrentMovieCharacter ? currentMoviePersons : (!isCurrentMovieCharacter && !isFavoritePersonsList) ? persons.uploadedPersons : persons.favoritePersons);
+	}, [persons.uploadedPersons, persons.favoritePersons, currentMoviePersons]);
+
+	useEffect(() => {
+		setIsShowMoreButton(handleIsShowMoreButton());
+	}, [personsList]);
+
+	useEffect(() => {
+		console.log(maxListLength);
+
+	}, [maxListLength]);
 
 	return (
 		<>
 			{
-				personsList.length !== 0
-					? <>
+				personsList.length === 0 && isPersonsListLoaded
+					? <InfoText>Persons list is empty</InfoText>
+					: <>
 						<div className="persons-list">
-							{uploadedPersons}
+							{getPersonsList()}
+							{!isPersonsListLoaded && <Loader>Loading persons</Loader>}
 						</div>
 						{
-							(isShowMoreButton && isPersonsListLoaded) && <MoreButton isFetchResultsButton={!isCurrentMovieCharacter} listLength={personsList.length} maxListLength={maxListLength} moreButtonOnClickFunction={getPersons} />
+							isShowMoreButton && <MoreButton isFetchResultsButton={!isCurrentMovieCharacter} listLength={personsList.length} maxListLength={maxListLength} moreButtonOnClickFunction={getPersons} />
 						}
 					</>
-					: <p className="persons-list-empty">Persons list is empty</p>
 			}
 		</>
 	)

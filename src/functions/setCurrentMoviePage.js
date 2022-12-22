@@ -1,9 +1,10 @@
 import axios from "axios";
 import { API_KEY } from "./linksToFetch";
 
-const getCurrentMoviePage = (selectedMovie) => {
+const handleChooseCurrentMoviePage = (selectedMovie, clearCurrentMoviePageFunction) => {
+	clearCurrentMoviePageFunction();
 
-	return new Promise(async function(resolve) {
+	return new Promise(async (resolve) => {
 
 		let currentMoviePage = {
 			currentMovieInfo: null,
@@ -41,11 +42,6 @@ const getCurrentMoviePage = (selectedMovie) => {
 			currentMovieVideos: currentMovieVideosResponse.data.results,
 		});
 	})
-}
-
-const handleChooseCurrentMoviePage = (selectedMovie, setCurrentMoviePageFunction, clearCurrentMoviePageFunction) => {
-	clearCurrentMoviePageFunction();
-	getCurrentMoviePage(selectedMovie).then(data => setCurrentMoviePageFunction(data));
 }
 
 export default handleChooseCurrentMoviePage;

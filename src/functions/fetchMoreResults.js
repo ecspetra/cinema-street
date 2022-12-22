@@ -1,20 +1,28 @@
 import axios from "axios";
 
-const fetchMoreResults = async (linkToFetch, currentResultsPage, handleSetResults) => {
+const fetchMoreResults = async (linkToFetch, currentResultsPage) => {
 
-	let isResultsExist = true;
+	return new Promise(async (resolve) => {
 
-	const response = await axios.get(
-		linkToFetch + '&page=' + currentResultsPage
-	);
+		const response = {
+			dataFromResponse: null,
+			isLastData: false,
+		}
 
-	if (!response.data.results.length) {
-		isResultsExist = false;
-		return;
-	} else {
-		handleSetResults(response.data.results);
-		return isResultsExist;
-	}
+		response.dataFromResponse = await axios.get(
+			linkToFetch + '&page=' + currentResultsPage
+		);
+
+		response.isLastData = await axios.get(
+			linkToFetch + '&page=' + (currentResultsPage + 1)
+		);
+
+		if (response.isLastData === undefined) {
+			response.isLastData = true;
+		}
+
+		resolve(response);
+	})
 };
 
 export default fetchMoreResults;

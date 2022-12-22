@@ -27,8 +27,6 @@ import FavoriteMovies from "../FavoriteMovies/FavoriteMovies";
 import { useLocation } from "react-router";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
-import axios from "axios";
-import {API_KEY} from "../../functions/linksToFetch";
 
 const App = (props) => {
 
@@ -60,7 +58,7 @@ const App = (props) => {
         const match = matchPath({ path: '/movie/:id' }, location.pathname);
 
         if (match) {
-            handleChooseCurrentMoviePage(match.params, handleSetCurrentMoviePage, handleClearCurrentMoviePage)
+            handleChooseCurrentMoviePage(match.params, handleClearCurrentMoviePage).then((data) => {handleSetCurrentMoviePage(data)})
         }
     }, [location]);
 
@@ -69,7 +67,7 @@ const App = (props) => {
         const match = matchPath({ path: '/person/:personID' }, location.pathname);
 
         if (match) {
-            getCurrentPersonPage(match.params.personID, handleSetCurrentPersonPage, handleClearCurrentPersonPage);
+            getCurrentPersonPage(match.params.personID, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)});
         }
     }, [location]);
 

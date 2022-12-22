@@ -51,7 +51,7 @@ const SearchMovie = (props) => {
 		const isDefaultLinkToFetchMoviesExists = defaultLinkToFetchMovies !== null;
 
 		if (searchMethod === 'title') {
-			linkToFetchMoviesByTitle = LINK_TO_FETCH_SEARCH_MOVIES_BY_TITLE.replace('{movieTitle}', isDefaultLinkToFetchMoviesExists ? defaultLinkToFetchMovies.name : searchInputRef.current.value);
+			linkToFetchMoviesByTitle = LINK_TO_FETCH_SEARCH_MOVIES_BY_TITLE.replace('{movieTitle}', isDefaultLinkToFetchMoviesExists ? defaultLinkToFetchMovies.name : searchInputRef.current.value.replace(/ /g, "+"));
 			return linkToFetchMoviesByTitle;
 		} else {
 			linkToFetchMoviesByGenre = LINK_TO_FETCH_SEARCH_MOVIES_BY_GENRE.replace('{genreID}', isDefaultLinkToFetchMoviesExists ? defaultLinkToFetchMovies.id : searchSelectRef.current.id);
@@ -59,8 +59,9 @@ const SearchMovie = (props) => {
 		}
 	}
 
-	const handleSearch = (event) => {
+	const handleSearch = async (event) => {
 		event.preventDefault();
+		await setIsShowSearchList(false);
 
 		if (searchMethod === 'title') {
 			if (searchInputRef.current.value.length && searchInputRef.current.value.trim() !== '') {
@@ -136,7 +137,7 @@ const SearchMovie = (props) => {
 									: ' genre ' + '"' + searchSelectRef.current.name + '"'
 							}
 						</h3>
-						<SearchList linkToFetch={linkToFetchMovies.current} setIsShowSearchList={setIsShowSearchList} />
+						<SearchList linkToFetch={linkToFetchMovies.current} setIsShowSearchList={setIsShowSearchList} isMovieList />
 					</>
 				)
 			}
