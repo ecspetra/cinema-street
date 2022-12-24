@@ -79,16 +79,16 @@ const PersonPage = (props) => {
 								<h1 className="person-page__name">{currentPerson.name}</h1>
 								<p className="person-page__role">{currentPerson.known_for_department}</p>
 								<div className="person-page__details-wrap">
-									<p className="person-page__details person-page__details--country">Country of birth: {currentPerson.place_of_birth}</p>
-									<div className="person-page__details person-page__details--dates-wrap">
+									{currentPerson.place_of_birth && <p className="person-page__details person-page__details--country">Country of birth: {currentPerson.place_of_birth}</p>}
+									{currentPerson.birthday && (<div className="person-page__details person-page__details--dates-wrap">
 										<p className="person-page__birthday">{moment(currentPerson.birthday).format("M.D.Y")}</p>
 										{
 											currentPerson.deathday && <p className="person-page__deathday">&nbsp;— {moment(currentPerson.deathday).format("M.D.Y")}</p>
 										}
-									</div>
+									</div>)}
+									{personGender && <p className="person-page__details person-page__details--gender">Gender: {personGender}</p>}
 								</div>
 								<p className="person-page__biography">{currentPerson.biography}</p>
-								<p className="person-page__gender">{personGender}</p>
 								<CollectionButton isExistsInCollection={isExistsInCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isExistsInCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
 							</div>
 						</div>

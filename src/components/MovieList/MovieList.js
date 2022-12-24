@@ -48,11 +48,16 @@ const MoviesList = (props) => {
 				})
 			}
 			await getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, handleSetFavoriteMovies, currentUser.uid);
-		} else setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
-			if (!data.length) {
-				return false;
-			} else handleSetMovies(data);
-		}));
+		} else {
+			await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
+				if (!data.dataFromResponse.data.results.length) {
+					return false;
+				} else {
+					handleSetMovies(data.dataFromResponse.data.results);
+					setIsResultsExist(true);
+				}
+			})
+		}
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
 		setIsMovieListLoaded(true);
@@ -73,8 +78,9 @@ const MoviesList = (props) => {
 	return (
 		<>
 			{
-				moviesList.length > 0
-					? <>
+				moviesList.length === 0 && isMovieListLoaded
+					? <InfoText>{isFavoriteMoviesList ? 'Movies you add to favorites will be displayed here' : 'Movie list is empty'}</InfoText>
+					: <>
 						<div className="movie-list">
 							{genres && moviesList && moviesList.map((movie, index) => {
 								return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
@@ -85,7 +91,6 @@ const MoviesList = (props) => {
 							(isShowMoreButton && isMovieListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getMovies} />
 						}
 					</>
-					: <InfoText>Movie list is empty</InfoText>
 			}
 		</>
 	)

@@ -4,7 +4,7 @@ import fetchMoreResults from "../../functions/fetchMoreResults";
 import { setPersons, clearPersons, setFavoritePersons, clearFavoritePersons } from "../../actions";
 import { connect } from "react-redux";
 import { getDatabase, ref } from "firebase/database";
-import getMyPersonsFromDatabase from "../../functions/getMyPersonsFromDatabase";
+import { getMyPersonsFromDatabase, fillFavoritePersonsList } from "../../functions/getMyPersonsFromDatabase";
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import Loader from "../Loader/Loader";
@@ -29,7 +29,6 @@ const PersonsList = (props) => {
 	const [isPersonsListLoaded, setIsPersonsListLoaded] = useState(false);
 	const [isShowMoreButton, setIsShowMoreButton] = useState(false);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
-	const [isResultsExist, setIsResultsExist] = useState(true);
 	const [isLastData, setIsLastData] = useState(false);
 	const [maxListLength, setMaxListLength] = useState(initialListLength);
 	const [personsList, setPersonsList] = useState([]);
@@ -44,32 +43,38 @@ const PersonsList = (props) => {
 
 			if (isFavoritePersonsList) {
 				let receivedFavoritePersonsKeys = [];
-				receivedFavoritePersonsKeys = persons.favoritePersons.map((person) => {
+				receivedFavoritePersonsKeys = personsList.map((person) => {
 					return person.key;
 				})
 				await getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
-					if (!data.dataFromResponse.length) {
-						setIsResultsExist(false);
-						return false;
+
+					const isEmptyResult = !data.dataFromResponse.length;
+
+					if (isEmptyResult) {
+						setMaxListLength(persons.favoritePersons.length);
+						setIsLastData(true);
 					} else {
-						handleSetFavoritePersons(data.dataFromResponse);
-						setIsResultsExist(true);
-						setMaxListLength(prevState => (prevState + data.dataFromResponse.length));
+						if (maxListLength === initialListLength) {
+							setMaxListLength(personsList.length + data.dataFromResponse.length);
+						} else setMaxListLength(prevState => (prevState + data.dataFromResponse.length));
 						if (data.isLastData === true) {
 							setIsLastData(true);
 						}
+						handleSetFavoritePersons(data.dataFromResponse);
 					}
 				})
 			} else if (!isCurrentMovieCharacter && !isFavoritePersonsList) {
+
 				await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
-					if (!data.dataFromResponse.data.results.length) {
-						setIsResultsExist(false);
+
+					const isEmptyResult = !data.dataFromResponse.data.results.length;
+
+					if (isEmptyResult) {
 						return false;
 					} else if (data.isLastData === true) {
 						setIsShowMoreButton(false);
 					} else {
 						handleSetPersons(data.dataFromResponse.data.results);
-						setIsResultsExist(true);
 					}
 				})
 				setPrevResultsPage(currentResultsPage);
@@ -88,6 +93,21 @@ const PersonsList = (props) => {
 		})
 	}
 
+	const handleFillFavoritePersonsList = async () => {
+		let receivedFavoritePersonsKeys = [];
+		receivedFavoritePersonsKeys = personsList.map((person) => {
+			return person.key;
+		})
+
+		await fillFavoritePersonsList(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+			const isEmptyResult = !data.dataFromResponse.length;
+
+			if (!isEmptyResult && personsList.length !== data.dataFromResponse.length) {
+				handleSetFavoritePersons(data.dataFromResponse);
+			}
+		});
+	}
+
 	const getPersonsList = () => {
 
 		let persons;
@@ -101,7 +121,7 @@ const PersonsList = (props) => {
 		} else if (isFavoritePersonsList) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person.data.person} key={index} currentUser={currentUser} isFavoritePerson />
+					return <PersonCard person={person.data.person} key={index} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
 				}
 			})
 		} else {
@@ -114,31 +134,35 @@ const PersonsList = (props) => {
 	}
 
 	const handleIsShowMoreButton = () => {
-		if (isPersonsListLoaded === true && personsList.length !== 0 && !isLastData && personsList.length > initialListLength) {
+		if (isPersonsListLoaded === true && personsList.length !== 0 && isLastData === false && personsList.length > initialListLength) {
 			return true;
 		} else return false;
 	}
 
 	useEffect(() => {
-		if (isResultsExist && prevResultsPage !== currentResultsPage && !isCurrentMovieCharacter && !isFavoritePersonsList) {
+		if (!isLastData && prevResultsPage !== currentResultsPage && !isCurrentMovieCharacter && !isFavoritePersonsList) {
 			getPersons().then((data) => {
 				setIsPersonsListLoaded(data);
 			})
 		} else if (isCurrentMovieCharacter) {
 			setIsPersonsListLoaded(true);
 		} else if (isFavoritePersonsList) {
+
 			let receivedFavoritePersonsKeys = [];
+
 			getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
-				if (!data.dataFromResponse.length) {
-					setIsResultsExist(false);
-					return false;
+
+				const isEmptyResult = !data.dataFromResponse.length;
+
+				if (isEmptyResult) {
+					setIsLastData(true);
 				} else {
 					handleSetFavoritePersons(data.dataFromResponse);
-					setIsResultsExist(true);
 					if (data.isLastData === true) {
 						setIsLastData(true);
 					}
 				}
+			}).then(() => {
 				setIsPersonsListLoaded(true);
 			})
 		}
@@ -150,18 +174,13 @@ const PersonsList = (props) => {
 
 	useEffect(() => {
 		setIsShowMoreButton(handleIsShowMoreButton());
-	}, [personsList]);
-
-	useEffect(() => {
-		console.log(maxListLength);
-
-	}, [maxListLength]);
+	}, [personsList, isLastData]);
 
 	return (
 		<>
 			{
 				personsList.length === 0 && isPersonsListLoaded
-					? <InfoText>Persons list is empty</InfoText>
+					? <InfoText>{isFavoritePersonsList ? 'Persons you add to favorites will be displayed here' : 'Persons list is empty'}</InfoText>
 					: <>
 						<div className="persons-list">
 							{getPersonsList()}

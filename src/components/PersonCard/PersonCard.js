@@ -4,7 +4,6 @@ import {
 	clearCurrentPersonPage,
 	removeFromFavoritePersons,
 	setCurrentPersonPage,
-	setFavoritePersons
 } from "../../actions";
 import { connect } from "react-redux";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
@@ -13,13 +12,11 @@ import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultPersonImage from "../App/assets/icons/default-person.svg";
 import HeartIcon from "../App/assets/icons/HeartIcon";
 import removePersonFromCollection from "../../functions/removePersonFromCollection";
-import checkIfPersonExistsInCollection from "../../functions/checkIfPersonExistsInCollection";
 import { getDatabase, ref } from "firebase/database";
-import getMyPersonsFromDatabase from "../../functions/getMyPersonsFromDatabase";
 
 const PersonCard = (props) => {
 
-	const { person, currentUser, isFavoritePerson, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons } = props;
+	const { person, currentUser, isFavoritePerson, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons, handleFillFavoritePersonsList } = props;
 
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -31,7 +28,8 @@ const PersonCard = (props) => {
 	const handleRemovePersonFromCollection = async (event) => {
 		event.preventDefault();
 		await removePersonFromCollection(postListRef, person, currentUser.uid, handleRemoveFromFavoritePersons);
-		// checkIfPersonExistsInCollection(postListRef, person.id, currentUser.uid);
+
+		handleFillFavoritePersonsList();
 	}
 
 	return (
@@ -47,7 +45,7 @@ const PersonCard = (props) => {
 				{isFavoritePerson && <HeartIcon onClick={(event) => {handleRemovePersonFromCollection(event)}} />}
 			</Link>
 			{
-				(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character}</span>
+				(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character ?? person.job}</span>
 			}
 		</div>
 	)

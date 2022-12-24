@@ -13,7 +13,7 @@ const Persons = () => {
 			</div>
 			<SearchPerson />
 			<div className="persons__general-list">
-				<h1>All persons</h1>
+				<h1>Discover persons</h1>
 				<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} />
 			</div>
 		</div>

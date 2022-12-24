@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import { connect } from "react-redux";
-import { onValue, push, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
 import { setMyReview } from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";

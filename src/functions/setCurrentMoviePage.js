@@ -34,9 +34,16 @@ const handleChooseCurrentMoviePage = (selectedMovie, clearCurrentMoviePageFuncti
 			'https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=' + API_KEY
 		);
 
+
+		const currentMovieCredits = [];
+		const currentMovieCast = currentMovieCreditsResponse.data.cast;
+		const currentMovieCrew = currentMovieCreditsResponse.data.crew;
+		currentMovieCredits.push(...currentMovieCast, ...currentMovieCrew);
+
+
 		resolve(currentMoviePage = {
 			currentMovieInfo: currentMovieInfoResponse.data,
-			currentMovieCredits: currentMovieCreditsResponse.data,
+			currentMovieCredits: currentMovieCredits,
 			currentMovieImages: currentMovieImagesResponse.data,
 			currentMovieReviews: currentMovieReviewsResponse.data,
 			currentMovieVideos: currentMovieVideosResponse.data.results,

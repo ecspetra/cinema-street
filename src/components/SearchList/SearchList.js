@@ -26,11 +26,12 @@ const SearchList = (props) => {
 
 	const getSearchResults = async () => {
 		setIsSearchListLoaded(false);
-		setIsResultsExist(await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
-			if (!data.length) {
-				return false;
-			} else handleSetSearchResults(data);
-		}));
+		await fetchMoreResults(linkToFetch, currentResultsPage).then((data) => {
+			if (!data.dataFromResponse.data.results.length) {
+				setIsResultsExist(false);
+			} else handleSetSearchResults(data.dataFromResponse.data.results);
+			setIsResultsExist(true);
+		})
 		setPrevResultsPage(currentResultsPage);
 		setCurrentResultsPage(currentResultsPage + 1);
 		setIsSearchListLoaded(true);
@@ -43,6 +44,8 @@ const SearchList = (props) => {
 	}, []);
 
 	const isShowMoreButton = isResultsExist && isSearchListLoaded;
+
+	console.log(linkToFetch, searchResults);
 
 	return (
 		<>

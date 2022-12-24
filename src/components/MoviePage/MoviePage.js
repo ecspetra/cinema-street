@@ -19,7 +19,7 @@ import Loader from "../Loader/Loader";
 
 const MoviePage = (props) => {
 
-	const { currentUser, currentMoviePage, getCurrentPersonInfo, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
+	const { currentUser, currentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
 	const isCurrentMovieLoaded = currentMoviePage !== null && Object.values(currentMoviePage) !== null;
 
@@ -124,8 +124,8 @@ const MoviePage = (props) => {
 								</div>
 							</div>
 							<div className="movie-page__credits-wrap">
-								<h1>Cast</h1>
-								<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} currentMoviePersons={currentMovieCredits.cast} getCurrentPersonInfo={getCurrentPersonInfo} isCurrentMovieCharacter />
+								<h1>Persons</h1>
+								<PersonsList currentMoviePersons={currentMovieCredits} isCurrentMovieCharacter />
 							</div>
 							<div className="movie-page__images-wrap">
 								<h1>Backdrops</h1>

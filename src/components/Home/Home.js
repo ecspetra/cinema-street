@@ -11,7 +11,7 @@ const Home = (props) => {
 			<h1>Upcoming movies</h1>
 			<UpcomingMovies upcomingMovieVideo={props.upcomingMovieVideo} />
 			<SearchMovie />
-			<h1>Explore movies</h1>
+			<h1>Discover movies</h1>
 			<MovieList linkToFetch={DEFAULT_LINK_TO_FETCH_MOVIES} />
 		</div>
 	)

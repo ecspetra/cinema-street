@@ -1,6 +1,6 @@
 import { get } from "firebase/database";
 
-const getTotalFavoritePersons = (postListRef, userID) => {
+export const getTotalFavoritePersons = (postListRef, userID) => {
 	return new Promise((resolve) => {
 		get(postListRef).then((snapshot) => {
 			const totalFavoritePersons = [];
@@ -21,7 +21,7 @@ const getTotalFavoritePersons = (postListRef, userID) => {
 	})
 }
 
-const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKeys, userID) => {
+export const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKeys, userID) => {
 	return new Promise(async (resolve) => {
 		get(postListRef).then((snapshot) => {
 
@@ -29,7 +29,8 @@ const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKeys, user
 
 				const initialListLength = 8;
 				const maxResponseLength = 24;
-				const isFirstRenderForList = !receivedFavoritePersonsKeys.length;
+				const isFirstRenderForList = receivedFavoritePersonsKeys.length === 0;
+				const isShortList = data.length <= initialListLength;
 
 				const response = {
 					dataFromResponse: [],
@@ -37,28 +38,34 @@ const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKeys, user
 				}
 
 				snapshot.forEach((childSnapshot) => {
+
 					const favoritePerson = {
 						key: childSnapshot.key,
 						data: childSnapshot.val(),
 					}
 
-					if (response.dataFromResponse.length < maxResponseLength && receivedFavoritePersonsKeys.length === 0 && favoritePerson.data.person.userID === userID) {
-						response.dataFromResponse.push(favoritePerson);
-					} else if (receivedFavoritePersonsKeys.length > 0) {
-						console.log(receivedFavoritePersonsKeys);
+					if (isFirstRenderForList) {
+						if (response.dataFromResponse.length < maxResponseLength && favoritePerson.data.person.userID === userID) {
+							response.dataFromResponse.push(favoritePerson);
+						}
+					} else {
 						if (response.dataFromResponse.length < maxResponseLength && !receivedFavoritePersonsKeys.includes(favoritePerson.key) && favoritePerson.data.person.userID === userID) {
 							response.dataFromResponse.push(favoritePerson);
 						}
 					}
 				});
 
-				if (data.length <= initialListLength) {
+				const isMoreResultsAvailable = response.dataFromResponse.length + receivedFavoritePersonsKeys.length < data.length;
+
+				if (isShortList) {
 					response.isLastData = true;
 				} else {
-					if (isFirstRenderForList && response.dataFromResponse.length <= data.length) {
-						response.isLastData = false;
+					if (isFirstRenderForList) {
+						if (isMoreResultsAvailable) {
+							response.isLastData = false;
+						}
 					} else {
-						if (response.dataFromResponse.length + receivedFavoritePersonsKeys.length < data.length) {
+						if (isMoreResultsAvailable) {
 							response.isLastData = false;
 						} else {
 							response.isLastData = true;
@@ -72,4 +79,30 @@ const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKeys, user
 	})
 }
 
-export default getMyPersonsFromDatabase;
+export const fillFavoritePersonsList = (postListRef, receivedFavoritePersonsKeys, userID) => {
+	return new Promise(async (resolve) => {
+		get(postListRef).then((snapshot) => {
+
+			getTotalFavoritePersons(postListRef, userID).then((data) => {
+
+				const response = {
+					dataFromResponse: [],
+				}
+
+				snapshot.forEach((childSnapshot) => {
+
+					const favoritePerson = {
+						key: childSnapshot.key,
+						data: childSnapshot.val(),
+					}
+
+					if (!receivedFavoritePersonsKeys.includes(favoritePerson.key) && favoritePerson.data.person.userID === userID) {
+						response.dataFromResponse.push(favoritePerson);
+					}
+				});
+
+				resolve(response);
+			})
+		});
+	})
+}

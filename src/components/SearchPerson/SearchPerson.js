@@ -5,7 +5,7 @@ import classNames from "classnames";
 import Error from "../Error/Error";
 import {LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME} from "../../functions/linksToFetch";
 
-const SearchPerson = (props) => {
+const SearchPerson = () => {
 
 	const searchInputRef = useRef();
 	const linkToFetchPersons = useRef();
