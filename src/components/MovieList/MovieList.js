@@ -82,8 +82,8 @@ const MoviesList = (props) => {
 					? <InfoText>{isFavoriteMoviesList ? 'Movies you add to favorites will be displayed here' : 'Movie list is empty'}</InfoText>
 					: <>
 						<div className="movie-list">
-							{genres && moviesList && moviesList.map((movie, index) => {
-								return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={index} genres={genres} />
+							{genres && moviesList && moviesList.map((movie) => {
+								return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={isFavoriteMoviesList ? movie.data.movie.id : movie.id} genres={genres} />
 							})}
 							{!isMovieListLoaded && <Loader>Loading movies</Loader>}
 						</div>

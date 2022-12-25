@@ -119,8 +119,8 @@ const SearchMovie = (props) => {
 						)
 						: (
 							<Select>
-								{genresList.map((genre, index) => {
-									return <SelectOption onClickAction={() => {getGenreToSearch(genre)}} key={index}>{genre.name}</SelectOption>
+								{genresList.map((genre) => {
+									return <SelectOption onClickAction={() => {getGenreToSearch(genre)}} key={genre.name}>{genre.name}</SelectOption>
 								})}
 							</Select>
 						)

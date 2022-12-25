@@ -61,7 +61,7 @@ const UpcomingMovieItem = (props) => {
 						{
 							upcomingMovieGenresNames.map((genre, index) => {
 								if (index < 3) {
-									return <span className="upcoming-movies__genres-item" key={index}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
+									return <span className="upcoming-movies__genres-item" key={genre.name}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
 								}
 							})
 						}

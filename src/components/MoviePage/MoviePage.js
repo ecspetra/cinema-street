@@ -86,7 +86,7 @@ const MoviePage = (props) => {
 									<p className="movie-page__genres">
 										{
 											currentMovieInfo && currentMovieInfo.genres.map((item, index) => {
-												return <span className="movie-page__genres-item" key={index}>{item.name + (index !== (currentMovieInfo.genres.length - 1) ? ', ' : '')}</span>
+												return <span className="movie-page__genres-item" key={item.name}>{item.name + (index !== (currentMovieInfo.genres.length - 1) ? ', ' : '')}</span>
 											})
 										}
 									</p>
@@ -101,7 +101,7 @@ const MoviePage = (props) => {
 									<p className="movie-page__details movie-page__details--production-countries">
 										{
 											currentMovieInfo && currentMovieInfo.production_countries.map((item, index) => {
-												return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={index}>{item.name + (index !== currentMovieInfo.production_countries.length - 1 ? ', ' : '')}</span>
+												return <span className="movie-page__details-item movie-page__details-item--production-countries-item" key={item.name}>{item.name + (index !== currentMovieInfo.production_countries.length - 1 ? ', ' : '')}</span>
 											})
 										}
 									</p>
@@ -114,8 +114,8 @@ const MoviePage = (props) => {
 										<h3 className="movie-page__production-companies-title">Production companies:</h3>
 										<div className="production-companies">
 											{
-												currentMovieInfo && currentMovieInfo.production_companies.map((item, index) => {
-													return <ProductionCompany company={item} key={index} />
+												currentMovieInfo && currentMovieInfo.production_companies.map((item) => {
+													return <ProductionCompany company={item} key={item.name} />
 												})
 											}
 										</div>

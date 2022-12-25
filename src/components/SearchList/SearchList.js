@@ -54,9 +54,9 @@ const SearchList = (props) => {
 					? <>
 						<div className="search-list">
 							{
-								searchResults.length > 0 && searchResults.map((result, index) => {
+								searchResults.length > 0 && searchResults.map((result) => {
 									return (
-										<SearchCard result={result} key={index} isMovieCard={isMovieList} />
+										<SearchCard result={result} key={result.id} isMovieCard={isMovieList} />
 									)
 								})
 							}

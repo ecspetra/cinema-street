@@ -115,18 +115,18 @@ const PersonsList = (props) => {
 		if (isCurrentMovieCharacter) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person} key={index} isCurrentMovieCharacter={isCurrentMovieCharacter} />
+					return <PersonCard person={person} key={person.id} isCurrentMovieCharacter={isCurrentMovieCharacter} />
 				}
 			})
 		} else if (isFavoritePersonsList) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person.data.person} key={index} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
+					return <PersonCard person={person.data.person} key={person.data.person.id} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
 				}
 			})
 		} else {
-			persons = personsList && personsList.map((person, index) => {
-				return <PersonCard person={person} key={index} />
+			persons = personsList && personsList.map((person) => {
+				return <PersonCard person={person} key={person.id} />
 			})
 		}
 

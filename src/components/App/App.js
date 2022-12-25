@@ -5,7 +5,6 @@ import Home from "../Home/Home";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 import Persons from "../Persons/Persons";
-import Genres from "../Genres/Genres";
 import Profile from "../Profile/Profile";
 import PersonPage from "../PersonPage/PersonPage";
 import '../../firebase';
@@ -82,7 +81,6 @@ const App = (props) => {
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favorite-movies" element={<FavoriteMovies />} />
                     <Route path="/actors" element={<Persons />} />
-                    <Route path="/genres" element={<Genres/>} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
                     <Route path={"/movie/:id"} element={<MoviePage />} />
                     <Route path={"/person/:personID"} element={<PersonPage />} />

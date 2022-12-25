@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { useState } from 'react';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
@@ -8,11 +7,13 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import rootReducer from "./reducers";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { createRoot } from 'react-dom/client';
 
 const store = createStore(rootReducer, composeWithDevTools());
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+const appRoot = createRoot(document.getElementById('app-root'));
+
+appRoot.render(
 	<Provider store={store}>
 		<BrowserRouter>
 			<App />

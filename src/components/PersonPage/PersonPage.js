@@ -44,22 +44,21 @@ const PersonPage = (props) => {
 	useEffect(() => {
 		if (isCurrentPersonLoaded) {
 			getPersonGender();
-			checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
+			checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
 		}
 	}, [isCurrentPersonLoaded]);
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'persons');
-	const newPostRef = push(postListRef);
 
-	const handleAddPersonToMyCollection = () => {
-		postPersonToDataBase(newPostRef, currentPerson, currentUser.uid);
-		checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
+	const handleAddPersonToMyCollection = async () => {
+		await postPersonToDataBase(database, currentPerson, currentUser.uid);
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
 	}
 
 	const handleRemovePersonFromCollection = async () => {
 		await removePersonFromCollection(postListRef, currentPerson, currentUser.uid, handleRemoveFromFavoritePersons);
-		checkIfPersonExistsInCollection(postListRef, currentPerson.id, currentUser.uid).then(data => setIsExistsInCollection(data));
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
 	}
 
 	const collectionButtonOnClickFunction = isExistsInCollection ? handleRemovePersonFromCollection : handleAddPersonToMyCollection;

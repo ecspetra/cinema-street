@@ -5,11 +5,12 @@ const removePersonFromCollection = async (postListRef, person, userID, removeFro
 
 	const database = getDatabase();
 
-	let personFromCollection = await checkIfPersonExistsInCollection(postListRef, person.id, userID, true);
+	let personFromCollection = await checkIfPersonExistsInCollection(postListRef, person, userID, true);
 
 	removeFromFavoritePersonsFunction(person.id);
 
 	const dbRef = ref(database, "/persons/" + personFromCollection.key);
+
 	remove(dbRef);
 }
 

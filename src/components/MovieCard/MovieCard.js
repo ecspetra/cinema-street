@@ -15,6 +15,7 @@ import postMovieToDataBase from "../../functions/postMovieToDataBase";
 import Loader from "../Loader/Loader";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultMovieImage from "../App/assets/icons/default-movie.svg";
+import { CSSTransition } from "react-transition-group";
 
 const MovieCard = (props) => {
 
@@ -24,6 +25,7 @@ const MovieCard = (props) => {
 
 	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
+	const [isMounted, setIsMounted] = useState(false);
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -35,11 +37,16 @@ const MovieCard = (props) => {
 	}
 
 	const handleRemoveMovieFromCollection = async () => {
-		await removeMovieFromCollection(postListRef, movie, handleRemoveFromFavoriteMovies);
-		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+		await setIsMounted(false);
+
+		setTimeout(async () => {
+			await removeMovieFromCollection(postListRef, movie, handleRemoveFromFavoriteMovies, setIsMounted);
+			checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+		}, 750);
 	}
 
 	useEffect(() => {
+		setIsMounted(true);
 		const movieGenresIDsArray = getMovieGenresIDs(genres, movie);
 		setMovieGenresIDs(movieGenresIDsArray);
 	}, []);
@@ -56,33 +63,40 @@ const MovieCard = (props) => {
 	const collectionButtonOnClickFunction = isMovieFromCollection ? handleRemoveMovieFromCollection : handleAddMovieToMyCollection;
 
 	return (
-		<div className="movie-card">
-			<Link to={"/movie/" + movie.id} className="movie-card__link" onClick={() => {
-				handleChooseCurrentMoviePage(movie, handleClearCurrentMoviePage).then((data) => {handleSetCurrentMoviePage(data)})
-			}}>
+		<CSSTransition
+			in={isMounted}
+			appear={true}
+			timeout={0}
+			classNames="movie-card-wrap"
+		>
+			<div className="movie-card">
+				<Link to={"/movie/" + movie.id} className="movie-card__link" onClick={() => {
+					handleChooseCurrentMoviePage(movie, handleClearCurrentMoviePage).then((data) => {handleSetCurrentMoviePage(data)})
+				}}>
 				<span className="movie-card__image-wrap">
 					<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
 					{!isImageLoaded && <Loader>Loading image</Loader>
 					}
 					<MyMark movie={movie} />
 				</span>
-				<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
-				<span className="movie-card__title-wrap">
+					<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
+					<span className="movie-card__title-wrap">
 					<h3 className="movie-card__title">{movie.title}</h3>
 					<Rating movie={movie} />
 				</span>
-			</Link>
-			<div className="movie-card__genres-wrap">
-				{
-					movieGenresNames.map((item, key) => {
-						if (key <= 2) {
-							return <span key={key} className="movie-card__genre">{item}</span>
-						}
-					})
-				}
+				</Link>
+				<div className="movie-card__genres-wrap">
+					{
+						movieGenresNames.map((item, key) => {
+							if (key <= 2) {
+								return <span key={item} className="movie-card__genre">{item}</span>
+							}
+						})
+					}
+				</div>
+				<CollectionButton isExistsInCollection={isMovieFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isMovieFromCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
 			</div>
-			<CollectionButton isExistsInCollection={isMovieFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isMovieFromCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
-		</div>
+		</CSSTransition>
 	)
 }
 

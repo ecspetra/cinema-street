@@ -1,10 +1,11 @@
 import { get } from "firebase/database";
 
-const checkIfPersonExistsInCollection = (postListRef, personID, userID, isPersonNeeded = false) => {
+const checkIfPersonExistsInCollection = (postListRef, person, userID, isPersonNeeded = false) => {
+
 	return new Promise((resolve) => {
 		get(postListRef).then((snapshot) => {
 
-			let person = false;
+			let isPersonFromCollection = false;
 
 			snapshot.forEach((childSnapshot) => {
 				const favoritePerson = {
@@ -12,14 +13,14 @@ const checkIfPersonExistsInCollection = (postListRef, personID, userID, isPerson
 					data: childSnapshot.val(),
 				}
 
-				if (userID === favoritePerson.data.person.userID && personID === favoritePerson.data.person.id && isPersonNeeded === true) {
-					person = favoritePerson;
-				} else if (userID === favoritePerson.data.person.userID && personID === favoritePerson.data.person.id && isPersonNeeded === false) {
-					person = true;
+				if (userID === favoritePerson.data.person.userID && (person.id === favoritePerson.data.person.id || person.name === favoritePerson.data.person.name) && isPersonNeeded === true) {
+					isPersonFromCollection = favoritePerson;
+				} else if (userID === favoritePerson.data.person.userID && (person.id === favoritePerson.data.person.id || person.name === favoritePerson.data.person.name) && isPersonNeeded === false) {
+					isPersonFromCollection = true;
 				}
 			});
 
-			resolve(person)
+			resolve(isPersonFromCollection)
 		});
 	});
 }

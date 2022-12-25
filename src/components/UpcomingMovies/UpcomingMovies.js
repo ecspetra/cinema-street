@@ -132,8 +132,8 @@ const UpcomingMovies = (props) => {
 			</div>
 			<div className="upcoming-movies__list">
 				{
-					moviesSortedByReleaseDate.map((movie, index) => {
-						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={index} />
+					moviesSortedByReleaseDate.map((movie) => {
+						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={movie.id} />
 					})
 				}
 			</div>

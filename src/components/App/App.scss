@@ -283,11 +283,40 @@ button {
     width: 28px;
     height: 28px;
     display: block;
-    padding: 4px;
-    transition: .3s;
 
-    path {
-        fill: $text-main-color;
+    &__empty {
+        opacity: 0;
+    }
+
+    &__filled {
+        opacity: 1;
+    }
+
+    &__empty,
+    &__filled {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 22px;
+        height: 22px;
+        transition: .3s;
+
+        path {
+            fill: $text-main-color;
+        }
+    }
+
+    &:hover {
+        .heart-icon {
+            &__empty {
+                opacity: 1;
+            }
+
+            &__filled {
+                opacity: 0;
+            }
+        }
     }
 }
 
@@ -344,6 +373,7 @@ button {
     padding: 0 10px 0;
     margin: 0 0 40px;
     position: relative;
+    transition: 1s ease;
 
     .loader {
         position: absolute;
@@ -474,6 +504,31 @@ button {
         color: $text-color-dark;
         font-size: 12px;
     }
+}
+
+.movie-card-wrap-enter {
+    opacity: 0;
+}
+
+.movie-card-wrap-enter-done {
+    opacity: 1;
+}
+
+.movie-card-wrap-enter-active {
+    opacity: 1;
+}
+
+.movie-card-wrap-exit {
+    opacity: 1;
+}
+
+.movie-card-wrap-exit-active {
+    opacity: 0;
+}
+
+.movie-card-wrap-exit-done {
+    opacity: 0;
+    transform: translateY(-100%);
 }
 
 .rating,
@@ -643,6 +698,63 @@ button {
     }
 }
 
+.modal {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba($extra-dark-color, .95);
+    z-index: 10;
+}
+
+.modal-content {
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $wrap-background-color;
+    border-radius: 12px;
+    padding: 20px;
+
+    &__text-wrap {
+        margin-bottom: 30px;
+    }
+
+    &__title {
+        max-width: 90%;
+    }
+
+    &__buttons-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    &__button {
+        max-width: 100px;
+
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+
+    &__close-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+
+        .close-icon {
+
+            path {
+                fill: $text-color-extra-light;
+            }
+        }
+    }
+}
+
 .person-card {
     display: flex;
     flex-direction: column;
@@ -652,6 +764,7 @@ button {
     padding: 0 10px 0;
     margin: 0 0 20px;
     position: relative;
+    transition: 1s ease;
 
     .loader {
         position: absolute;
@@ -711,6 +824,31 @@ button {
         color: #a7a2b4;
         text-transform: uppercase;
     }
+}
+
+.person-card-wrap-enter {
+    opacity: 0;
+}
+
+.person-card-wrap-enter-done {
+    opacity: 1;
+}
+
+.person-card-wrap-enter-active {
+    opacity: 1;
+}
+
+.person-card-wrap-exit {
+    opacity: 1;
+}
+
+.person-card-wrap-exit-active {
+    opacity: 0;
+}
+
+.person-card-wrap-exit-done {
+    opacity: 0;
+    transform: translateY(-100%);
 }
 
 .movie-page {

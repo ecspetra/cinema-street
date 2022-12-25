@@ -30,7 +30,7 @@ const BackdropsList = (props) => {
 						<div className="backdrops-list">
 							{(backdrops && backdrops.map((item, index) => {
 								if (index < maxListLength) {
-									return <Backdrops backdrops={item} key={index} />
+									return <Backdrops backdrops={item} key={item.file_path} />
 								}
 							}))
 							}

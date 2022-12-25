@@ -748,7 +748,7 @@ const ReviewCard = (props) => {
 									deleteReplyFromReview={deleteReplyFromReview}
 									editReplyInReview={editReplyInReview}
 									reviewID={reviewID}
-									key={index}
+									key={item.id}
 								/>
 							}
 						})

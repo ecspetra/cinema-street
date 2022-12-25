@@ -10,6 +10,7 @@ const removeMovieFromCollection = async (postListRef, movie, removeFromFavoriteM
 	removeFromFavoriteMoviesFunction(movie.id);
 
 	const dbRef = ref(database, "/movies/" + movieFromCollection.key);
+
 	remove(dbRef);
 }
 
