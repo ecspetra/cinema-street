@@ -6,9 +6,7 @@ const postPersonToDataBase = async (database, person, userID) => {
 	const postListRef = ref(database, 'persons');
 	const newPostRef = push(postListRef);
 
-	let personFromCollection = await checkIfPersonExistsInCollection(postListRef, person, userID, true);
-
-	console.log(personFromCollection);
+	let personFromCollection = await checkIfPersonExistsInCollection(postListRef, person, userID);
 
 	if (personFromCollection === false) {
 		set(newPostRef, {

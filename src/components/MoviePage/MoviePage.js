@@ -49,7 +49,7 @@ const MoviePage = (props) => {
 	}
 
 	const handleAddMovieToMyCollection = () => {
-		postMovieToDataBase(newPostRef, currentMovieInfo, currentUser.uid);
+		postMovieToDataBase(database, currentMovieInfo, currentUser.uid);
 		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(data => setIsMovieFromCollection(data));
 	}
 

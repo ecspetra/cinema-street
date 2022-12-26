@@ -10,6 +10,11 @@ import postPersonToDataBase from "../../functions/postPersonToDataBase";
 import removePersonFromCollection from "../../functions/removePersonFromCollection";
 import checkIfPersonExistsInCollection from "../../functions/checkIfPersonExistsInCollection";
 import { addDefaultImage } from "../../functions/addDefaultImage";
+import Modal from "../Modal/Modal";
+import InfoPopup from "../InfoPopup/InfoPopup";
+import useDidMountEffect from "../../functions/useDidMountEffect";
+import MovieList from "../MovieList/MovieList";
+import {LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON} from "../../functions/linksToFetch";
 
 const PersonPage = (props) => {
 
@@ -25,11 +30,15 @@ const PersonPage = (props) => {
 
 	const [isExistsInCollection, setIsExistsInCollection] = useState(false);
 	const [personGender, setPersonGender] = useState();
+	const [isShowInfoPopup, setIsShowInfoPopup] = useState(false);
+	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 	let currentPerson;
+	let linkToFetchCurrentPersonMovies;
 
 	if (isCurrentPersonLoaded) {
 		currentPerson = persons.currentPersonInfo;
+		linkToFetchCurrentPersonMovies = LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON.replace('{personID}', currentPerson.id);
 	}
 
 	const onMoviePageUnmount = useRef();
@@ -62,7 +71,16 @@ const PersonPage = (props) => {
 	}
 
 	const collectionButtonOnClickFunction = isExistsInCollection ? handleRemovePersonFromCollection : handleAddPersonToMyCollection;
-	const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+	useDidMountEffect(() => {
+		if (isExistsInCollection === true) {
+			setIsShowInfoPopup(true);
+
+			setTimeout(() => {
+				setIsShowInfoPopup(false);
+			}, 2000);
+		}
+	}, [isExistsInCollection]);
 
 	return (
 		<>
@@ -92,8 +110,12 @@ const PersonPage = (props) => {
 							</div>
 						</div>
 						<div className="person-page__movies">
-
+							<h1>Movies with {currentPerson.name}</h1>
+							<MovieList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
+						{isShowInfoPopup && (<Modal className="modal--transparent">
+							<InfoPopup title={'Person added to favorite'} />
+						</Modal>)}
 					</div>
 				)
 					: <div className="movie-page-empty"><Loader>Loading person</Loader></div>

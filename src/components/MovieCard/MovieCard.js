@@ -21,7 +21,6 @@ const MovieCard = (props) => {
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
-	const newPostRef = push(postListRef);
 
 	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
@@ -31,8 +30,8 @@ const MovieCard = (props) => {
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 	const [isMovieFromCollection, setIsMovieFromCollection] = useState(false);
 
-	const handleAddMovieToMyCollection = () => {
-		postMovieToDataBase(newPostRef, movie, currentUser.uid);
+	const handleAddMovieToMyCollection = async () => {
+		await postMovieToDataBase(database, movie, currentUser.uid);
 		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
 	}
 

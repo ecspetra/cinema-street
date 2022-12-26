@@ -6,3 +6,4 @@ export const LINK_TO_FETCH_SEARCH_MOVIES_BY_TITLE = 'https://api.themoviedb.org/
 export const LINK_TO_FETCH_SEARCH_MOVIES_BY_GENRE = 'https://api.themoviedb.org/3/discover/movie?api_key=' + API_KEY + '&with_genres={genreID}';
 export const LINK_TO_FETCH_PERSONS = 'https://api.themoviedb.org/3/person/popular/?api_key=' + API_KEY;
 export const LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME = 'https://api.themoviedb.org/3/search/person?api_key=' + API_KEY + '&query={personName}';
+export const LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON = 'https://api.themoviedb.org/3/discover/movie?api_key=' + API_KEY + '&with_people={personID}';

@@ -17,7 +17,7 @@ const fetchMoreResults = async (linkToFetch, currentResultsPage) => {
 			linkToFetch + '&page=' + (currentResultsPage + 1)
 		);
 
-		if (response.isLastData === undefined) {
+		if (!response.isLastData.data.results.length) {
 			response.isLastData = true;
 		}
 

@@ -80,7 +80,7 @@ const App = (props) => {
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favorite-movies" element={<FavoriteMovies />} />
-                    <Route path="/actors" element={<Persons />} />
+                    <Route path="/persons" element={<Persons />} />
                     <Route path="/profile" element={<Profile user={props.currentUser} />} />
                     <Route path={"/movie/:id"} element={<MoviePage />} />
                     <Route path={"/person/:personID"} element={<PersonPage />} />

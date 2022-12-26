@@ -5,19 +5,30 @@ const Modal = (props) => {
 
 	const modalRoot = document.getElementById('modal-root');
 
-	const { children, onClick } = props;
+	const { children, onClick, className } = props;
 
 	const container = useRef(document.createElement('div'));
 	container.current.classList.add('modal');
 
+	if (className) {
+		container.current.classList.add(className);
+	}
+
 	useEffect(() => {
 		modalRoot.appendChild(container.current);
 		modalRoot.addEventListener('click', onClick);
-		document.body.style.overflow = 'hidden';
+
+		if (container.current.classList.length === 1) {
+			document.body.style.overflow = 'hidden';
+		}
+
 		return () => {
 			modalRoot.removeChild(container.current);
 			modalRoot.removeEventListener('click', onClick);
-			document.body.style.overflow = 'unset';
+
+			if (container.current.classList.length === 1) {
+				document.body.style.overflow = 'unset';
+			}
 		}
 	}, []);
 

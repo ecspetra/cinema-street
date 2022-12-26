@@ -71,9 +71,10 @@ const PersonsList = (props) => {
 
 					if (isEmptyResult) {
 						return false;
-					} else if (data.isLastData === true) {
-						setIsShowMoreButton(false);
 					} else {
+						if (data.isLastData === true) {
+							setIsLastData(true);
+						}
 						handleSetPersons(data.dataFromResponse.data.results);
 					}
 				})
