@@ -13,7 +13,7 @@ const NewReviewForm = (props) => {
 
 	const [isShowError, setIsShowError] = useState(false);
 
-	const { reviewID, movieID, handleReplyOnReview, isShowReplyForm, setIsShowReplyForm, isReplyForm, currentUser } = props;
+	const { reviewID, reviewCardRef, movieID, handleReplyOnReview, isShowReplyForm, setIsShowReplyForm, isReplyForm, currentUser } = props;
 
 	let reviewTextRef = useRef();
 
@@ -58,6 +58,23 @@ const NewReviewForm = (props) => {
 					},
 				}).then(() => {
 					reviewTextRef.current.value = '';
+
+					if (reviewCardRef.current) {
+						reviewCardRef.current.classList.add('review-card--new');
+
+						let refOffset = 80;
+						let refPosition = reviewCardRef.current.getBoundingClientRect().top;
+						let offsetPosition = refPosition + window.pageYOffset - refOffset;
+
+						window.scrollTo({
+							top: offsetPosition,
+							behavior: "smooth"
+						});
+
+						setTimeout(() => {
+							reviewCardRef.current.classList.remove('review-card--new');
+						}, 2000);
+					}
 				});
 			}
 		} else {

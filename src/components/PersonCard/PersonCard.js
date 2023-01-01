@@ -17,16 +17,17 @@ import { CSSTransition } from "react-transition-group";
 import ModalContent from "../ModalContent/ModalContent";
 import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
+import DeletePersonFromCollectionPopup from "../Popups/DeletePersonFromCollectionPopup/DeletePersonFromCollectionPopup";
 
 const PersonCard = (props) => {
 
-	const { person, currentUser, isFavoritePerson, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons, handleFillFavoritePersonsList } = props;
+	const { person, currentUser, isCurrentMovieCharacter, isFavoritePerson, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons, handleFillFavoritePersonsList } = props;
 
 	const [isMounted, setIsMounted] = useState(false);
 	const [isShowModal, setIsShowModal] = useState(false);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-	const isMovieCharacter = props.isCurrentMovieCharacter;
+	const isMovieCharacter = isCurrentMovieCharacter;
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'persons');
@@ -36,14 +37,15 @@ const PersonCard = (props) => {
 		setIsShowModal(true);
 	}
 
-	const handleRemovePersonFromCollection = async (event) => {
+	const handleRemovePersonFromCollection = async () => {
 		setIsShowModal(false);
 
 		await setIsMounted(false);
 
+		handleFillFavoritePersonsList();
+
 		setTimeout(async () => {
 			await removePersonFromCollection(postListRef, person, currentUser.uid, handleRemoveFromFavoritePersons);
-			handleFillFavoritePersonsList();
 		}, 750);
 	}
 
@@ -65,18 +67,15 @@ const PersonCard = (props) => {
 						<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + person.profile_path} alt="person-photo" />
 						{!isImageLoaded && <Loader>Loading image</Loader>}
 					</span>
-					<h3 className="person-card__title">{person.name}</h3>
+					<span className="person-card__title">{person.name}</span>
+					{!isFavoritePerson && !isMovieCharacter && <span className="person-card__role">{person.known_for_department}</span>}
 				</span>
 					{isFavoritePerson && <HeartIcon onClick={(event) => handleIsShowModal(event)} />}
 				</Link>
 				{
 					(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character ?? person.job}</span>
 				}
-				{isShowModal && (
-					<Modal onClick={() => {setIsShowModal(false)}}>
-						<ModalContent title={'Please confirm the action'} description={'Are you sure you want to delete this person from favorite?'} handleAcceptFunction={handleRemovePersonFromCollection} handleCancelFunction={() => {setIsShowModal(false)}} />
-					</Modal>
-				)}
+				{isShowModal && <DeletePersonFromCollectionPopup setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />}
 			</div>
 		</CSSTransition>
 	)

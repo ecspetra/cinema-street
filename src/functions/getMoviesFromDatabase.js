@@ -84,28 +84,19 @@ export const getMyMoviesFromDatabase = (postListRef, receivedFavoriteMoviesKeys,
 
 export const fillFavoriteMoviesList = (postListRef, receivedFavoriteMoviesKeys, userID) => {
 	return new Promise(async (resolve) => {
-		get(postListRef).then((snapshot) => {
+		getTotalFavoriteMovies(postListRef, userID).then((movies) => {
 
-			getTotalFavoriteMovies(postListRef, userID).then((data) => {
+			const response = {
+				dataFromResponse: [],
+			}
 
-				const response = {
-					dataFromResponse: [],
+			movies.map((movie) => {
+				if (!receivedFavoriteMoviesKeys.includes(movie.key) && movie.data.movie.userID === userID) {
+					response.dataFromResponse.push(movie);
 				}
-
-				snapshot.forEach((childSnapshot) => {
-
-					const favoriteMovie = {
-						key: childSnapshot.key,
-						data: childSnapshot.val(),
-					}
-
-					if (!receivedFavoriteMoviesKeys.includes(favoriteMovie.key) && favoriteMovie.data.movie.userID === userID) {
-						response.dataFromResponse.push(favoriteMovie);
-					}
-				});
-
-				resolve(response);
 			})
-		});
+
+			resolve(response);
+		})
 	})
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import LoaderIcon from "../App/assets/icons/LoaderIcon";
 
 const Loader = (props) => {
 
@@ -6,7 +7,7 @@ const Loader = (props) => {
 
 	return (
 		<span className="loader">
-			<span className="loader__icon" />
+			<LoaderIcon />
 			{children && <span className="loader__text">{children}</span>}
 		</span>
 	)

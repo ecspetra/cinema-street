@@ -1,20 +1,24 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState} from "react";
 import { connect } from "react-redux";
 import { clearCurrentPersonPage, removeFromFavoritePersons } from "../../actions";
 import defaultPersonImage from "../App/assets/icons/default-person.svg";
 import moment from "moment";
 import Loader from "../Loader/Loader";
 import CollectionButton from "../CollectionButton/CollectionButton";
-import { getDatabase, push, ref } from "firebase/database";
+import { getDatabase, ref } from "firebase/database";
 import postPersonToDataBase from "../../functions/postPersonToDataBase";
 import removePersonFromCollection from "../../functions/removePersonFromCollection";
 import checkIfPersonExistsInCollection from "../../functions/checkIfPersonExistsInCollection";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import Modal from "../Modal/Modal";
 import InfoPopup from "../InfoPopup/InfoPopup";
-import useDidMountEffect from "../../functions/useDidMountEffect";
 import MovieList from "../MovieList/MovieList";
-import {LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON} from "../../functions/linksToFetch";
+import { LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON } from "../../functions/linksToFetch";
+import DeletePersonFromCollectionPopup from "../Popups/DeletePersonFromCollectionPopup/DeletePersonFromCollectionPopup";
+import {getInfoPopupText} from "../../functions/getInfoPopupText";
+import FlagIcon from "../App/assets/icons/FlagIcon";
+import CalendarIcon from "../App/assets/icons/CalendarIcon";
+import GenderIcon from "../App/assets/icons/GenderIcon";
 
 const PersonPage = (props) => {
 
@@ -28,8 +32,11 @@ const PersonPage = (props) => {
 		} else setPersonGender('Male');
 	}
 
-	const [isExistsInCollection, setIsExistsInCollection] = useState(false);
+	let infoPopupTextRef = useRef();
+	let infoPopupTimerRef = useRef();
+	const [isExistsInCollection, setIsExistsInCollection] = useState(undefined);
 	const [personGender, setPersonGender] = useState();
+	const [isShowModal, setIsShowModal] = useState(false);
 	const [isShowInfoPopup, setIsShowInfoPopup] = useState(false);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -61,26 +68,52 @@ const PersonPage = (props) => {
 	const postListRef = ref(database, 'persons');
 
 	const handleAddPersonToMyCollection = async () => {
+
+		if (isShowInfoPopup === true) {
+			setIsShowInfoPopup(false);
+			clearTimeout(infoPopupTimerRef.current);
+		}
+
 		await postPersonToDataBase(database, currentPerson, currentUser.uid);
-		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then((isPersonFromCollection) => {
+			setIsExistsInCollection(isPersonFromCollection);
+			infoPopupTextRef.current = getInfoPopupText('add', isPersonFromCollection, 'Person added to favorites successfully', );
+
+			setIsShowInfoPopup(true);
+
+			infoPopupTimerRef.current = setTimeout(() => {
+				setIsShowInfoPopup(false);
+			}, 2000);
+		});
 	}
 
 	const handleRemovePersonFromCollection = async () => {
+
+		setIsShowModal(false);
+
+		if (isShowInfoPopup === true) {
+			setIsShowInfoPopup(false);
+			clearTimeout(infoPopupTimerRef.current);
+		}
+
 		await removePersonFromCollection(postListRef, currentPerson, currentUser.uid, handleRemoveFromFavoritePersons);
-		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
-	}
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then((isPersonFromCollection) => {
+			setIsExistsInCollection(isPersonFromCollection);
+			infoPopupTextRef.current = getInfoPopupText('remove', isPersonFromCollection, 'Person removed from favorites successfully');
 
-	const collectionButtonOnClickFunction = isExistsInCollection ? handleRemovePersonFromCollection : handleAddPersonToMyCollection;
-
-	useDidMountEffect(() => {
-		if (isExistsInCollection === true) {
 			setIsShowInfoPopup(true);
 
-			setTimeout(() => {
+			infoPopupTimerRef.current = setTimeout(() => {
 				setIsShowInfoPopup(false);
 			}, 2000);
-		}
-	}, [isExistsInCollection]);
+		});
+	}
+
+	const handleIsShowModal = () => {
+		setIsShowModal(true);
+	}
+
+	const collectionButtonOnClickFunction = isExistsInCollection ? handleIsShowModal : handleAddPersonToMyCollection;
 
 	return (
 		<>
@@ -96,14 +129,27 @@ const PersonPage = (props) => {
 								<h1 className="person-page__name">{currentPerson.name}</h1>
 								<p className="person-page__role">{currentPerson.known_for_department}</p>
 								<div className="person-page__details-wrap">
-									{currentPerson.place_of_birth && <p className="person-page__details person-page__details--country">Country of birth: {currentPerson.place_of_birth}</p>}
-									{currentPerson.birthday && (<div className="person-page__details person-page__details--dates-wrap">
-										<p className="person-page__birthday">{moment(currentPerson.birthday).format("M.D.Y")}</p>
-										{
-											currentPerson.deathday && <p className="person-page__deathday">&nbsp;— {moment(currentPerson.deathday).format("M.D.Y")}</p>
-										}
-									</div>)}
-									{personGender && <p className="person-page__details person-page__details--gender">Gender: {personGender}</p>}
+									{currentPerson.place_of_birth && (
+										<div className="person-page__details person-page__details--country">
+											<FlagIcon />
+											<p className="person-page__details-text">Country of birth: {currentPerson.place_of_birth}</p>
+										</div>
+									)}
+									{currentPerson.birthday && (
+										<div className="person-page__details person-page__details--dates-wrap">
+											<CalendarIcon />
+											<p className="person-page__details-text">{moment(currentPerson.birthday).format("M.D.Y")}</p>
+											{
+												currentPerson.deathday && <p className="person-page__details-text">&nbsp;— {moment(currentPerson.deathday).format("M.D.Y")}</p>
+											}
+										</div>
+									)}
+									{personGender && (
+										<div className="person-page__details person-page__details--gender">
+											<GenderIcon />
+											<p className="person-page__details-text">Gender: {personGender}</p>
+										</div>
+									)}
 								</div>
 								<p className="person-page__biography">{currentPerson.biography}</p>
 								<CollectionButton isExistsInCollection={isExistsInCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isExistsInCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
@@ -113,9 +159,13 @@ const PersonPage = (props) => {
 							<h1>Movies with {currentPerson.name}</h1>
 							<MovieList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
-						{isShowInfoPopup && (<Modal className="modal--transparent">
-							<InfoPopup title={'Person added to favorite'} />
-						</Modal>)}
+						{isShowModal && <DeletePersonFromCollectionPopup setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />}
+						{isShowInfoPopup && (
+							<Modal className="modal--transparent" overflow={'visible'}>
+								<InfoPopup title={infoPopupTextRef.current} />
+							</Modal>
+							)
+						}
 					</div>
 				)
 					: <div className="movie-page-empty"><Loader>Loading person</Loader></div>

@@ -1,4 +1,5 @@
 import { get } from "firebase/database";
+import {getTotalFavoriteMovies} from "./getMoviesFromDatabase";
 
 export const getTotalFavoritePersons = (postListRef, userID) => {
 	return new Promise((resolve) => {
@@ -81,28 +82,19 @@ export const getMyPersonsFromDatabase = (postListRef, receivedFavoritePersonsKey
 
 export const fillFavoritePersonsList = (postListRef, receivedFavoritePersonsKeys, userID) => {
 	return new Promise(async (resolve) => {
-		get(postListRef).then((snapshot) => {
+		getTotalFavoritePersons(postListRef, userID).then((persons) => {
 
-			getTotalFavoritePersons(postListRef, userID).then((data) => {
+			const response = {
+				dataFromResponse: [],
+			}
 
-				const response = {
-					dataFromResponse: [],
+			persons.map((person) => {
+				if (!receivedFavoritePersonsKeys.includes(person.key) && person.data.person.userID === userID) {
+					response.dataFromResponse.push(person);
 				}
-
-				snapshot.forEach((childSnapshot) => {
-
-					const favoritePerson = {
-						key: childSnapshot.key,
-						data: childSnapshot.val(),
-					}
-
-					if (!receivedFavoritePersonsKeys.includes(favoritePerson.key) && favoritePerson.data.person.userID === userID) {
-						response.dataFromResponse.push(favoritePerson);
-					}
-				});
-
-				resolve(response);
 			})
-		});
+
+			resolve(response);
+		})
 	})
 }

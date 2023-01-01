@@ -3,12 +3,13 @@ import MovieCard from "../MovieCard/MovieCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
 import { clearFavoriteMovies, clearMovies, setFavoriteMovies, setGenres, setMovies } from "../../actions";
 import { connect } from "react-redux";
-import { getMyMoviesFromDatabase } from "../../functions/getMoviesFromDatabase";
+import { fillFavoriteMoviesList, getMyMoviesFromDatabase } from "../../functions/getMoviesFromDatabase";
 import { getDatabase, ref } from "firebase/database";
 import MoreButton from "../MoreButton/MoreButton";
 import Loader from "../Loader/Loader";
 import getGenres from "../../functions/getGenres";
 import InfoText from "../InfoText/InfoText";
+import {v1 as uuidv1} from "uuid";
 
 const MoviesList = (props) => {
 
@@ -89,22 +90,41 @@ const MoviesList = (props) => {
 		})
 	}
 
+	const handleFillFavoriteMoviesList = async () => {
+		let receivedFavoriteMoviesKeys = [];
+		receivedFavoriteMoviesKeys = moviesList.map((person) => {
+			return person.key;
+		})
+
+		await fillFavoriteMoviesList(postListRef, receivedFavoriteMoviesKeys, currentUser.uid).then((data) => {
+			const isEmptyResult = !data.dataFromResponse.length;
+
+			if (!isEmptyResult && moviesList.length !== data.dataFromResponse.length) {
+				handleSetFavoriteMovies(data.dataFromResponse);
+			}
+		});
+	}
+
 	const getMoviesList = () => {
 
 		let movies;
 
-		movies = moviesList && moviesList.map((movie) => {
-			return <MovieCard movie={isFavoriteMoviesList ? movie.data.movie : movie} key={isFavoriteMoviesList ? movie.data.movie.id : movie.id} genres={genres} />
-		})
+		if (isFavoriteMoviesList) {
+			movies = moviesList && moviesList.map((movie, index) => {
+				if (index < maxListLength) {
+					return <MovieCard movie={movie.data.movie} key={uuidv1()} genres={genres} handleFillFavoriteMoviesList={handleFillFavoriteMoviesList} />
+				}
+			})
+		} else {
+			movies = moviesList && moviesList.map((movie) => {
+				return <MovieCard movie={movie} key={uuidv1()} genres={genres} />
+			})
+		}
 
 		return movies;
 	}
 
 	const handleIsShowMoreButton = () => {
-
-		console.log(isMovieListLoaded, moviesList.length !== 0, isLastData);
-
-
 		if (isMovieListLoaded === true && moviesList.length !== 0 && isLastData === false) {
 			return true;
 		} else return false;
@@ -146,8 +166,6 @@ const MoviesList = (props) => {
 	}, [favoriteMovies, movies]);
 
 	useEffect(() => {
-		console.log('handleIsShowMoreButton', isLastData);
-
 		setIsShowMoreButton(handleIsShowMoreButton());
 	}, [moviesList, isLastData]);
 

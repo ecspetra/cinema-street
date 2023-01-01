@@ -16,18 +16,21 @@ import Loader from "../Loader/Loader";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultMovieImage from "../App/assets/icons/default-movie.svg";
 import { CSSTransition } from "react-transition-group";
+import DeleteMovieFromCollectionPopup from "../Popups/DeleteMovieFromCollectionPopup/DeleteMovieFromCollectionPopup";
+import {v1 as uuidv1} from "uuid";
 
 const MovieCard = (props) => {
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
 
-	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
+	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies, handleFillFavoriteMoviesList } = props;
 
 	const [isMounted, setIsMounted] = useState(false);
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
+	const [isShowModal, setIsShowModal] = useState(false);
 	const [isMovieFromCollection, setIsMovieFromCollection] = useState(false);
 
 	const handleAddMovieToMyCollection = async () => {
@@ -36,7 +39,10 @@ const MovieCard = (props) => {
 	}
 
 	const handleRemoveMovieFromCollection = async () => {
-		await setIsMounted(false);
+		setIsShowModal(false);
+		setIsMounted(false);
+
+		handleFillFavoriteMoviesList();
 
 		setTimeout(async () => {
 			await removeMovieFromCollection(postListRef, movie, handleRemoveFromFavoriteMovies, setIsMounted);
@@ -59,7 +65,11 @@ const MovieCard = (props) => {
 		setMovieGenresNames(comparedGenresNames);
 	}, [movieGenresIDs]);
 
-	const collectionButtonOnClickFunction = isMovieFromCollection ? handleRemoveMovieFromCollection : handleAddMovieToMyCollection;
+	const handleIsShowModal = () => {
+		setIsShowModal(true);
+	}
+
+	const collectionButtonOnClickFunction = isMovieFromCollection ? handleIsShowModal : handleAddMovieToMyCollection;
 
 	return (
 		<CSSTransition
@@ -80,7 +90,7 @@ const MovieCard = (props) => {
 				</span>
 					<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
 					<span className="movie-card__title-wrap">
-					<h3 className="movie-card__title">{movie.title}</h3>
+					<span className="movie-card__title">{movie.title}</span>
 					<Rating movie={movie} />
 				</span>
 				</Link>
@@ -88,12 +98,13 @@ const MovieCard = (props) => {
 					{
 						movieGenresNames.map((item, key) => {
 							if (key <= 2) {
-								return <span key={item} className="movie-card__genre">{item}</span>
+								return <span key={uuidv1()} className="movie-card__genre">{item}</span>
 							}
 						})
 					}
 				</div>
 				<CollectionButton isExistsInCollection={isMovieFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isMovieFromCollection ? 'Remove from favorite' : 'Add to favorite'}</CollectionButton>
+				{isShowModal && <DeleteMovieFromCollectionPopup setIsShowModal={setIsShowModal} handleRemoveMovieFromCollection={handleRemoveMovieFromCollection} />}
 			</div>
 		</CSSTransition>
 	)

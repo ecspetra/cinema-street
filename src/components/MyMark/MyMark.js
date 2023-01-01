@@ -9,6 +9,7 @@ import {
 } from "../../actions";
 import { connect } from "react-redux";
 import getRatingStars from "../../functions/getRatingStars";
+import Button from "../Button/Button";
 
 const MyMark = (props) => {
 
@@ -62,16 +63,20 @@ const MyMark = (props) => {
 		handleSetMyMarkForMovie();
 	}, [myMarks]);
 
-	const [myMovieMark, setMyMovieMark] = useState([]);
+	const [myMovieMark, setMyMovieMark] = useState({
+		iconsArray: null,
+		mark: null,
+	});
 	const [isLoadingMark, setIsLoadingMark] = useState(false);
 
 	const renderShortMark = (myMarkFromStore) => {
 
 		setIsLoadingMark(true);
 
-		const myMarkShort = <><RatingIcon/><span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span></>;
+		const myMarkShortIcon = <RatingIcon />;
+		const myMarkShortNumber = <span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span>;
 
-		setMyMovieMark(myMarkShort);
+		setMyMovieMark({iconsArray: myMarkShortIcon, mark: myMarkShortNumber});
 		setIsLoadingMark(false);
 	}
 
@@ -79,13 +84,13 @@ const MyMark = (props) => {
 
 		setIsLoadingMark(true);
 
-		const myMarkExtended = <>
-			{getRatingStars(myMarkFromStore.data.movie.myMark)}
+		const myMarkExtendedIcons = <>{getRatingStars(myMarkFromStore.data.movie.myMark)}</>;
+		const myMarkExtendedNumber = <>
 			<span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span>
 			<button className="my-mark__remove" onClick={() => {handleRemoveMyMarkForMovie(myMarkFromStore.key)}}>Remove my mark</button>
 		</>;
 
-		setMyMovieMark(myMarkExtended);
+		setMyMovieMark({ iconsArray: myMarkExtendedIcons, mark: myMarkExtendedNumber});
 		setIsLoadingMark(false);
 	}
 
@@ -100,23 +105,28 @@ const MyMark = (props) => {
 
 			const mark = index + 1;
 
-			const markButton = <button key={index} className="my-mark__stars-item" onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}><RatingIcon onMouseEnter={() => {
+			const markButton = <RatingIcon onMouseEnter={() => {
 				onHoverEmptyMark(mark)
 			}} onMouseLeave={() => {
 				renderEmptyMark()
-			}} isEmpty /></button>
+			}} isEmpty />;
 
 			emptyMarkArray.push(markButton);
 		}
 
-		setMyMovieMark(emptyMarkArray);
+		const mappedEmptyMarkArray = emptyMarkArray.map((icon, index) => {
+			const mark = index + 1;
+			return <Button className="my-mark__stars-item" key={index} buttonOnClickFunction={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</Button>;
+		})
+
+		setMyMovieMark({ iconsArray: mappedEmptyMarkArray, mark: null});
 		setIsLoadingMark(false);
 	}
 
 	const handleRemoveMyMarkForMovie = (key) => {
 
 		const dbRef = ref(database, "/marks/" + key);
-		remove(dbRef).then(() => console.log("Mark removed"));
+		remove(dbRef);
 
 		handleRemoveMyMark(key);
 	}
@@ -130,26 +140,32 @@ const MyMark = (props) => {
 		for (let index = 0; index < maxIconsAvailable; index++) {
 			let markIndex = index + 1;
 
-			const unhoveredMarkButton = <button key={index} className="my-mark__stars-item" onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}><RatingIcon onMouseEnter={() => {
+			const unhoveredMarkButton = <RatingIcon onMouseEnter={() => {
 				onHoverEmptyMark(markIndex)
 			}} onMouseLeave={() => {
 				renderEmptyMark()
-			}} isEmpty /></button>;
+			}} isEmpty />;
 
-			const hoveredMarkButton = <button key={index} className="my-mark__stars-item" onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}><RatingIcon onMouseEnter={() => {
+			const hoveredMarkButton = <RatingIcon onMouseEnter={() => {
 				onHoverEmptyMark(markIndex)
 			}} onMouseLeave={() => {
 				renderEmptyMark()
-			}} /></button>;
+			}} />;
 
 			if (markIndex <= iconIndex) {
 				hoveredIconsArray.push(hoveredMarkButton);
 			} else hoveredIconsArray.push(unhoveredMarkButton);
 		}
 
+		const mappedHoveredIconsArray = hoveredIconsArray.map((icon, index) => {
+			return <Button className="my-mark__stars-item" key={index} buttonOnClickFunction={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</Button>;
+		})
+
 		markRef.current = iconIndex;
-		hoveredIconsArray.push(<span className="my-mark__text">{markRef.current}</span>);
-		setMyMovieMark(hoveredIconsArray);
+
+		const hoveredIconsNumber = <span className="my-mark__text">{markRef.current}</span>;
+
+		setMyMovieMark({iconsArray: mappedHoveredIconsArray, mark: hoveredIconsNumber});
 	}
 
 	const handleCheckIfMyMarkExists = async () => {
@@ -167,11 +183,16 @@ const MyMark = (props) => {
 
 	const extendedMarkInMovieCard = myMovieMark.length;
 
-	if (!isShowExtendMark && extendedMarkInMovieCard) return;
+	const isMyMarkUnset = getMyMarks(movie.id, myMarks) === undefined;
+
+	if ((!isShowExtendMark && extendedMarkInMovieCard) || (!isShowExtendMark && isMyMarkUnset)) return;
 
 	return (
 		<span className="my-mark">
-			{!isLoadingMark && myMovieMark}
+			{!isLoadingMark && <>
+				<span className="my-mark__icons">{myMovieMark.iconsArray}</span>
+				{myMovieMark.mark}
+			</>}
 		</span>
 	)
 }

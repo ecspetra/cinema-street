@@ -8,6 +8,7 @@ import { getMyPersonsFromDatabase, fillFavoritePersonsList } from "../../functio
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import Loader from "../Loader/Loader";
+import {v1 as uuidv1} from "uuid";
 
 const PersonsList = (props) => {
 
@@ -24,6 +25,7 @@ const PersonsList = (props) => {
 		return () => onPersonsListUnmount.current();
 	}, []);
 
+	const personsListRef = useRef(null);
 	const initialListLength = 8;
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
 	const [isPersonsListLoaded, setIsPersonsListLoaded] = useState(false);
@@ -84,7 +86,18 @@ const PersonsList = (props) => {
 				if (personsList.length !== maxListLength) {
 					setMaxListLength(personsList.length);
 				} else {
-					setMaxListLength(initialListLength);
+					let refOffset = 120;
+					let refPosition = personsListRef.current.getBoundingClientRect().top;
+					let offsetPosition = refPosition + window.pageYOffset - refOffset;
+
+					window.scrollTo({
+						top: offsetPosition,
+						behavior: "smooth"
+					});
+
+					setTimeout(() => {
+						setMaxListLength(initialListLength);
+					}, 750);
 				}
 			}
 
@@ -116,18 +129,18 @@ const PersonsList = (props) => {
 		if (isCurrentMovieCharacter) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person} key={person.id} isCurrentMovieCharacter={isCurrentMovieCharacter} />
+					return <PersonCard person={person} key={uuidv1()} isCurrentMovieCharacter={isCurrentMovieCharacter} />
 				}
 			})
 		} else if (isFavoritePersonsList) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person.data.person} key={person.data.person.id} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
+					return <PersonCard person={person.data.person} key={uuidv1()} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
 				}
 			})
 		} else {
-			persons = personsList && personsList.map((person) => {
-				return <PersonCard person={person} key={person.id} />
+			persons = personsList && personsList.map((person, index) => {
+				return <PersonCard person={person} key={uuidv1()} />
 			})
 		}
 
@@ -183,7 +196,7 @@ const PersonsList = (props) => {
 				personsList.length === 0 && isPersonsListLoaded
 					? <InfoText>{isFavoritePersonsList ? 'Persons you add to favorites will be displayed here' : 'Persons list is empty'}</InfoText>
 					: <>
-						<div className="persons-list">
+						<div className="persons-list" ref={personsListRef}>
 							{getPersonsList()}
 							{!isPersonsListLoaded && <Loader>Loading persons</Loader>}
 						</div>

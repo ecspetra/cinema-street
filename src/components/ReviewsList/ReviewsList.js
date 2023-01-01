@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import { connect } from "react-redux";
 import { onValue, ref } from "firebase/database";
@@ -7,7 +7,9 @@ import { setMyReview } from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 
-const ReviewsList = (props) => {
+const ReviewsList = forwardRef((props, reviewCardRef) => {
+
+	const { currentUser, movieID, handleSetMyReview } = props;
 
 	const reviewsListRef = ref(database, 'reviews');
 	const apiReviews = props.reviews;
@@ -30,7 +32,7 @@ const ReviewsList = (props) => {
 					key: childSnapshot.key,
 					data: childSnapshot.val(),
 				}
-				props.handleSetMyReview(review);
+				handleSetMyReview(review);
 			});
 		});
 	}
@@ -68,9 +70,10 @@ const ReviewsList = (props) => {
 		});
 
 		return <ReviewCard
+			ref={reviewCardRef}
 			getMyReviewsForMovies={getMyReviewsForMovies}
 			userID={'userFromAPI'}
-			movieID={props.movieID}
+			movieID={movieID}
 			reviewID={review.id}
 			key={review.id}
 			userIconPath={review.author_details.avatar_path}
@@ -86,9 +89,10 @@ const ReviewsList = (props) => {
 	const getUsersReviews = (review) => {
 
 		return <ReviewCard
+			ref={reviewCardRef}
 			getMyReviewsForMovies={getMyReviewsForMovies}
-			userID={props.currentUser.uid}
-			movieID={props.movieID}
+			userID={currentUser.uid}
+			movieID={movieID}
 			reviewID={review.data.review.id}
 			key={review.data.review.id}
 			userIconPath={review.data.review.userAvatar}
@@ -108,7 +112,7 @@ const ReviewsList = (props) => {
 		usersReviews.map((review) => {
 			const reviewExistsInAPI = apiReviews.find(apiReview => apiReview.id === review.data.review.id);
 
-			if (props.movieID === review.data.review.movieID && !reviewExistsInAPI) {
+			if (movieID === review.data.review.movieID && !reviewExistsInAPI) {
 				allReviews.push(review);
 			}
 		});
@@ -155,7 +159,7 @@ const ReviewsList = (props) => {
 		</>
 
 	)
-}
+})
 
 const mapStateToProps = state => ({
 	usersReviews: state.reviews.uploadedReviews,
@@ -168,4 +172,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewsList);
+export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(ReviewsList);

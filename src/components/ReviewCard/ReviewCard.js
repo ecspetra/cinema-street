@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {forwardRef, useEffect, useRef, useState} from "react";
 import default_user_icon from "../App/assets/icons/default-user.svg";
 import { removeMyReview, setMyReview } from "../../actions";
 import { connect } from "react-redux";
@@ -19,8 +19,9 @@ import EditIcon from "../App/assets/icons/EditIcon";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultUserImage from "../App/assets/icons/default-user.svg";
 import MoreButton from "../MoreButton/MoreButton";
+import {CSSTransition} from "react-transition-group";
 
-const ReviewCard = (props) => {
+const ReviewCard = forwardRef((props, reviewCardRef) => {
 
 	const { userID, movieID, reviewID, userIconPath, userName, reviewText, reviewDate, likes, dislikes, replies, usersReviews, currentUser, handleSetMyReview, handleRemoveMyReview } = props;
 
@@ -45,6 +46,7 @@ const ReviewCard = (props) => {
 	const maxReviewTextLength = 400;
 	const initialRepliesListLength = 2;
 	const isLongReviewText = reviewText.length > maxReviewTextLength;
+	const [isMounted, setIsMounted] = useState(false);
 	const [isReviewTextHidden, setIsReviewTextHidden] = useState(isLongReviewText);
 	const [maxRepliesListLength, setMaxRepliesListLength] = useState(initialRepliesListLength);
 	const [isShowReplyForm, setIsShowReplyForm] = useState(false);
@@ -68,11 +70,14 @@ const ReviewCard = (props) => {
 	}, [likes, dislikes]);
 
 	const deleteReviewFromFirebase = (reviewID) => {
-		let reviewToDelete = usersReviews.find(item => item.data.review.id === reviewID);
+		setIsMounted(false);
 
+		let reviewToDelete = usersReviews.find(item => item.data.review.id === reviewID);
 		const reviewRef = ref(database, "/reviews/" + reviewToDelete.key);
 
-		remove(reviewRef).then(() => {handleRemoveMyReview(reviewID)});
+		setTimeout(() => {
+			remove(reviewRef).then(() => {handleRemoveMyReview(reviewID)});
+		}, 750);
 	}
 
 	const editReviewFromFirebase = (updatedReviewText, reviewID) => {
@@ -624,8 +629,6 @@ const ReviewCard = (props) => {
 
 		const reviewRef = ref(database, "/reviews/" + reviewToChange.key);
 
-		console.log(reviewToChange, replyToChange, replyID);
-
 		const replyInfo = {
 			userID: replyToChange.userID,
 			movieID: replyToChange.movieID,
@@ -692,90 +695,101 @@ const ReviewCard = (props) => {
 
 	const isShowMoreButton = replies.length !== 0 && replies.length > initialRepliesListLength;
 
+	useEffect(() => {
+		setIsMounted(true);
+	}, [])
+
 	return (
-		<div className="review-card">
-			<div className="review-card__user-wrap">
-				<img className="review-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={userIconPath === null ? default_user_icon : userIconPath} alt="user-avatar" />
-				<div className="review-card__user-info">
-					<div className="review-card__username">
-						{userName}
+		<CSSTransition
+			in={isMounted}
+			appear={true}
+			timeout={0}
+			classNames="review-card-wrap"
+		>
+			<div className="review-card" ref={reviewCardRef}>
+				<div className="review-card__user-wrap">
+					<img className="review-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={userIconPath === null ? default_user_icon : userIconPath} alt="user-avatar" />
+					<div className="review-card__user-info">
+						<div className="review-card__username">
+							{userName}
+							{
+								isCurrentUsersReview && <span className="label">my review</span>
+							}
+						</div>
+						<div className="review-card__review-date">{moment(reviewDate).format("M.D.Y")}</div>
+					</div>
+				</div>
+				{
+					isShowEditReviewForm
+						? <EditReviewForm reviewID={reviewID} initialValue={reviewContent} setIsShowEditReviewForm={setIsShowEditReviewForm} editReviewFromFirebase={editReviewFromFirebase} />
+						: (<>
+							<span className="review-card__text">{reviewContent}</span>
+							{
+								isLongReviewText && <button className="review-card__more-button" onClick={() => {setIsReviewTextHidden(!isReviewTextHidden)}}>{isReviewTextHidden ? 'Show more' : 'Show less'}</button>
+							}
+							<div className="review-card__actions">
+								<div className={reviewLikeActionClassNames}>
+									<button className="review-card__action-item" onClick={() => {handleReviewReactionLikeButtonClick(reviewID)}}><ReactionIcon isLike />Like
+										{
+											likes !== 0 && <span className="review-card__action-counter">{likes.length}</span>
+										}
+									</button>
+								</div>
+								<div className={reviewDislikeActionClassNames}>
+									<button className="review-card__action-item" onClick={() => {handleReviewReactionDislikeButtonClick(reviewID)}}><ReactionIcon />Dislike
+										{
+											dislikes !== 0 && <span className="review-card__action-counter">{dislikes.length}</span>
+										}
+									</button>
+								</div>
+								<div className="review-card__action-item-wrap">
+									<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(!isShowReplyForm)}}><ReplyIcon />Reply</button>
+								</div>
+							</div>
+						</>)
+				}
+				{
+					replies.length && <div className="review-card__replies-list">
 						{
-							isCurrentUsersReview && <span className="label">my review</span>
+							replies.map((item, index) => {
+								if (index < maxRepliesListLength) {
+									return <ReplyCard
+										reply={item}
+										userID={currentUser.uid}
+										handleLikeReply={handleLikeReply}
+										handleDislikeReply={handleDislikeReply}
+										deleteReplyFromReview={deleteReplyFromReview}
+										editReplyInReview={editReplyInReview}
+										reviewID={reviewID}
+										key={item.id}
+									/>
+								}
+							})
+						}
+						{
+							isShowMoreButton && <MoreButton listLength={replies.length} maxListLength={maxRepliesListLength} moreButtonOnClickFunction={getRepliesListLength} />
 						}
 					</div>
-					<div className="review-card__review-date">{moment(reviewDate).format("M.D.Y")}</div>
-				</div>
+				}
+				{
+					isCurrentUsersReview && <Dropdown>
+						<DropdownOption onClickAction={() => {deleteReviewFromFirebase(reviewID)}}>
+							<DeleteIcon className="dropdown__icon dropdown__icon--delete" />
+							Delete
+						</DropdownOption>
+						<DropdownOption onClickAction={() => {setIsShowEditReviewForm(true)}}>
+							<EditIcon className="dropdown__icon" />
+							Edit review
+						</DropdownOption>
+					</Dropdown>
+				}
+				{
+					isShowReplyForm && <NewReviewForm reviewID={reviewID} movieID={movieID} setIsShowReplyForm={setIsShowReplyForm} handleReplyOnReview={handleReplyOnReview} isShowReplyForm={isShowReplyForm} isReplyForm />
+				}
 			</div>
-			{
-				isShowEditReviewForm
-					? <EditReviewForm reviewID={reviewID} initialValue={reviewContent} setIsShowEditReviewForm={setIsShowEditReviewForm} editReviewFromFirebase={editReviewFromFirebase} />
-					: (<>
-						<span className="review-card__text">{reviewContent}</span>
-						{
-							isLongReviewText && <button className="review-card__more-button" onClick={() => {setIsReviewTextHidden(!isReviewTextHidden)}}>{isReviewTextHidden ? 'Show more' : 'Show less'}</button>
-						}
-						<div className="review-card__actions">
-							<div className={reviewLikeActionClassNames}>
-								<button className="review-card__action-item" onClick={() => {handleReviewReactionLikeButtonClick(reviewID)}}><ReactionIcon isLike />Like
-									{
-										likes !== 0 && <span className="review-card__action-counter">{likes.length}</span>
-									}
-								</button>
-							</div>
-							<div className={reviewDislikeActionClassNames}>
-								<button className="review-card__action-item" onClick={() => {handleReviewReactionDislikeButtonClick(reviewID)}}><ReactionIcon />Dislike
-									{
-										dislikes !== 0 && <span className="review-card__action-counter">{dislikes.length}</span>
-									}
-								</button>
-							</div>
-							<div className="review-card__action-item-wrap">
-								<button className="review-card__action-item" onClick={() => {setIsShowReplyForm(!isShowReplyForm)}}><ReplyIcon />Reply</button>
-							</div>
-						</div>
-					</>)
-			}
-			{
-				replies.length && <div className="review-card__replies-list">
-					{
-						replies.map((item, index) => {
-							if (index < maxRepliesListLength) {
-								return <ReplyCard
-									reply={item}
-									userID={currentUser.uid}
-									handleLikeReply={handleLikeReply}
-									handleDislikeReply={handleDislikeReply}
-									deleteReplyFromReview={deleteReplyFromReview}
-									editReplyInReview={editReplyInReview}
-									reviewID={reviewID}
-									key={item.id}
-								/>
-							}
-						})
-					}
-					{
-						isShowMoreButton && <MoreButton listLength={replies.length} maxListLength={maxRepliesListLength} moreButtonOnClickFunction={getRepliesListLength} />
-					}
-				</div>
-			}
-			{
-				isCurrentUsersReview && <Dropdown>
-					<DropdownOption onClickAction={() => {deleteReviewFromFirebase(reviewID)}}>
-						<DeleteIcon className="dropdown__icon dropdown__icon--delete" />
-						Delete
-					</DropdownOption>
-					<DropdownOption onClickAction={() => {setIsShowEditReviewForm(true)}}>
-						<EditIcon className="dropdown__icon" />
-						Edit review
-					</DropdownOption>
-				</Dropdown>
-			}
-			{
-				isShowReplyForm && <NewReviewForm reviewID={reviewID} movieID={movieID} setIsShowReplyForm={setIsShowReplyForm} handleReplyOnReview={handleReplyOnReview} isShowReplyForm={isShowReplyForm} isReplyForm />
-			}
-		</div>
+		</CSSTransition>
 	)
-}
+})
 
 const mapStateToProps = state => ({
 	usersReviews: state.reviews.uploadedReviews,
@@ -789,4 +803,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewCard);
+export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(ReviewCard);

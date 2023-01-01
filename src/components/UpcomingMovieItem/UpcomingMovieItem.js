@@ -6,7 +6,8 @@ import classNames from "classnames";
 import moment from "moment";
 import {connect} from "react-redux";
 import getGenres from "../../functions/getGenres";
-import {setGenres} from "../../actions";
+import { setGenres } from "../../actions";
+import { v1 as uuidv1 } from "uuid";
 
 const UpcomingMovieItem = (props) => {
 
@@ -28,10 +29,6 @@ const UpcomingMovieItem = (props) => {
 			setUpcomingMovieGenresNames(comparedGenresNames);
 		}
 	}, [upcomingMovieGenresIDs]);
-
-	// useEffect(() => {
-	// 	getGenres(handleSetGenres);
-	// }, []);
 
 	useEffect(() => {
 		getGenres().then((data) => {handleSetGenres(data)});
@@ -61,7 +58,7 @@ const UpcomingMovieItem = (props) => {
 						{
 							upcomingMovieGenresNames.map((genre, index) => {
 								if (index < 3) {
-									return <span className="upcoming-movies__genres-item" key={genre.name}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
+									return <span className="upcoming-movies__genres-item" key={uuidv1()}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
 								}
 							})
 						}

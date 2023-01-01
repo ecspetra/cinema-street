@@ -5,6 +5,7 @@ import fetchMoreResults from "../../functions/fetchMoreResults";
 import MoreButton from "../MoreButton/MoreButton";
 import SearchCard from "../SearchCard/SearchCard";
 import InfoText from "../InfoText/InfoText";
+import {v1 as uuidv1} from "uuid";
 
 const SearchList = (props) => {
 
@@ -56,7 +57,7 @@ const SearchList = (props) => {
 							{
 								searchResults.length > 0 && searchResults.map((result) => {
 									return (
-										<SearchCard result={result} key={result.id} isMovieCard={isMovieList} />
+										<SearchCard result={result} key={uuidv1()} isMovieCard={isMovieList} />
 									)
 								})
 							}

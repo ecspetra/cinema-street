@@ -4,12 +4,8 @@ const Button = (props) => {
 
 	const { children, buttonOnClickFunction, className } = props;
 
-	const handleButtonOnClick = async () => {
-		buttonOnClickFunction();
-	}
-
 	return (
-		<button className={className} onClick={() => {handleButtonOnClick()}}>{children}</button>
+		<button className={className} onClick={() => {buttonOnClickFunction()}}>{children}</button>
 	)
 }
 

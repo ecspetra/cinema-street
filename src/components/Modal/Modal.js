@@ -1,38 +1,32 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from 'react-dom';
+import { useEffect } from "react";
+import ReactDOM from "react-dom";
+import classNames from "classnames";
 
 const Modal = (props) => {
 
-	const modalRoot = document.getElementById('modal-root');
-
-	const { children, onClick, className } = props;
-
-	const container = useRef(document.createElement('div'));
-	container.current.classList.add('modal');
-
-	if (className) {
-		container.current.classList.add(className);
-	}
+	const { children, onClickFunction, className, overflow = 'hidden' } = props;
 
 	useEffect(() => {
-		modalRoot.appendChild(container.current);
-		modalRoot.addEventListener('click', onClick);
 
-		if (container.current.classList.length === 1) {
+		if (overflow === 'hidden') {
 			document.body.style.overflow = 'hidden';
 		}
 
 		return () => {
-			modalRoot.removeChild(container.current);
-			modalRoot.removeEventListener('click', onClick);
-
-			if (container.current.classList.length === 1) {
+			if (overflow === 'hidden') {
 				document.body.style.overflow = 'unset';
 			}
 		}
 	}, []);
 
-	return createPortal(children, container.current);
+	return (
+		<>
+			{ReactDOM.createPortal(
+				<div className={classNames(className, 'modal')} onClick={onClickFunction}>{children}</div>,
+				document.getElementById("modal-root")
+			)}
+		</>
+	);
 }
 
 export default Modal;

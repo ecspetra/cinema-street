@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import Loader from "../Loader/Loader";
 
 const CollectionButton = (props) => {
 
 	const { isExistsInCollection, collectionButtonOnClickFunction, children } = props;
-	const [isLoaded, setIsLoaded] = useState(true);
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	const collectionButtonClassNames = classNames('main-button', {
 		'main-button--remove': isExistsInCollection,
@@ -20,10 +20,16 @@ const CollectionButton = (props) => {
 		}, 1000);
 	}
 
+	useEffect(() => {
+		if (isExistsInCollection !== undefined) {
+			setIsLoaded(true);
+		}
+	}, [isExistsInCollection]);
+
 	return (
 		<button className={collectionButtonClassNames} onClick={() => {handleCollectionButtonOnClick()}}>
 			{
-				isLoaded ? children : <Loader />
+				isLoaded === true ? children : <Loader />
 			}
 		</button>
 	)

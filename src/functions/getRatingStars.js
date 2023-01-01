@@ -16,9 +16,7 @@ const getCountOfFilledStars = (voteAverage) => {
 
 const getMovieRating = (voteAverage) => {
 	let stars = [];
-	const fullStar = <RatingIcon />;
-	const halfStar = <RatingIcon className="star--half" isHalf />;
-	const emptyStar = <RatingIcon className="star--empty" isEmpty />;
+
 	const maxRatingAvailable = 10;
 
 	const filledStars = getCountOfFilledStars(voteAverage);
@@ -27,6 +25,10 @@ const getMovieRating = (voteAverage) => {
 
 		let starIndex = index + 1;
 		let lastStar = filledStars[filledStars.length - 1];
+
+		const fullStar = <RatingIcon key={index} />;
+		const halfStar = <RatingIcon key={index} className="star--half" isHalf />;
+		const emptyStar = <RatingIcon key={index} className="star--empty" isEmpty />;
 
 		if (starIndex <= lastStar) {
 			stars.push(fullStar);
