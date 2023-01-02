@@ -49,7 +49,7 @@ const Login = () => {
         <div className="login-form">
             <form className="login-form__content" onSubmit={handleSubmit}>
                 <div className="login-form__text-wrap">
-                    <h1 className="login-form__title">Login to Cinema field</h1>
+                    <h1 className="login-form__title">Login to Cinema street</h1>
                     <p className="login-form__text">Please enter your data</p>
                 </div>
                 <div className="login-form__field">

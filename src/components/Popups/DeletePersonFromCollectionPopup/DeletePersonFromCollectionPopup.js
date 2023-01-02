@@ -4,10 +4,12 @@ import Modal from "../../Modal/Modal";
 
 const DeletePersonFromCollectionPopup = (props) => {
 
-	const { setIsShowModal, handleRemovePersonFromCollection } = props;
+	const { isShowModal, setIsShowModal, handleRemovePersonFromCollection } = props;
+
+	console.log(isShowModal);
 
 	return (
-		<Modal onClickFunction={() => {setIsShowModal(false)}}>
+		<Modal isShowModal={isShowModal} onClickFunction={() => {setIsShowModal(false)}}>
 			<ModalContent title={'Please confirm the action'} description={'Are you sure you want to delete this person from favorite?'} handleAcceptFunction={handleRemovePersonFromCollection} handleCancelFunction={() => {setIsShowModal(false)}} />
 		</Modal>
 	)

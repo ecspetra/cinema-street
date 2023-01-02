@@ -1,6 +1,7 @@
 import React from "react";
 import InfoIcon from "../App/assets/icons/InfoIcon";
 import classNames from "classnames";
+import './assets/index.scss';
 
 const InfoPopup = (props) => {
 

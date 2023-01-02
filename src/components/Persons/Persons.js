@@ -2,6 +2,7 @@ import React from "react";
 import PersonsList from "../PersonsList/PersonsList";
 import { LINK_TO_FETCH_PERSONS } from "../../functions/linksToFetch";
 import SearchPerson from "../SearchPerson/SearchPerson";
+import './assets/index.scss';
 
 const Persons = () => {
 

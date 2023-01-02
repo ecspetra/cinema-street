@@ -10,6 +10,7 @@ import Loader from "../Loader/Loader";
 import getGenres from "../../functions/getGenres";
 import InfoText from "../InfoText/InfoText";
 import {v1 as uuidv1} from "uuid";
+import './assets/index.scss';
 
 const MoviesList = (props) => {
 
@@ -127,6 +128,8 @@ const MoviesList = (props) => {
 	const handleIsShowMoreButton = () => {
 		if (isMovieListLoaded === true && moviesList.length !== 0 && isLastData === false) {
 			return true;
+		} else if (moviesList.length <= initialListLength) {
+			return false;
 		} else return false;
 	}
 

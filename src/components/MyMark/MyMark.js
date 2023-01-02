@@ -9,7 +9,7 @@ import {
 } from "../../actions";
 import { connect } from "react-redux";
 import getRatingStars from "../../functions/getRatingStars";
-import Button from "../Button/Button";
+import './assets/index.scss';
 
 const MyMark = (props) => {
 
@@ -116,7 +116,7 @@ const MyMark = (props) => {
 
 		const mappedEmptyMarkArray = emptyMarkArray.map((icon, index) => {
 			const mark = index + 1;
-			return <Button className="my-mark__stars-item" key={index} buttonOnClickFunction={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</Button>;
+			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</button>;
 		})
 
 		setMyMovieMark({ iconsArray: mappedEmptyMarkArray, mark: null});
@@ -158,7 +158,7 @@ const MyMark = (props) => {
 		}
 
 		const mappedHoveredIconsArray = hoveredIconsArray.map((icon, index) => {
-			return <Button className="my-mark__stars-item" key={index} buttonOnClickFunction={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</Button>;
+			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</button>;
 		})
 
 		markRef.current = iconIndex;

@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "../Button/Button";
 import CloseIcon from "../App/assets/icons/CloseIcon";
+import './assets/index.scss';
 
 const ModalContent = (props) => {
 
@@ -13,8 +14,8 @@ const ModalContent = (props) => {
 				<p className="modal-content__description">{description}</p>
 			</div>
 			<div className="modal-content__buttons-wrap">
-				<Button buttonOnClickFunction={handleCancelFunction} className='main-button main-button--cancel modal-content__button'>Cancel</Button>
-				<Button buttonOnClickFunction={handleAcceptFunction} className='main-button main-button--filled modal-content__button'>Accept</Button>
+				<Button context={'cancel'} buttonOnClickFunction={handleCancelFunction} className='modal-content__button'>Cancel</Button>
+				<Button context={'filled'} buttonOnClickFunction={handleAcceptFunction} className='modal-content__button'>Accept</Button>
 			</div>
 			<Button buttonOnClickFunction={handleCancelFunction} className='modal-content__close-button'>
 				<CloseIcon />

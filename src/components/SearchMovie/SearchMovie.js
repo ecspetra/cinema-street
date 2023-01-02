@@ -12,6 +12,8 @@ import SelectOption from "../SelectOption/SelectOption";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import classNames from "classnames";
 import Error from "../Error/Error";
+import Button from "../Button/Button";
+import './assets/index.scss';
 
 const SearchMovie = (props) => {
 
@@ -93,24 +95,24 @@ const SearchMovie = (props) => {
 		}
 	}, [isTitleSearchMethod]);
 
-	const searchInputClassNames = classNames('search__title-input', {
-		'search__title-input--error': isShowError,
+	const searchInputClassNames = classNames('search-movie__title-input', {
+		'search-movie__title-input--error': isShowError,
 	})
 
 	return (
-		<div className="search">
-			<div className="search__title-wrap">
-				<h1 className="search__title">Search movie by</h1>
-				<Select className="search__method-select">
+		<div className="search-movie">
+			<div className="search-movie__title-wrap">
+				<h1 className="search-movie__title">Search movie by</h1>
+				<Select className="search-movie__method-select">
 					<SelectOption onClickAction={() => {getSearchMethod('title')}}>Title</SelectOption>
 					<SelectOption onClickAction={() => {getSearchMethod('genre')}}>Genre</SelectOption>
 				</Select>
 			</div>
-			<form className="search__form" onSubmit={handleSearch}>
+			<form className="search-movie__form" onSubmit={handleSearch}>
 				{
 					searchMethod === 'title'
 						? (
-							<div className="search__input-wrap">
+							<div className="search-movie__input-wrap">
 								<input ref={searchInputRef} onChange={() => {handleChangeInputValue(searchInputRef, setIsShowError)}} className={searchInputClassNames} />
 								{
 									isShowError && <Error>Search field shouldn't be empty</Error>
@@ -125,12 +127,12 @@ const SearchMovie = (props) => {
 							</Select>
 						)
 				}
-				<button className="main-button main-button--filled search__button" type="submit">Search</button>
+				<Button context={'filled'} className="search-movie__button" type="submit">Search</Button>
 			</form>
 			{
 				isShowSearchList && (
 					<>
-						<h3 className="search__subtitle">Results for
+						<h3 className="search-movie__subtitle">Results for
 							{
 								searchMethod === 'title'
 									? ' title ' + '"' + searchInputRef.current.value + '"'

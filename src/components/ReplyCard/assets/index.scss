@@ -1,0 +1,110 @@
+@import '../../App/assets/colors.module';
+
+.reply-card {
+	position: relative;
+	width: 100%;
+	margin: 20px 0;
+	border: 1px solid $wrap-background-color-light;
+	background-color: rgba($wrap-background-color-light, .6);
+	box-shadow: 0 4px 15px $main-background-color;
+	padding: 15px;
+	border-radius: 8px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+	&__actions {
+		margin-top: 20px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 0;
+	}
+
+	&__action-counter {
+		margin-left: 4px;
+	}
+
+	&__action-item {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 0;
+		font-size: 14px;
+		line-height: 1;
+		font-weight: 500;
+		transition: .3s;
+
+		&:not(:last-child) {
+			margin-right: 16px;
+		}
+
+		&--active {
+			color: $text-main-color;
+
+			.reaction-icon {
+				path {
+					fill: $text-main-color;
+				}
+			}
+		}
+	}
+
+	&__user-info {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
+	&__user-wrap {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		margin: 0 0 15px;
+	}
+
+	&__username {
+		font-weight: 600;
+		margin-right: 10px;
+	}
+
+	&__user-avatar {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		margin: 0 10px 0 0;
+	}
+
+	&__more-button {
+		display: inline-block;
+		color: $text-color-dark;
+		text-decoration: underline;
+		font-size: 14px;
+		padding: 0;
+	}
+
+	&__review-date {
+		color: $text-color-light;
+	}
+
+	&__user-label {
+		background-color: rgba($mark-color, .1);
+		color: $mark-color;
+		font-size: 12px;
+		font-weight: 400;
+		padding: 2px 4px;
+		border-radius: 3px;
+		margin-left: 10px;
+	}
+
+	&--own {
+		border-color: rgba($main-color, .15);
+		background-color: rgba($main-color, .05);
+	}
+
+	.dropdown {
+		top: 12px;
+		right: 10px;
+	}
+}

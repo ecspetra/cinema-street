@@ -4,7 +4,7 @@ import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import Modal from "../Modal/Modal";
 import Lightbox from "../Lightbox/Lightbox";
-import { CSSTransition } from "react-transition-group";
+import './assets/index.scss';
 
 const BackdropsList = (props) => {
 
@@ -15,7 +15,6 @@ const BackdropsList = (props) => {
 	const backdropsRef = useRef(null);
 	const [maxListLength, setMaxListLength] = useState(initialListLength);
 	const [isShowModal, setIsShowModal] = useState(false);
-	const [isMounted, setIsMounted] = useState(false);
 	const isShowMoreButton = backdrops.length !== 0 && backdrops.length >= maxListLength;
 
 	const getBackdrops = () => {
@@ -37,23 +36,10 @@ const BackdropsList = (props) => {
 		}
 	}
 
-	const handleIsShowLightbox = () => {
-		setIsShowModal(true);
-		setIsMounted(true);
-	}
-
 	const [defaultImage, setDefaultImagePath] = useState({
 		backdrops: null,
 		index: null,
 	});
-
-	const handleCloseLightbox = () => {
-		setIsMounted(false);
-
-		setTimeout(() => {
-			setIsShowModal(false);
-		}, 300)
-	}
 
 	return (
 		<>
@@ -63,25 +49,14 @@ const BackdropsList = (props) => {
 						<div className="backdrops-list" ref={backdropsRef}>
 							{(backdrops && backdrops.map((item, index) => {
 								if (index < maxListLength) {
-									return <Backdrops setDefaultImagePath={setDefaultImagePath} onOpenImage={handleIsShowLightbox} backdrops={item} index={index} key={item.file_path} />
+									return <Backdrops setDefaultImagePath={setDefaultImagePath} onOpenImage={() => {setIsShowModal(true)}} backdrops={item} index={index} key={item.file_path} />
 								}
 							}))
 							}
 						</div>
-						{
-							isShowModal && (
-								<CSSTransition
-									in={isMounted}
-									appear={true}
-									timeout={0}
-									classNames="modal"
-								>
-									<Modal>
-										<Lightbox images={backdrops} defaultImage={defaultImage} handleCloseLightbox={handleCloseLightbox} />
-									</Modal>
-								</CSSTransition>
-							)
-						}
+						<Modal isShowModal={isShowModal}>
+							<Lightbox images={backdrops} defaultImage={defaultImage} handleCloseLightbox={() => {setIsShowModal(false)}} />
+						</Modal>
 						{
 							isShowMoreButton && <MoreButton listLength={backdrops.length} maxListLength={maxListLength} moreButtonOnClickFunction={getBackdrops} />
 						}

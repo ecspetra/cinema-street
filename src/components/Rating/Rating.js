@@ -1,6 +1,7 @@
 import React from 'react';
 import RatingIcon from "../App/assets/icons/Rating";
 import getRatingStars from "../../functions/getRatingStars";
+import './assets/index.scss';
 
 const Rating = (props) => {
 

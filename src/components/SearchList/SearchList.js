@@ -6,6 +6,7 @@ import MoreButton from "../MoreButton/MoreButton";
 import SearchCard from "../SearchCard/SearchCard";
 import InfoText from "../InfoText/InfoText";
 import {v1 as uuidv1} from "uuid";
+import './assets/index.scss';
 
 const SearchList = (props) => {
 

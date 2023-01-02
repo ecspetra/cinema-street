@@ -19,6 +19,7 @@ import {getInfoPopupText} from "../../functions/getInfoPopupText";
 import FlagIcon from "../App/assets/icons/FlagIcon";
 import CalendarIcon from "../App/assets/icons/CalendarIcon";
 import GenderIcon from "../App/assets/icons/GenderIcon";
+import './assets/index.scss';
 
 const PersonPage = (props) => {
 
@@ -159,13 +160,10 @@ const PersonPage = (props) => {
 							<h1>Movies with {currentPerson.name}</h1>
 							<MovieList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
-						{isShowModal && <DeletePersonFromCollectionPopup setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />}
-						{isShowInfoPopup && (
-							<Modal className="modal--transparent" overflow={'visible'}>
-								<InfoPopup title={infoPopupTextRef.current} />
-							</Modal>
-							)
-						}
+						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>
+							<InfoPopup title={infoPopupTextRef.current !== undefined ? infoPopupTextRef.current.resultText : null} />
+						</Modal>
+						<DeletePersonFromCollectionPopup isShowModal={isShowModal} setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />
 					</div>
 				)
 					: <div className="movie-page-empty"><Loader>Loading person</Loader></div>

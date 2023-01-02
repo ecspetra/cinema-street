@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import Loader from "../Loader/Loader";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultBackdropsImage from "../App/assets/icons/default-person.svg";
+import './assets/index.scss';
 
 const Backdrops = (props) => {
 

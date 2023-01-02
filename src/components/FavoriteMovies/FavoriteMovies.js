@@ -1,11 +1,11 @@
 import React from "react";
 import MovieList from "../MovieList/MovieList";
 
-const FavoriteMovies = (props) => {
+const FavoriteMovies = () => {
 
 	return (
 		<>
-			<h1>My collection</h1>
+			<h1>Favorite movies</h1>
 			<div className="favorite-movie-list">
 				<MovieList isFavoriteMoviesList />
 			</div>

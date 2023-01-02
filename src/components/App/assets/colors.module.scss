@@ -1,0 +1,34 @@
+$main-background-color: #0F1013;
+$extra-dark-color: #040609;
+$wrap-background-color: #18191E;
+$wrap-background-color-light: #24262b;
+$main-color: #7E5BF4;
+$secondary-color: #54ADF5;
+$additional-color-1: #ff54cf;
+$mark-color: #ffaa34;
+$danger-color: #f14040;
+
+$text-color-extra-light: #f3f1f0;
+$text-color-light: #a7a2b4;
+$text-color-dark: #5a5862;
+$text-main-color: #8071ff;
+$text-main-color-light: #9284ff;
+
+
+:export {
+  main-background-color: $main-background-color;
+  extra-dark-color: $extra-dark-color;
+  wrap-background-color: $wrap-background-color;
+  wrap-background-color-light: $wrap-background-color-light;
+  main-color: $main-color;
+  secondary-color: $secondary-color;
+  additional-color-1: $additional-color-1;
+  mark-color: $mark-color;
+  danger-color: $danger-color;
+
+  text-color-extra-light: $text-color-extra-light;
+  text-color-light: $text-color-light;
+  text-color-dark: $text-color-dark;
+  text-main-color: $text-main-color;
+  text-main-color-light: $text-main-color-light;
+}

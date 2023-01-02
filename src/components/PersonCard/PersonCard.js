@@ -14,10 +14,8 @@ import HeartIcon from "../App/assets/icons/HeartIcon";
 import removePersonFromCollection from "../../functions/removePersonFromCollection";
 import { getDatabase, ref } from "firebase/database";
 import { CSSTransition } from "react-transition-group";
-import ModalContent from "../ModalContent/ModalContent";
-import Modal from "../Modal/Modal";
-import Button from "../Button/Button";
 import DeletePersonFromCollectionPopup from "../Popups/DeletePersonFromCollectionPopup/DeletePersonFromCollectionPopup";
+import './assets/index.scss';
 
 const PersonCard = (props) => {
 
@@ -34,6 +32,7 @@ const PersonCard = (props) => {
 
 	const handleIsShowModal = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		setIsShowModal(true);
 	}
 
@@ -53,31 +52,38 @@ const PersonCard = (props) => {
 		setIsMounted(true);
 	}, []);
 
+	useEffect(() => {
+		console.log(isShowModal);
+
+	}, [isShowModal]);
+
 	return (
-		<CSSTransition
-			in={isMounted}
-			appear={true}
-			timeout={0}
-			classNames="person-card-wrap"
-		>
-			<div className="person-card">
-				<Link to={"/person/" + person.id} className="person-card__link" onClick={() => {getCurrentPersonPage(person.id, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)})}}>
-				<span className="person-card__content">
-					<span className="person-card__image-wrap">
-						<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + person.profile_path} alt="person-photo" />
-						{!isImageLoaded && <Loader>Loading image</Loader>}
+		<>
+			<CSSTransition
+				in={isMounted}
+				appear={true}
+				timeout={0}
+				classNames="person-card-wrap"
+			>
+				<div className="person-card">
+					<Link to={"/person/" + person.id} className="person-card__link" onClick={() => {getCurrentPersonPage(person.id, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)})}}>
+					<span className="person-card__content">
+						<span className="person-card__image-wrap">
+							<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + person.profile_path} alt="person-photo" />
+							{!isImageLoaded && <Loader>Loading image</Loader>}
+						</span>
+						<span className="person-card__title">{person.name}</span>
+						{!isFavoritePerson && !isMovieCharacter && <span className="person-card__role">{person.known_for_department}</span>}
 					</span>
-					<span className="person-card__title">{person.name}</span>
-					{!isFavoritePerson && !isMovieCharacter && <span className="person-card__role">{person.known_for_department}</span>}
-				</span>
-					{isFavoritePerson && <HeartIcon onClick={(event) => handleIsShowModal(event)} />}
-				</Link>
-				{
-					(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character ?? person.job}</span>
-				}
-				{isShowModal && <DeletePersonFromCollectionPopup setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />}
-			</div>
-		</CSSTransition>
+						{isFavoritePerson && <HeartIcon onClick={(event) => handleIsShowModal(event)} />}
+					</Link>
+					{
+						(isMovieCharacter && (person.character !== "")) && <span className="person-card__character">{person.character ?? person.job}</span>
+					}
+				</div>
+			</CSSTransition>
+			<DeletePersonFromCollectionPopup isShowModal={isShowModal} setIsShowModal={setIsShowModal} handleRemovePersonFromCollection={handleRemovePersonFromCollection} />
+		</>
 	)
 }
 

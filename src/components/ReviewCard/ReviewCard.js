@@ -20,6 +20,7 @@ import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultUserImage from "../App/assets/icons/default-user.svg";
 import MoreButton from "../MoreButton/MoreButton";
 import {CSSTransition} from "react-transition-group";
+import './assets/index.scss';
 
 const ReviewCard = forwardRef((props, reviewCardRef) => {
 

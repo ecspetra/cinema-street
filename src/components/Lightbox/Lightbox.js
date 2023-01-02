@@ -5,6 +5,7 @@ import Loader from "../Loader/Loader";
 import CloseIcon from "../App/assets/icons/CloseIcon";
 import ArrowIcon from "../App/assets/icons/ArrowIcon";
 import Button from "../Button/Button";
+import './assets/index.scss';
 
 const Lightbox = (props) => {
 

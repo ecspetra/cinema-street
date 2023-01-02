@@ -1,0 +1,10 @@
+@import '../../App/assets/colors.module';
+
+.error {
+	color: $danger-color;
+	background-color: rgba($danger-color, .1);
+	border-radius: 4px;
+	display: inline-block;
+	padding: 2px 10px;
+	margin-bottom: 20px;
+}

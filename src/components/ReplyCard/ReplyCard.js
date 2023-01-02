@@ -10,6 +10,7 @@ import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultUserImage from "../App/assets/icons/default-user.svg";
+import './assets/index.scss';
 
 const ReplyCard = (props) => {
 

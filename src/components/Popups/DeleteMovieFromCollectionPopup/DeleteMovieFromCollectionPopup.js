@@ -4,10 +4,10 @@ import Modal from "../../Modal/Modal";
 
 const DeleteMovieFromCollectionPopup = (props) => {
 
-	const { setIsShowModal, handleRemoveMovieFromCollection } = props;
+	const { isShowModal, setIsShowModal, handleRemoveMovieFromCollection } = props;
 
 	return (
-		<Modal onClickFunction={() => {setIsShowModal(false)}}>
+		<Modal isShowModal={isShowModal} onClickFunction={() => {setIsShowModal(false)}}>
 			<ModalContent title={'Please confirm the action'} description={'Are you sure you want to delete this movie from favorite?'} handleAcceptFunction={handleRemoveMovieFromCollection} handleCancelFunction={() => {setIsShowModal(false)}} />
 		</Modal>
 	)

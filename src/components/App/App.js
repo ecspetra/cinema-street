@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import './App.scss';
+import './assets/common.scss';
+import './assets/index.scss';
 import { Route, Routes, matchPath, BrowserRouter } from "react-router-dom";
 import Home from "../Home/Home";
 import Login from "../Auth/Login";
@@ -26,6 +27,8 @@ import FavoriteMovies from "../FavoriteMovies/FavoriteMovies";
 import { useLocation } from "react-router";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
+import axios from "axios";
+import {API_KEY} from "../../functions/linksToFetch";
 
 const App = (props) => {
 
@@ -46,7 +49,6 @@ const App = (props) => {
             }
         });
     }, [onAuthStateChanged]);
-
 
     /////////////////////////////////////////////////// - set current movie page when click back button
 
@@ -71,17 +73,17 @@ const App = (props) => {
     }, [location]);
 
     return (
-        <div className="content-wrapper">
+        <div className="app">
             <Menu auth={auth} />
             <TopBanner />
-            <div className="content">
+            <div className="app__content">
                 <Routes>
                     <Route exact path="/" element={<Home />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
                     <Route path="/favorite-movies" element={<FavoriteMovies />} />
                     <Route path="/persons" element={<Persons />} />
-                    <Route path="/profile" element={<Profile user={props.currentUser} />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path={"/movie/:id"} element={<MoviePage />} />
                     <Route path={"/person/:personID"} element={<PersonPage />} />
                 </Routes>

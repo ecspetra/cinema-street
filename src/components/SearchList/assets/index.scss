@@ -1,0 +1,25 @@
+@import '../../App/assets/colors.module';
+
+.search-list {
+	display: flex;
+	justify-content: flex-start;
+	align-items: stretch;
+	flex-wrap: wrap;
+	margin: 0 -10px;
+}
+
+.search-list-buttons-wrap {
+	position: relative;
+	margin-top: 20px;
+
+	&__clear-button {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		transform: translateY(-50%);
+		color: $text-color-dark;
+		padding: 0;
+		text-decoration: underline;
+		font-size: 14px;
+	}
+}

@@ -1,0 +1,60 @@
+@import '../../App/assets/colors.module';
+
+.more-button {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 10px 8px;
+	min-height: 34px;
+	margin: 0 auto;
+	text-transform: uppercase;
+	transition: .3s;
+	z-index: 10;
+	color: $text-main-color;
+
+	&:before {
+		content: '';
+		position: absolute;
+		width: calc(100% + 4px);
+		height: calc(100% + 4px);
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-image: linear-gradient(to right, $main-color, $secondary-color);
+		opacity: 0;
+		transition: .3s;
+		border-radius: 4px;
+		z-index: -1;
+	}
+
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 240px;
+		height: 120px;
+		background-image: radial-gradient(rgba($main-color, .3) 0%, rgba($main-color, .08) 20%,  rgba($main-color, .04) 35%, rgba($main-color, .025) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+		opacity: 0;
+		transition: .3s;
+		pointer-events: none;
+	}
+
+	&:hover {
+		box-shadow: none;
+
+		&:after {
+			opacity: 1;
+		}
+
+		&:before {
+			box-shadow: none;
+			opacity: 0;
+		}
+	}
+}

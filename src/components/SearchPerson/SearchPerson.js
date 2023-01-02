@@ -4,6 +4,8 @@ import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import classNames from "classnames";
 import Error from "../Error/Error";
 import {LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME} from "../../functions/linksToFetch";
+import Button from "../Button/Button";
+import './assets/index.scss';
 
 const SearchPerson = () => {
 
@@ -24,28 +26,28 @@ const SearchPerson = () => {
 		}
 	}
 
-	const searchInputClassNames = classNames('search__title-input', {
-		'search__title-input--error': isShowError,
+	const searchInputClassNames = classNames('search-person__title-input', {
+		'search-person__title-input--error': isShowError,
 	});
 
 	return (
-		<div className="search">
-			<div className="search__title-wrap">
-				<h1 className="search__title">Search person by name</h1>
+		<div className="search-person">
+			<div className="search-person__title-wrap">
+				<h1 className="search-person__title">Search person by name</h1>
 			</div>
-			<form className="search__form" onSubmit={handleSearch}>
-				<div className="search__input-wrap">
+			<form className="search-person__form" onSubmit={handleSearch}>
+				<div className="search-person__input-wrap">
 					<input ref={searchInputRef} onChange={() => {handleChangeInputValue(searchInputRef, setIsShowError)}} className={searchInputClassNames} />
 					{
 						isShowError && <Error>Search field shouldn't be empty</Error>
 					}
 				</div>
-				<button className="main-button main-button--filled search__button" type="submit">Search</button>
+				<Button context={'filled'} className="search-person__button" type="submit">Search</Button>
 			</form>
 			{
 				isShowSearchList && (
 					<>
-						<h3 className="search__subtitle">Results for person {'"' + searchInputRef.current.value + '"'}</h3>
+						<h3 className="search-person__subtitle">Results for person {'"' + searchInputRef.current.value + '"'}</h3>
 						<SearchList linkToFetch={linkToFetchPersons.current} setIsShowSearchList={setIsShowSearchList} />
 					</>
 				)

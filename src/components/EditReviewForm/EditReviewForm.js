@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import classNames from "classnames";
 import Error from "../Error/Error";
+import './assets/index.scss';
+import Button from "../Button/Button";
 
 const EditReviewForm = (props) => {
 
@@ -57,8 +59,8 @@ const EditReviewForm = (props) => {
 				isShowError && <Error>Text field shouldn't be empty</Error>
 			}
 			<div className="edit-review-form__buttons-wrap">
-				<button className="main-button main-button--cancel" onClick={() => {handleCancelButtonClick()}}>Cancel</button>
-				<button className="main-button main-button--filled" type="submit">Save changes</button>
+				<Button context={'cancel'} buttonOnClickFunction={() => {handleCancelButtonClick()}}>Cancel</Button>
+				<Button context={'filled'} type="submit">Save changes</Button>
 			</div>
 		</form>
 	)

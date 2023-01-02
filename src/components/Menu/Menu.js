@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { useLocation } from "react-router";
 import classNames from 'classnames';
+import './assets/index.scss';
 
 const Menu = (props) => {
 

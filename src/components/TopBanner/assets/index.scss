@@ -1,0 +1,88 @@
+@import '../../App/assets/colors.module';
+
+.top-banner {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	background-image: url('../../App/assets/images/image-3.jpg');
+	background-size: 100vw auto;
+	background-position: center calc(50% - 200px);
+	background-repeat: no-repeat;
+	line-height: 1;
+	margin: 0;
+
+	//&--actors {
+	//    background-image: url('assets/images/image-5.jpg');
+	//}
+	//
+	//&--genres {
+	//    background-image: url('assets/images/image-7.jpg');
+	//}
+	//
+	//&--profile {
+	//    background-image: url('assets/images/image-1.jpg');
+	//}
+
+	//&--profile {
+	//    background-image: url('assets/images/image-2.jpg');
+	//}
+	//
+	//&--profile {
+	//    background-image: url('assets/images/image-5.jpg');
+	//}
+	//
+	//&--profile {
+	//    background-image: url('assets/images/image-6.jpg');
+	//}
+
+	&:before {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-image: linear-gradient(to top, $main-background-color 0%, rgba($main-background-color, .2) 100%);
+	}
+
+	&__title-wrapper {
+		width: calc(100% - 32px);
+		max-width: 1140px;
+		position: absolute;
+		top: 30px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	&__title {
+		width: 126px;
+		display: block;
+		position: relative;
+		color: $text-color-extra-light;
+		font-size: 30px;
+		font-weight: 700;
+	}
+
+	&__logo-icon {
+		position: absolute;
+		width: 34px;
+		height: 34px;
+		top: -2px;
+		right: -50px;
+		animation: logo-animation 4s infinite linear;
+
+		path.logo-background {
+			fill: $text-main-color;
+		}
+	}
+
+	&__accent {
+		display: block;
+		position: absolute;
+		top: 25px;
+		right: -20px;
+		font-size: 40px;
+		font-weight: 600;
+		color: $text-main-color;
+	}
+}

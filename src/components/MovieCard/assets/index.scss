@@ -1,0 +1,170 @@
+@import '../../App/assets/colors.module';
+
+.movie-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	width: 232px;
+	padding: 0 10px 0;
+	margin: 0 0 40px;
+	position: relative;
+	transition: 1s ease;
+
+	.loader {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	&__image-wrap {
+		position: relative;
+		min-height: 318px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&__link {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+		margin-bottom: 10px;
+
+		&:hover {
+			.movie-card {
+				&__image {
+					box-shadow: 0 0 50px 10px rgba($main-color, .3);
+				}
+			}
+
+			.my-mark {
+				box-shadow: none;
+			}
+		}
+	}
+
+	&__title-wrap {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+
+		.rating {
+			font-size: 12px;
+			font-weight: 500;
+			margin: 6px 0 0;
+
+			.star {
+				width: 12px;
+				height: 12px;
+			}
+
+			&__text {
+				margin-left: 2px;
+			}
+		}
+	}
+
+	.my-mark {
+		width: 40px;
+		height: 32px;
+		font-size: 12px;
+		font-weight: 600;
+		margin: 0;
+		color: $main-color;
+		background-image: linear-gradient(to top right, white, white);
+		box-shadow: 0 0 20px $main-color;
+		border-radius: 8px;
+		justify-content: center;
+		position: absolute;
+		top: -10px;
+		right: 10px;
+
+		.star {
+			width: 12px;
+			height: 12px;
+
+			path {
+				fill: $main-color;
+			}
+		}
+
+		&__text {
+			margin-left: 2px;
+		}
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 16px;
+		line-height: 20px;
+		font-weight: 500;
+		flex: 1 1 75%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	&__image {
+		width: 100%;
+		border-radius: 8px;
+		margin-bottom: 10px;
+		display: block;
+		transition: .3s;
+	}
+
+	&__genres-wrap {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		margin-bottom: 15px;
+	}
+
+	&__genre {
+		font-size: 10px;
+		line-height: 1;
+		font-weight: 500;
+		margin: 0 4px 4px 0;
+		padding: 3px 8px;
+		border-radius: 8px;
+		color: $text-color-light;
+		text-transform: uppercase;
+		background-image: linear-gradient(to right, rgba($main-color, .1), rgba($additional-color-1, .1));
+	}
+
+	&__release-date {
+		font-weight: 500;
+		color: $text-color-dark;
+		font-size: 12px;
+	}
+}
+
+.movie-card-wrap-enter {
+	opacity: 0;
+}
+
+.movie-card-wrap-enter-done {
+	opacity: 1;
+}
+
+.movie-card-wrap-enter-active {
+	opacity: 1;
+}
+
+.movie-card-wrap-exit {
+	opacity: 1;
+}
+
+.movie-card-wrap-exit-active {
+	opacity: 0;
+}
+
+.movie-card-wrap-exit-done {
+	opacity: 0;
+	transform: translateY(-100%);
+}

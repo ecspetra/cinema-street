@@ -1,0 +1,54 @@
+@import '../../App/assets/colors.module';
+
+.modal-content {
+	width: 400px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: $wrap-background-color;
+	border-radius: 12px;
+	padding: 20px;
+
+	&__text-wrap {
+		margin-bottom: 30px;
+	}
+
+	&__title {
+		max-width: 90%;
+	}
+
+	&__buttons-wrap {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	&__button {
+		max-width: 100px;
+
+		&:not(:last-child) {
+			margin-right: 10px;
+		}
+	}
+
+	&__close-button {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		width: auto;
+		min-height: auto;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+
+		&:hover {
+			box-shadow: none;
+		}
+
+		&:before {
+			display: none;
+		}
+	}
+}

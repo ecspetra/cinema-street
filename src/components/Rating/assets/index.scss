@@ -1,0 +1,33 @@
+@import '../../App/assets/colors.module';
+
+.rating {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-shrink: 0;
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 1;
+	margin: 20px 0;
+	transition: .3s;
+
+	.star {
+		width: 30px;
+		height: 30px;
+
+		path {
+			fill: $main-color;
+		}
+	}
+
+	&__count {
+		font-size: 14px;
+		font-weight: 400;
+		color: $text-color-light;
+		margin: auto 0 4px 10px;
+	}
+
+	&__text {
+		margin-left: 10px;
+	}
+}

@@ -8,6 +8,8 @@ import defaultUserImage from "../App/assets/icons/default-user.svg";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import classNames from "classnames";
 import Error from "../Error/Error";
+import './assets/index.scss';
+import Button from "../Button/Button";
 
 const NewReviewForm = (props) => {
 
@@ -119,9 +121,9 @@ const NewReviewForm = (props) => {
 			}
 			<div className="new-review-form__buttons-wrap">
 				{
-					isReplyForm && <button className="main-button main-button--cancel" onClick={() => {handleCancelButtonClick()}}>Cancel</button>
+					isReplyForm && <Button context={'cancel'} buttonOnClickFunction={() => {handleCancelButtonClick()}}>Cancel</Button>
 				}
-				<button className="main-button main-button--filled" type="submit">{isReplyForm ? 'Send reply' : 'Send review'}</button>
+				<Button context={'filled'} type="submit">{isReplyForm ? 'Send reply' : 'Send review'}</Button>
 			</div>
 		</form>
 	)

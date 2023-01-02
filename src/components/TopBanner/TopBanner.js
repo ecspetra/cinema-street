@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { useLocation } from "react-router";
 import LogoIcon from "../App/assets/icons/Logo";
+import './assets/index.scss';
 
 const TopBanner = () => {
 

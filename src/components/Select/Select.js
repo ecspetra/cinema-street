@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import ArrowIcon from "../App/assets/icons/ArrowIcon";
+import './assets/index.scss';
 
 const Select = (props) => {
 

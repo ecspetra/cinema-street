@@ -1,0 +1,131 @@
+@import '../../App/assets/colors.module';
+
+.search-person {
+	width: 100%;
+	margin-bottom: 60px;
+
+	&__title-wrap {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 40px;
+	}
+
+	&__title {
+		margin-bottom: 0;
+	}
+
+	&__subtitle {
+		text-align: center;
+		margin: 40px 0;
+	}
+
+	&__form {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		max-width: 600px;
+		margin: 0 auto;
+		background-color: rgba($wrap-background-color, .8);
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 0 30px $extra-dark-color;
+
+		.select {
+			max-width: calc(100% - 160px);
+		}
+	}
+
+	&__input-wrap {
+		width: 100%;
+		max-width: calc(100% - 160px);
+
+		.error {
+			margin: 20px 0 0;
+		}
+	}
+
+	&__title-input {
+		background-color: $main-background-color;
+		border: 1px solid $wrap-background-color-light;
+		outline: none;
+		color: $text-color-extra-light;
+		border-radius: 4px;
+		padding: 0 8px;
+		width: 100%;
+		min-height: 34px;
+		transition: .3s;
+
+		&:focus {
+			border-color: $main-color;
+		}
+
+		&--error {
+			border-color: $danger-color;
+		}
+	}
+
+	&__method-select {
+		&.select {
+			width: auto;
+			border: none;
+			border-radius: 0;
+			padding: 0;
+			margin-left: 10px;
+		}
+
+		.select {
+			&__button {
+				color: $text-main-color;
+				font-size: 30px;
+				font-weight: 700;
+				padding: 0;
+				border: none;
+				background: none;
+				box-shadow: none;
+
+				&:before {
+					display: none;
+				}
+
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: 240px;
+					height: 120px;
+					background-image: radial-gradient(rgba($main-color, .3) 0%, rgba($main-color, .08) 20%,  rgba($main-color, .04) 35%, rgba($main-color, .025) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+					opacity: 0;
+					transition: .3s;
+					pointer-events: none;
+				}
+
+				&:hover {
+					box-shadow: none;
+
+					&:after {
+						opacity: 1;
+					}
+				}
+
+				.arrow-icon {
+					width: 16px;
+					height: 16px;
+
+					&__path {
+						fill: $text-main-color;
+					}
+				}
+
+			}
+		}
+	}
+
+	&__button {
+		max-width: 140px;
+		margin-top: 0;
+	}
+}

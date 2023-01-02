@@ -1,0 +1,42 @@
+@import '../../App/assets/colors.module';
+
+.modal {
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba($extra-dark-color, .95);
+	z-index: 10;
+	transition: .3s;
+
+	&--transparent {
+		width: auto;
+		height: auto;
+		top: 85px;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: transparent;
+	}
+}
+
+.modal-appear {
+	opacity: 0;
+}
+
+.modal-enter-done {
+	opacity: 1;
+}
+
+.modal-exit {
+	opacity: 1;
+}
+
+.modal-exit-active {
+	opacity: 0;
+}
+
+.modal-exit-done {
+	opacity: 0;
+}

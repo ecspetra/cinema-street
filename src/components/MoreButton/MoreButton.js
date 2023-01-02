@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Loader from "../Loader/Loader";
+import './assets/index.scss';
 
 const MoreButton = (props) => {
 
@@ -18,7 +19,7 @@ const MoreButton = (props) => {
 	const buttonText = listLength > maxListLength || isFetchResultsButton ? 'Show more' : 'Show less';
 
 	return (
-		<button className="main-button main-button--more" onClick={() => {handleMoreButtonOnClick()}}>
+		<button className="more-button" onClick={() => {handleMoreButtonOnClick()}}>
 			{
 				isLoaded ? buttonText : <Loader />
 			}

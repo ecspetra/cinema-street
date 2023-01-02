@@ -6,7 +6,7 @@ import ReviewsList from "../ReviewsList/ReviewsList";
 import MovieList from "../MovieList/MovieList";
 import ProductionCompany from "../ProductionCompany/ProductionCompany";
 import Rating from "../Rating/Rating";
-import {API_KEY, LINK_TO_FETCH_PERSONS, LINK_TO_FETCH_SIMILAR_MOVIES} from '../../functions/linksToFetch';
+import { LINK_TO_FETCH_SIMILAR_MOVIES } from '../../functions/linksToFetch';
 import MyMark from "../MyMark/MyMark";
 import NewReviewForm from "../NewReviewForm/NewReviewForm";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
@@ -26,8 +26,10 @@ import TaglineIcon from "../App/assets/icons/TaglineIcon";
 import FlagIcon from "../App/assets/icons/FlagIcon";
 import classNames from "classnames";
 import Plyr from "plyr-react";
-import axios from "axios";
 import {v1 as uuidv1} from "uuid";
+import {addDefaultImage} from "../../functions/addDefaultImage";
+import defaultMovieImage from "../App/assets/icons/default-movie.svg";
+import './assets/index.scss';
 
 const MoviePage = (props) => {
 
@@ -59,6 +61,7 @@ const MoviePage = (props) => {
 	const [isShowModal, setIsShowModal] = useState(false);
 	const [isShowInfoPopup, setIsShowInfoPopup] = useState(false);
 	const [isActionCompletedSuccessfully, setIsActionCompletedSuccessfully] = useState(undefined);
+	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 	const onMoviePageUnmount = useRef();
 	onMoviePageUnmount.current = () => {
@@ -167,7 +170,8 @@ const MoviePage = (props) => {
 						<div className="movie-page__content">
 							<div className="movie-page__movie-info">
 								<div className="movie-page__cover-wrap">
-									<img className="movie-page__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + currentMovieInfo.poster_path} alt="movie-poster" />
+									<img className="movie-page__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + currentMovieInfo.poster_path} alt="image" />
+									{!isImageLoaded && <Loader>Loading image</Loader>}
 								</div>
 								<div className="movie-page__info-wrap">
 									{currentMovieInfo.adult && <span>18+</span>}
@@ -255,12 +259,10 @@ const MoviePage = (props) => {
 								<MovieList linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', currentMovieInfo.id)} />
 							</div>
 						</div>
-						{isShowInfoPopup && (
-							<Modal className="modal--transparent" overflow={'visible'}>
-								<InfoPopup className={infoPopupClassNames} title={infoPopupTextRef.current.resultText} />
-							</Modal>
-						)}
-						{isShowModal && <DeleteMovieFromCollectionPopup setIsShowModal={setIsShowModal} handleRemoveMovieFromCollection={handleRemoveMovieFromCollection} />}
+						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>
+							<InfoPopup className={infoPopupClassNames} title={infoPopupTextRef.current !== undefined ? infoPopupTextRef.current.resultText : null} />
+						</Modal>
+						<DeleteMovieFromCollectionPopup isShowModal={isShowModal} setIsShowModal={setIsShowModal} handleRemoveMovieFromCollection={handleRemoveMovieFromCollection} />
 					</div>
 				)
 					: <div className="movie-page-empty"><Loader>Loading movie</Loader></div>

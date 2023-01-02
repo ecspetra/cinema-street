@@ -9,6 +9,7 @@ import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import Loader from "../Loader/Loader";
 import {v1 as uuidv1} from "uuid";
+import './assets/index.scss';
 
 const PersonsList = (props) => {
 

@@ -6,6 +6,7 @@ import { database } from "../../firebase";
 import { setMyReview } from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
+import './assets/index.scss';
 
 const ReviewsList = forwardRef((props, reviewCardRef) => {
 

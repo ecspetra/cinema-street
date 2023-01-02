@@ -89,7 +89,7 @@ const Register = () => {
         <div className="registration-form">
             <form className="registration-form__content" onSubmit={handleSubmit}>
                 <div className="registration-form__text-wrap">
-                    <h1 className="registration-form__title">Register to Cinema field</h1>
+                    <h1 className="registration-form__title">Register to Cinema street</h1>
                     <p className="registration-form__text">Please fill in the fields to enter</p>
                 </div>
                 <div className="registration-form__field">

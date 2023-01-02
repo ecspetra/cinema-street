@@ -1,0 +1,75 @@
+@import '../../App/assets/colors.module';
+
+.main-button {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid $main-color;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 10px 8px;
+	min-height: 34px;
+	margin: auto 0 0;
+	width: 100%;
+	text-transform: uppercase;
+	transition: .3s;
+	z-index: 10;
+
+	&:before {
+		content: '';
+		position: absolute;
+		width: calc(100% + 4px);
+		height: calc(100% + 4px);
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-image: linear-gradient(to right, $main-color, $secondary-color);
+		opacity: 0;
+		transition: .3s;
+		border-radius: 4px;
+		z-index: -1;
+	}
+
+	&:hover {
+		box-shadow: 0 0 15px rgba($main-color, .5);
+
+		&:before {
+			opacity: 1;
+		}
+	}
+
+	&--remove,
+	&--cancel {
+		border-color: transparent;
+		color: $text-main-color;
+
+		&:before {
+			opacity: .2;
+			box-shadow: 0 0 15px rgba($main-color, .8);
+		}
+
+		&:hover {
+			color: $text-color-extra-light;
+			border-color: rgba($main-color, .4);
+
+			&:before {
+				box-shadow: none;
+				opacity: 0;
+			}
+		}
+	}
+
+	&--filled {
+		&:before {
+			opacity: 1;
+		}
+	}
+
+	.loader {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+}

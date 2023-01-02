@@ -7,6 +7,7 @@ import Loader from "../Loader/Loader";
 import { clearCurrentMoviePage, clearCurrentPersonPage, setCurrentMovie, setCurrentPersonPage } from "../../actions";
 import { connect } from "react-redux";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
+import './assets/index.scss';
 
 const SearchCard = (props) => {
 
@@ -30,7 +31,7 @@ const SearchCard = (props) => {
 		<div className="search-card">
 			<Link to={linkToResultPage} className="search-card__link" onClick={onClickRef.current}>
 				<div className="search-card__image-wrap">
-					<img className="search-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={resultImage} alt="movie-poster" />
+					<img className="search-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={resultImage} alt="image" />
 					{!isImageLoaded && <Loader>Loading image</Loader>}
 				</div>
 				{

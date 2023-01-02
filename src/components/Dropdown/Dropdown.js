@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import './assets/index.scss';
+import DropdownIcon from "../App/assets/icons/DropdownIcon";
 
 const Dropdown = ({ children }) => {
 
@@ -10,7 +12,7 @@ const Dropdown = ({ children }) => {
 
 	return (
 		<div className="dropdown" onMouseLeave={() => {setIsDropdownOpened(false)}}>
-			<button className="dropdown__button" onClick={() => {handleToggleDropdown()}} />
+			<button className="dropdown__button" onClick={() => {handleToggleDropdown()}}><DropdownIcon /></button>
 			{
 				isDropdownOpened && (<div className="dropdown__list">
 					<div onClick={() => {handleToggleDropdown()}}>{children}</div>
