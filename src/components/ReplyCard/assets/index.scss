@@ -69,11 +69,14 @@
 		margin-right: 10px;
 	}
 
-	&__user-avatar {
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
+	.user-icon {
 		margin: 0 10px 0 0;
+
+		&__image-wrap {
+			width: 26px;
+			height: 26px;
+			border-radius: 50%;
+		}
 	}
 
 	&__more-button {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import PersonCard from "../PersonCard/PersonCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
 import { setPersons, clearPersons, setFavoritePersons, clearFavoritePersons } from "../../actions";
@@ -8,12 +8,13 @@ import { getMyPersonsFromDatabase, fillFavoritePersonsList } from "../../functio
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import Loader from "../Loader/Loader";
-import {v1 as uuidv1} from "uuid";
 import './assets/index.scss';
+import md5 from "md5";
+import UserContext from "../UserContext/UserContext";
 
 const PersonsList = (props) => {
 
-	const { currentUser, persons, isFavoritePersonsList, currentMoviePersons, isCurrentMovieCharacter, linkToFetch, handleSetPersons, handleClearPersons, handleSetFavoritePersons, handleClearFavoritePersons } = props;
+	const { persons, isFavoritePersonsList, currentMoviePersons, isCurrentMovieCharacter, linkToFetch, handleSetPersons, handleClearPersons, handleSetFavoritePersons, handleClearFavoritePersons } = props;
 
 	const onPersonsListUnmount = useRef();
 	onPersonsListUnmount.current = () => {
@@ -25,6 +26,8 @@ const PersonsList = (props) => {
 	useEffect(() => {
 		return () => onPersonsListUnmount.current();
 	}, []);
+
+	const { currentUser } = useContext(UserContext);
 
 	const personsListRef = useRef(null);
 	const initialListLength = 8;
@@ -130,18 +133,18 @@ const PersonsList = (props) => {
 		if (isCurrentMovieCharacter) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person} key={uuidv1()} isCurrentMovieCharacter={isCurrentMovieCharacter} />
+					return <PersonCard person={person} key={md5(person.id + person.name)} isCurrentMovieCharacter={isCurrentMovieCharacter} />
 				}
 			})
 		} else if (isFavoritePersonsList) {
 			persons = personsList && personsList.map((person, index) => {
 				if (index < maxListLength) {
-					return <PersonCard person={person.data.person} key={uuidv1()} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
+					return <PersonCard person={person.data.person} key={md5(person.data.person.id + person.data.person.name)} currentUser={currentUser} handleFillFavoritePersonsList={handleFillFavoritePersonsList} isFavoritePerson />
 				}
 			})
 		} else {
-			persons = personsList && personsList.map((person, index) => {
-				return <PersonCard person={person} key={uuidv1()} />
+			persons = personsList && personsList.map((person) => {
+				return <PersonCard person={person} key={md5(person.id + person.name)} />
 			})
 		}
 
@@ -212,7 +215,6 @@ const PersonsList = (props) => {
 
 const mapStateToProps = state => ({
 	persons: state.persons,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

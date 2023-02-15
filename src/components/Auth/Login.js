@@ -1,48 +1,66 @@
-import React, { useState, useEffect } from "react";
-import {Link, useNavigate} from "react-router-dom";
-import {signInWithEmailAndPassword, getAuth, updateProfile} from "firebase/auth";
-import {getDatabase, ref, set} from "firebase/database";
+import React, { useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import Input from "../Input/Input";
+import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
+import Error from "../Error/Error";
+import Button from "../Button/Button";
 
 const Login = () => {
 
-    const [userEmail, setUserEmail] = useState('');
-    const [userPassword, setUserPassword] = useState('');
-    const [formError, setFormError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [formError, setFormError] = useState({
+        formErrorText: '',
+        isShowError: false,
+    });
+    const [emailError, setEmailError] = useState({
+        emailErrorText: '',
+        isShowError: false,
+    });
+    const [passwordError, setPasswordError] = useState({
+        passwordErrorText: '',
+        isShowError: false,
+    });
 
-    const database = getDatabase();
+    const emailInputRef = useRef();
+    const passwordInputRef = useRef();
     const auth = getAuth();
 
-    useEffect(() => {
-        console.log(formError);
-    }, [formError]);
-
-    const handleUserEmailChange = (event) => {
-        setUserEmail(event.target.value);
+    const checkIfEmailIsValid = () => {
+        if (emailInputRef.current.value.length) {
+            return true;
+        } else {
+            setEmailError({emailErrorText: 'Email shouldn`t be empty', isShowError: true});
+            return false;
+        }
     }
 
-    const handleUserPasswordChange = (event) => {
-        setUserPassword(event.target.value);
-    }
-
-    const isFormValid = () => {
-        return userEmail && userPassword;
+    const checkIfPasswordIsValid = () => {
+        if (passwordInputRef.current.value.length) {
+            return true;
+        } else {
+            setPasswordError({passwordErrorText: 'Password shouldn`t be empty', isShowError: true});
+            return false;
+        }
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (isFormValid(userEmail, userPassword)) {
-            setIsLoading(true);
-            signInWithEmailAndPassword(auth, userEmail, userPassword)
-                .then((currentUser) => {
-                    setIsLoading(false);
-            })
-                .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
+
+        setIsLoading(true);
+
+        const isEmailIsValid = checkIfEmailIsValid();
+        const isPasswordIsValid = checkIfPasswordIsValid();
+
+        if (isEmailIsValid && isPasswordIsValid) {
+            signInWithEmailAndPassword(auth, emailInputRef.current.value, passwordInputRef.current.value)
+                .then(() => {
+                }).catch((error) => {
+                setFormError({formErrorText: error.toString(), isShowError: true})
             });
-            setFormError('');
         }
+
+        setIsLoading(false);
     }
 
     return (
@@ -54,24 +72,23 @@ const Login = () => {
                 </div>
                 <div className="login-form__field">
                     <label className="login-form__label" htmlFor="email">Enter your email</label>
-                    <input className="login-form__input" id="email" type="text" value={userEmail} onChange={handleUserEmailChange} />
+                    <Input inputRef={emailInputRef} id="email" isValid={!emailError.isShowError} errorText={emailError.emailErrorText} onChangeFunction={() => {handleChangeInputValue(emailInputRef, setEmailError)}} />
                 </div>
                 <div className="login-form__field">
                     <label className="login-form__label" htmlFor="password">Enter your password</label>
-                    <input className="login-form__input" id="password" type="text" value={userPassword} onChange={handleUserPasswordChange} />
+                    <Input inputRef={passwordInputRef} id="password" type="password" isValid={!passwordError.isShowError} errorText={passwordError.passwordErrorText} onChangeFunction={() => {handleChangeInputValue(passwordInputRef, setPasswordError)}} />
                 </div>
-                <button type="submit">Submit</button>
-                <div>
+                <Button buttonType={"submit"} context={'filled'} className="login-form__button">Log in</Button>
+                <div className="login-form__field">
                     Don't have an account?
                     <Link to="/register">Register</Link>
-                </div>
-                <div>
-                    <Link to="/">Continue exploring</Link>
                 </div>
                 {
                     isLoading && <div>Loading...</div>
                 }
-                <p>{formError}</p>
+                {
+                    formError.isShowError && <Error>{formError.formErrorText}</Error>
+                }
             </form>
         </div>
     )

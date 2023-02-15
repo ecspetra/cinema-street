@@ -67,12 +67,6 @@
 		padding: 10px;
 	}
 
-	&__list-item-info {
-		display: flex;
-		justify-content: flex-start;
-		align-items: flex-start;
-	}
-
 	&__date-day {
 		font-size: 20px;
 		line-height: 1;
@@ -81,26 +75,6 @@
 	&__date-month {
 		font-size: 10px;
 		line-height: 1;
-	}
-
-	&__date-year {
-		font-size: 10px;
-		font-weight: 500;
-		line-height: 1;
-		margin: 0 10px 4px 0;
-		color: $text-color-light;
-		position: relative;
-
-		&:after {
-			content: '';
-			position: absolute;
-			top: 50%;
-			right: -6px;
-			transform: translateY(-50%);
-			background-color: $text-color-light;
-			width: 1px;
-			height: 100%;
-		}
 	}
 
 	&__list-item {

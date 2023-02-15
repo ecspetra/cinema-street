@@ -34,6 +34,10 @@ const initialCurrentMoviePageState = {
 	currentMoviePage: null,
 }
 
+const initialProfilePageState = {
+	profile: null,
+}
+
 const initialPersonsState = {
 	uploadedPersons: [],
 	favoritePersons: [],
@@ -248,6 +252,21 @@ const genres_reducer = (state = initialGenresState, action) => {
 	}
 }
 
+const profile_page_reducer = (state = initialProfilePageState, action) => {
+	switch (action.type) {
+		case actionTypes.SET_PROFILE_PAGE:
+			return {
+				...state,
+				user: action.payload,
+			}
+		case actionTypes.CLEAR_PROFILE_PAGE:
+			return {
+				...initialProfilePageState
+			}
+		default: return state;
+	}
+}
+
 const rootReducer = combineReducers({
 	user: user_reducer,
 	movies: movies_reducer,
@@ -259,6 +278,7 @@ const rootReducer = combineReducers({
 	myMarks: marks_reducer,
 	reviews: reviews_reducer,
 	searchResults: search_results_reducer,
+	profile: profile_page_reducer,
 });
 
 export default rootReducer;

@@ -1,0 +1,25 @@
+@import '../../App/assets/colors.module';
+
+.input {
+	background-color: $main-background-color;
+	border: 1px solid $wrap-background-color-light;
+	outline: none;
+	color: $text-color-extra-light;
+	border-radius: 4px;
+	padding: 0 8px;
+	width: 100%;
+	min-height: 34px;
+	transition: .3s;
+
+	&:disabled {
+		color: $text-color-dark;
+	}
+
+	&:focus {
+		border-color: $main-color;
+	}
+
+	&--error {
+		border-color: $danger-color;
+	}
+}

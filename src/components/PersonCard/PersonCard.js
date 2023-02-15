@@ -52,11 +52,6 @@ const PersonCard = (props) => {
 		setIsMounted(true);
 	}, []);
 
-	useEffect(() => {
-		console.log(isShowModal);
-
-	}, [isShowModal]);
-
 	return (
 		<>
 			<CSSTransition

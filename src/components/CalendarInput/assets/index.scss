@@ -1,0 +1,159 @@
+@import '../../App/assets/colors.module';
+
+.calendar-input {
+	&__calendar-wrap {
+		position: relative;
+	}
+
+	.input {
+		&:disabled {
+			color: $text-color-extra-light;
+		}
+	}
+
+	&__clear-button {
+		display: flex;
+		min-height: 0;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		position: absolute;
+		top: 50%;
+		right: 4px;
+		transform: translateY(-50%);
+		border-radius: 50%;
+		opacity: .4;
+
+		&:before {
+			display: none;
+		}
+
+		&:after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 60px;
+			height: 60px;
+			background-image: radial-gradient(rgba($main-color, .5) 0%, rgba($main-color, .23) 20%,  rgba($main-color, .1) 35%, rgba($main-color, .06) 40%, rgba($main-color, .01) 50%, rgba($main-color, 0) 60%);
+			opacity: 0;
+			transition: .3s;
+			pointer-events: none;
+			z-index: -1;
+		}
+
+		&:hover {
+			opacity: 1;
+			box-shadow: none;
+
+			&:after {
+				opacity: 1;
+			}
+		}
+
+		.close-icon {
+			width: 16px;
+			height: 16px;
+		}
+	}
+}
+
+.react-calendar {
+	position: absolute;
+	z-index: 100;
+	background-color: $wrap-background-color-light;
+	box-shadow: 0 4px 15px $extra-dark-color;
+	border: none;
+	border-radius: 8px;
+
+	&__tile {
+		border-radius: 8px;
+
+		&:disabled {
+			color: $text-color-dark;
+			background-color: rgba($wrap-background-color, .7);
+
+			&.react-calendar__month-view__days__day {
+				&--weekend {
+					color: $text-color-dark;
+				}
+			}
+		}
+
+		&.react-calendar__month-view__days__day {
+			&--weekend {
+				color: $text-color-extra-light;
+			}
+
+			&--weekend {
+				&.react-calendar__month-view__days__day--neighboringMonth {
+					color: $text-color-dark;
+				}
+			}
+
+			&--neighboringMonth {
+				color: $text-color-dark;
+			}
+		}
+
+		&--now {
+			background-color: rgba($main-color, .3);
+
+			&:hover {
+				background-color: rgba($main-color, .3);
+			}
+		}
+
+		&--active {
+			background: none;
+
+			&:enabled {
+				&:focus {
+					background-image: linear-gradient(to top right, $main-color, $secondary-color);
+					box-shadow: 0 0 20px $main-color;
+				}
+			}
+
+			&.react-calendar__tile {
+				&--now {
+					background-color: rgba($main-color, .3);
+				}
+			}
+		}
+
+		&:enabled {
+			&:hover {
+				color: $text-color-extra-light;
+				background: none;
+				background-image: linear-gradient(to top right, $main-color, $secondary-color);
+				box-shadow: 0 0 20px $main-color;
+			}
+
+			&:focus {
+				background-image: linear-gradient(to top right, $main-color, $secondary-color);
+				box-shadow: 0 0 20px $main-color;
+			}
+		}
+	}
+
+	&__navigation {
+		button {
+			&:hover,
+			&:focus {
+				background-color: rgba($text-color-dark, .4);
+			}
+
+			&:disabled {
+				color: $text-color-dark;
+				background-color: rgba($wrap-background-color, .7);
+			}
+		}
+	}
+
+	abbr {
+		text-decoration: none;
+	}
+}

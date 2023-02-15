@@ -1,20 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { useLocation } from "react-router";
 import classNames from 'classnames';
 import './assets/index.scss';
+import UserIcon from "../UserIcon/UserIcon";
+import UserContext from "../UserContext/UserContext";
 
-const Menu = (props) => {
+const Menu = () => {
 
 	const location = useLocation();
 
 	const auth = getAuth();
 
+	const { currentUser } = useContext(UserContext);
+
 	const handleSignOut = () => {
-	    signOut(auth).then(() => {
-	        console.log('Signed Out');
-	    })
+		signOut(auth);
 	}
 
 	const projectMenuClassNames = classNames('project-menu', {
@@ -37,11 +39,11 @@ const Menu = (props) => {
 					<Link className="project-menu__item" to="/genres">Genres</Link>
 				</div>
 				<div className="project-menu__item-wrap">
-					<Link className="project-menu__item" to="/profile">Profile</Link>
+					<UserIcon profileLink={currentUser.uid} />
 				</div>
 				<div className="project-menu__item-wrap">
 					{
-						props.auth.currentUser !== null
+						auth.currentUser !== null
 							? <button className="project-menu__item project-menu__item--auth" onClick={handleSignOut}>Sign Out</button>
 							: <Link className="project-menu__item project-menu__item--auth" to="/login">Log In</Link>
 					}

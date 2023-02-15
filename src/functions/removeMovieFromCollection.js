@@ -1,11 +1,11 @@
 import checkIfMovieExistsInCollection from "./checkIfMovieExistsInCollection";
 import { ref, getDatabase, remove } from "firebase/database";
 
-const removeMovieFromCollection = async (postListRef, movie, removeFromFavoriteMoviesFunction) => {
+const removeMovieFromCollection = async (postListRef, movie, currentUser, removeFromFavoriteMoviesFunction) => {
 
 	const database = getDatabase();
 
-	let movieFromCollection = await checkIfMovieExistsInCollection(postListRef, movie.id, true);
+	let movieFromCollection = await checkIfMovieExistsInCollection(postListRef, movie.id, currentUser, true);
 
 	removeFromFavoriteMoviesFunction(movie.id);
 

@@ -7,7 +7,8 @@ import moment from "moment";
 import {connect} from "react-redux";
 import getGenres from "../../functions/getGenres";
 import { setGenres } from "../../actions";
-import { v1 as uuidv1 } from "uuid";
+import md5 from "md5";
+import Genre from "../Genre/Genre";
 
 const UpcomingMovieItem = (props) => {
 
@@ -51,18 +52,15 @@ const UpcomingMovieItem = (props) => {
 				<span className="upcoming-movies__date-month">{movieReleaseDate.releaseMonth}</span>
 			</div>
 			<div className="upcoming-movies__list-item-text-wrap">
-				<h3 className="upcoming-movies__list-item-title">{movie.title}</h3>
-				<div className="upcoming-movies__list-item-info">
-					<span className="upcoming-movies__date-year">{movieReleaseDate.releaseYear}</span>
-					<div className="upcoming-movies__genres-wrap">
-						{
-							upcomingMovieGenresNames.map((genre, index) => {
-								if (index < 3) {
-									return <span className="upcoming-movies__genres-item" key={uuidv1()}>{genre + ((index !== 2 && index !== upcomingMovieGenresNames.length - 1) ? ', ' : '')}</span>
-								}
-							})
-						}
-					</div>
+				<h3 className="upcoming-movies__list-item-title">{movie.title + ' | ' + movieReleaseDate.releaseYear}</h3>
+				<div className="upcoming-movies__genres-wrap">
+					{
+						upcomingMovieGenresNames.map((genre, index) => {
+							if (index < 3) {
+								return <Genre key={md5(genre + index)}>{genre}</Genre>
+							}
+						})
+					}
 				</div>
 			</div>
 		</div>

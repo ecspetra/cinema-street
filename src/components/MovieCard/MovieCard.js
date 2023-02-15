@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from "react-router-dom";
 import CollectionButton from "../CollectionButton/CollectionButton";
 import Rating from "../Rating/Rating";
@@ -17,15 +17,19 @@ import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultMovieImage from "../App/assets/icons/default-movie.svg";
 import { CSSTransition } from "react-transition-group";
 import DeleteMovieFromCollectionPopup from "../Popups/DeleteMovieFromCollectionPopup/DeleteMovieFromCollectionPopup";
-import {v1 as uuidv1} from "uuid";
 import './assets/index.scss';
+import md5 from "md5";
+import Genre from "../Genre/Genre";
+import UserContext from "../UserContext/UserContext";
 
 const MovieCard = (props) => {
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'movies');
 
-	const { currentUser, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies, handleFillFavoriteMoviesList } = props;
+	const { currentUser } = useContext(UserContext);
+
+	const { isFavoriteMoviesList, genres, movie, handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies, handleFillFavoriteMoviesList } = props;
 
 	const [isMounted, setIsMounted] = useState(false);
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
@@ -35,20 +39,22 @@ const MovieCard = (props) => {
 	const [isMovieFromCollection, setIsMovieFromCollection] = useState(false);
 
 	const handleAddMovieToMyCollection = async () => {
-		await postMovieToDataBase(database, movie, currentUser.uid);
-		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+		await postMovieToDataBase(database, movie, currentUser);
+		checkIfMovieExistsInCollection(postListRef, movie.id, currentUser).then(data => setIsMovieFromCollection(data));
 	}
 
 	const handleRemoveMovieFromCollection = async () => {
 		setIsShowModal(false);
 		setIsMounted(false);
 
-		handleFillFavoriteMoviesList();
-
 		setTimeout(async () => {
-			await removeMovieFromCollection(postListRef, movie, handleRemoveFromFavoriteMovies, setIsMounted);
-			checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+			await removeMovieFromCollection(postListRef, movie, currentUser, handleRemoveFromFavoriteMovies, setIsMounted);
+			checkIfMovieExistsInCollection(postListRef, movie.id, currentUser).then(data => setIsMovieFromCollection(data));
 		}, 750);
+
+		if (isFavoriteMoviesList === true) {
+			handleFillFavoriteMoviesList();
+		}
 	};
 
 	useEffect(() => {
@@ -58,7 +64,7 @@ const MovieCard = (props) => {
 	}, []);
 
 	useEffect(() => {
-		checkIfMovieExistsInCollection(postListRef, movie.id).then(data => setIsMovieFromCollection(data));
+		checkIfMovieExistsInCollection(postListRef, movie.id, currentUser).then(data => setIsMovieFromCollection(data));
 	}, []);
 
 	useEffect(() => {
@@ -84,22 +90,22 @@ const MovieCard = (props) => {
 					<Link to={"/movie/" + movie.id} className="movie-card__link" onClick={() => {
 						handleChooseCurrentMoviePage(movie, handleClearCurrentMoviePage).then((data) => {handleSetCurrentMoviePage(data)})
 					}}>
-					<span className="movie-card__image-wrap">
-						<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
-						{!isImageLoaded && <Loader>Loading image</Loader>}
-						<MyMark movie={movie} />
-					</span>
-						<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
-						<span className="movie-card__title-wrap">
-						<span className="movie-card__title">{movie.title}</span>
-						<Rating movie={movie} />
-					</span>
+						<span className="movie-card__image-wrap">
+							<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
+							{!isImageLoaded && <Loader>Loading image</Loader>}
+							<MyMark movie={movie} />
+						</span>
+							<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
+							<span className="movie-card__title-wrap">
+							<span className="movie-card__title">{movie.title}</span>
+							<Rating movie={movie} />
+						</span>
 					</Link>
 					<div className="movie-card__genres-wrap">
 						{
-							movieGenresNames.map((item, key) => {
-								if (key <= 2) {
-									return <span key={uuidv1()} className="movie-card__genre">{item}</span>
+							movieGenresNames.map((genre, index) => {
+								if (index <= 2) {
+									return <Genre key={md5(genre + index)}>{genre}</Genre>
 								}
 							})
 						}
@@ -112,10 +118,6 @@ const MovieCard = (props) => {
 	)
 }
 
-const mapStateToProps = state => ({
-	currentUser: state.user.currentUser,
-})
-
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleSetCurrentMoviePage: (selectedMovie) => dispatch(setCurrentMovie(selectedMovie)),
@@ -124,4 +126,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MovieCard);
+export default connect(null, mapDispatchToProps)(MovieCard);

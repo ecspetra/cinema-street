@@ -7,6 +7,7 @@ import SearchCard from "../SearchCard/SearchCard";
 import InfoText from "../InfoText/InfoText";
 import {v1 as uuidv1} from "uuid";
 import './assets/index.scss';
+import md5 from "md5";
 
 const SearchList = (props) => {
 
@@ -47,8 +48,6 @@ const SearchList = (props) => {
 
 	const isShowMoreButton = isResultsExist && isSearchListLoaded;
 
-	console.log(linkToFetch, searchResults);
-
 	return (
 		<>
 			{
@@ -58,7 +57,7 @@ const SearchList = (props) => {
 							{
 								searchResults.length > 0 && searchResults.map((result) => {
 									return (
-										<SearchCard result={result} key={uuidv1()} isMovieCard={isMovieList} />
+										<SearchCard result={result} key={md5(result.id)} isMovieCard={isMovieList} />
 									)
 								})
 							}

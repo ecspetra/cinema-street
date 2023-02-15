@@ -4,16 +4,24 @@ import './assets/index.scss';
 
 const Button = (props) => {
 
-	const { children, buttonOnClickFunction, className, context } = props;
+	const { children, buttonOnClickFunction, className, context, buttonType = "button", isEventNeeded = false } = props;
 
 	const buttonClassNames = classNames('main-button', className, {
 		'main-button--filled': context === 'filled',
 		'main-button--remove': context === 'remove',
 		'main-button--cancel': context === 'cancel',
-	})
+	});
 
 	return (
-		<button className={buttonClassNames} onClick={() => {buttonOnClickFunction()}}>{children}</button>
+		<>
+			{
+				buttonType === "button" ? (
+					<button type={buttonType} className={buttonClassNames} onClick={isEventNeeded ? (event) => buttonOnClickFunction(event) : () => buttonOnClickFunction()}>{children}</button>
+				) : (
+					<button type={buttonType} className={buttonClassNames}>{children}</button>
+				)
+			}
+		</>
 	)
 }
 

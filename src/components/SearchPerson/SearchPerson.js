@@ -1,18 +1,20 @@
 import React, { useRef, useState } from "react";
 import SearchList from "../SearchList/SearchList";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
-import classNames from "classnames";
-import Error from "../Error/Error";
-import {LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME} from "../../functions/linksToFetch";
+import { LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME } from "../../functions/linksToFetch";
 import Button from "../Button/Button";
 import './assets/index.scss';
+import Input from "../Input/Input";
 
 const SearchPerson = () => {
 
 	const searchInputRef = useRef();
 	const linkToFetchPersons = useRef();
 	const [isShowSearchList, setIsShowSearchList] = useState(false);
-	const [isShowError, setIsShowError] = useState(false);
+	const [error, setError] = useState({
+		errorText: '',
+		isShowError: false,
+	});
 
 	const handleSearch = async (event) => {
 		event.preventDefault();
@@ -22,13 +24,9 @@ const SearchPerson = () => {
 			linkToFetchPersons.current = LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME.replace('{personName}', searchInputRef.current.value.replace(/ /g, "+"));
 			setIsShowSearchList(true);
 		} else {
-			setIsShowError(true);
+			setError({errorText: '', isShowError: false});
 		}
 	}
-
-	const searchInputClassNames = classNames('search-person__title-input', {
-		'search-person__title-input--error': isShowError,
-	});
 
 	return (
 		<div className="search-person">
@@ -37,12 +35,9 @@ const SearchPerson = () => {
 			</div>
 			<form className="search-person__form" onSubmit={handleSearch}>
 				<div className="search-person__input-wrap">
-					<input ref={searchInputRef} onChange={() => {handleChangeInputValue(searchInputRef, setIsShowError)}} className={searchInputClassNames} />
-					{
-						isShowError && <Error>Search field shouldn't be empty</Error>
-					}
+					<Input inputRef={searchInputRef} isValid={!error.isShowError} errorText={error.errorText} onChangeFunction={() => {handleChangeInputValue(searchInputRef, setError)}} />
 				</div>
-				<Button context={'filled'} className="search-person__button" type="submit">Search</Button>
+				<Button buttonType={"submit"} context={'filled'} className="search-person__button">Search</Button>
 			</form>
 			{
 				isShowSearchList && (

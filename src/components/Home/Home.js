@@ -1,18 +1,18 @@
 import React from "react";
-import MovieList from "../MovieList/MovieList";
+import MoviesList from "../MoviesList/MoviesList";
 import UpcomingMovies from "../UpcomingMovies/UpcomingMovies";
 import { DEFAULT_LINK_TO_FETCH_MOVIES } from '../../functions/linksToFetch';
 import SearchMovie from "../SearchMovie/SearchMovie";
 
-const Home = (props) => {
+const Home = () => {
 
 	return (
 		<div className="home">
 			<h1>Upcoming movies</h1>
-			<UpcomingMovies upcomingMovieVideo={props.upcomingMovieVideo} />
+			<UpcomingMovies />
 			<SearchMovie />
 			<h1>Discover movies</h1>
-			<MovieList linkToFetch={DEFAULT_LINK_TO_FETCH_MOVIES} />
+			<MoviesList linkToFetch={DEFAULT_LINK_TO_FETCH_MOVIES} />
 		</div>
 	)
 }

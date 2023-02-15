@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import fetchMoreResults from "../../functions/fetchMoreResults";
 import { clearFavoriteMovies, clearMovies, setFavoriteMovies, setGenres, setMovies } from "../../actions";
@@ -9,12 +9,13 @@ import MoreButton from "../MoreButton/MoreButton";
 import Loader from "../Loader/Loader";
 import getGenres from "../../functions/getGenres";
 import InfoText from "../InfoText/InfoText";
-import {v1 as uuidv1} from "uuid";
 import './assets/index.scss';
+import md5 from "md5";
+import UserContext from "../UserContext/UserContext";
 
 const MoviesList = (props) => {
 
-	const { currentUser, isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleSetGenres } = props;
+	const { isFavoriteMoviesList, handleSetFavoriteMovies, handleClearFavoriteMovies, genres, movies, favoriteMovies, linkToFetch, handleClearMovies, handleSetMovies, handleSetGenres } = props;
 
 	const onMovieListUnmount = useRef();
 	onMovieListUnmount.current = () => {
@@ -27,6 +28,9 @@ const MoviesList = (props) => {
 		return () => onMovieListUnmount.current();
 	}, []);
 
+	const { currentUser } = useContext(UserContext);
+
+	const isFavoriteMoviesListFilled = useRef(null);
 	const initialListLength = 20;
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
 	const [isMovieListLoaded, setIsMovieListLoaded] = useState(true);
@@ -104,6 +108,8 @@ const MoviesList = (props) => {
 				handleSetFavoriteMovies(data.dataFromResponse);
 			}
 		});
+
+		isFavoriteMoviesListFilled.current = true;
 	}
 
 	const getMoviesList = () => {
@@ -113,12 +119,12 @@ const MoviesList = (props) => {
 		if (isFavoriteMoviesList) {
 			movies = moviesList && moviesList.map((movie, index) => {
 				if (index < maxListLength) {
-					return <MovieCard movie={movie.data.movie} key={uuidv1()} genres={genres} handleFillFavoriteMoviesList={handleFillFavoriteMoviesList} />
+					return <MovieCard movie={movie.data.movie} key={md5(movie.data.movie.id + movie.data.movie.title)} genres={genres} handleFillFavoriteMoviesList={handleFillFavoriteMoviesList} isFavoriteMoviesList />
 				}
 			})
 		} else {
 			movies = moviesList && moviesList.map((movie) => {
-				return <MovieCard movie={movie} key={uuidv1()} genres={genres} />
+				return <MovieCard movie={movie} key={md5(movie.id + movie.title)} genres={genres} />
 			})
 		}
 
@@ -128,8 +134,6 @@ const MoviesList = (props) => {
 	const handleIsShowMoreButton = () => {
 		if (isMovieListLoaded === true && moviesList.length !== 0 && isLastData === false) {
 			return true;
-		} else if (moviesList.length <= initialListLength) {
-			return false;
 		} else return false;
 	}
 
@@ -170,6 +174,12 @@ const MoviesList = (props) => {
 
 	useEffect(() => {
 		setIsShowMoreButton(handleIsShowMoreButton());
+
+		if (isFavoriteMoviesList && isFavoriteMoviesListFilled.current === true) {
+			if (moviesList.length === initialListLength) {
+				setIsLastData(true);
+			}
+		}
 	}, [moviesList, isLastData]);
 
 	return (
@@ -178,7 +188,7 @@ const MoviesList = (props) => {
 				moviesList.length === 0 && isMovieListLoaded
 					? <InfoText>{isFavoriteMoviesList ? 'Movies you add to favorites will be displayed here' : 'Movie list is empty'}</InfoText>
 					: <>
-						<div className="movie-list">
+						<div className="movies-list">
 							{getMoviesList()}
 							{!isMovieListLoaded && <Loader>Loading movies</Loader>}
 						</div>
@@ -195,7 +205,6 @@ const mapStateToProps = state => ({
 	movies: state.movies.uploadedMovies,
 	genres: state.genres.uploadedGenres,
 	favoriteMovies: state.favoriteMovies.favoriteMovies,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

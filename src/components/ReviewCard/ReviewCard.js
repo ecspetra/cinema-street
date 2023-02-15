@@ -1,5 +1,4 @@
-import React, {forwardRef, useEffect, useRef, useState} from "react";
-import default_user_icon from "../App/assets/icons/default-user.svg";
+import React, { forwardRef, useEffect, useState, useContext } from "react";
 import { removeMyReview, setMyReview } from "../../actions";
 import { connect } from "react-redux";
 import { onValue, push, set, ref, remove } from "firebase/database";
@@ -16,15 +15,17 @@ import DropdownOption from "../DropdownOption/DropdownOption";
 import DeleteIcon from "../App/assets/icons/DeleteIcon";
 import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
-import { addDefaultImage } from "../../functions/addDefaultImage";
-import defaultUserImage from "../App/assets/icons/default-user.svg";
 import MoreButton from "../MoreButton/MoreButton";
-import {CSSTransition} from "react-transition-group";
+import { CSSTransition } from "react-transition-group";
 import './assets/index.scss';
+import UserContext from "../UserContext/UserContext";
+import UserIcon from "../UserIcon/UserIcon";
 
 const ReviewCard = forwardRef((props, reviewCardRef) => {
 
-	const { userID, movieID, reviewID, userIconPath, userName, reviewText, reviewDate, likes, dislikes, replies, usersReviews, currentUser, handleSetMyReview, handleRemoveMyReview } = props;
+	const { userID, movieID, reviewID, userIconPath, userName, reviewText, reviewDate, likes, dislikes, replies, usersReviews, handleRemoveMyReview, getMyReviewsForMovies } = props;
+
+	const { currentUser } = useContext(UserContext);
 
 	const checkIfReviewLikedByCurrentUser = () => {
 		if (likes !== 0) {
@@ -101,7 +102,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			},
 		});
 
-		props.getMyReviewsForMovies();
+		getMyReviewsForMovies();
 		setIsShowEditReviewForm(false);
 	}
 
@@ -232,7 +233,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			}
 		});
 
-		props.getMyReviewsForMovies();
+		getMyReviewsForMovies();
 	}
 
 	const handleDislikeReview = (reviewID) => {
@@ -328,7 +329,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			}
 		});
 
-		props.getMyReviewsForMovies();
+		getMyReviewsForMovies();
 	}
 
 	const handleReplyOnReview = (replyInfo, reviewID) => {
@@ -698,7 +699,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 
 	useEffect(() => {
 		setIsMounted(true);
-	}, [])
+	}, []);
 
 	return (
 		<CSSTransition
@@ -709,7 +710,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		>
 			<div className="review-card" ref={reviewCardRef}>
 				<div className="review-card__user-wrap">
-					<img className="review-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={userIconPath === null ? default_user_icon : userIconPath} alt="user-avatar" />
+					<UserIcon isUserFromAPI={userID === 'userFromAPI'} profileImageSrc={userIconPath} profileLink={userID} />
 					<div className="review-card__user-info">
 						<div className="review-card__username">
 							{userName}
@@ -756,7 +757,8 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 								if (index < maxRepliesListLength) {
 									return <ReplyCard
 										reply={item}
-										userID={currentUser.uid}
+										userID={item.userID}
+										userIconPath={item.userAvatar}
 										handleLikeReply={handleLikeReply}
 										handleDislikeReply={handleDislikeReply}
 										deleteReplyFromReview={deleteReplyFromReview}
@@ -794,7 +796,6 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 
 const mapStateToProps = state => ({
 	usersReviews: state.reviews.uploadedReviews,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import CollectionButton from "../CollectionButton/CollectionButton";
 import PersonsList from "../PersonsList/PersonsList";
 import BackdropsList from "../BackdropsList/BackdropsList";
 import ReviewsList from "../ReviewsList/ReviewsList";
-import MovieList from "../MovieList/MovieList";
+import MoviesList from "../MoviesList/MoviesList";
 import ProductionCompany from "../ProductionCompany/ProductionCompany";
 import Rating from "../Rating/Rating";
 import { LINK_TO_FETCH_SIMILAR_MOVIES } from '../../functions/linksToFetch';
 import MyMark from "../MyMark/MyMark";
 import NewReviewForm from "../NewReviewForm/NewReviewForm";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
-import { getDatabase, push, ref } from "firebase/database";
+import { getDatabase, ref } from "firebase/database";
 import { connect } from "react-redux";
 import { clearCurrentMoviePage, removeFromFavoriteMovies } from "../../actions";
 import postMovieToDataBase from "../../functions/postMovieToDataBase";
@@ -26,16 +26,19 @@ import TaglineIcon from "../App/assets/icons/TaglineIcon";
 import FlagIcon from "../App/assets/icons/FlagIcon";
 import classNames from "classnames";
 import Plyr from "plyr-react";
-import {v1 as uuidv1} from "uuid";
-import {addDefaultImage} from "../../functions/addDefaultImage";
+import { addDefaultImage } from "../../functions/addDefaultImage";
 import defaultMovieImage from "../App/assets/icons/default-movie.svg";
 import './assets/index.scss';
+import md5 from "md5";
+import UserContext from "../UserContext/UserContext";
 
 const MoviePage = (props) => {
 
-	const { currentUser, currentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
+	const { currentMoviePage, handleClearCurrentMoviePage, handleRemoveFromFavoriteMovies } = props;
 
 	const isCurrentMovieLoaded = currentMoviePage !== null && Object.values(currentMoviePage) !== null;
+
+	const { currentUser } = useContext(UserContext);
 
 	let currentMovieInfo;
 	let currentMovieCredits;
@@ -75,8 +78,8 @@ const MoviePage = (props) => {
 			clearTimeout(infoPopupTimerRef.current);
 		}
 
-		await postMovieToDataBase(database, currentMovieInfo, currentUser.uid);
-		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(isMovieExistsInCollection => {
+		await postMovieToDataBase(database, currentMovieInfo, currentUser);
+		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id, currentUser).then(isMovieExistsInCollection => {
 			setIsMovieFromCollection(isMovieExistsInCollection);
 
 			infoPopupTextRef.current = getInfoPopupText('add', isMovieExistsInCollection, 'Movie added to favorites successfully');
@@ -101,8 +104,8 @@ const MoviePage = (props) => {
 			clearTimeout(infoPopupTimerRef.current);
 		}
 
-		await removeMovieFromCollection(postListRef, currentMovieInfo, handleRemoveFromFavoriteMovies);
-		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(isMovieExistsInCollection => {
+		await removeMovieFromCollection(postListRef, currentMovieInfo, currentUser, handleRemoveFromFavoriteMovies);
+		checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id, currentUser).then(isMovieExistsInCollection => {
 			setIsMovieFromCollection(isMovieExistsInCollection);
 
 			infoPopupTextRef.current = getInfoPopupText('remove', isMovieExistsInCollection, 'Movie removed from favorites successfully');
@@ -131,7 +134,7 @@ const MoviePage = (props) => {
 
 	useEffect(() => {
 		if (isCurrentMovieLoaded) {
-			checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id).then(data => setIsMovieFromCollection(data));
+			checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id, currentUser).then(data => setIsMovieFromCollection(data));
 			videoSrcRef.current = {
 				type: "video",
 				sources: [
@@ -179,7 +182,7 @@ const MoviePage = (props) => {
 									<p className="movie-page__genres">
 										{
 											currentMovieInfo && currentMovieInfo.genres.map((item, index) => {
-												return <span className="movie-page__genres-item" key={uuidv1()}>{item.name + (index !== (currentMovieInfo.genres.length - 1) ? ', ' : '')}</span>
+												return <span className="movie-page__genres-item" key={md5(item.id + index)}>{item.name + (index !== (currentMovieInfo.genres.length - 1) ? ', ' : '')}</span>
 											})
 										}
 									</p>
@@ -256,7 +259,7 @@ const MoviePage = (props) => {
 							</div>
 							<div className="movie-page__similar-movies-wrap">
 								<h1>Similar movies</h1>
-								<MovieList linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', currentMovieInfo.id)} />
+								<MoviesList linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', currentMovieInfo.id)} />
 							</div>
 						</div>
 						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>
@@ -273,7 +276,6 @@ const MoviePage = (props) => {
 
 const mapStateToProps = state => ({
 	currentMoviePage: state.currentMoviePage.currentMoviePage,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

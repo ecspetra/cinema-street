@@ -1,21 +1,22 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { push, ref, set } from "firebase/database";
 import { database } from "../../firebase";
-import { v1 as uuidv1 } from 'uuid';
-import { connect } from "react-redux";
-import { addDefaultImage } from "../../functions/addDefaultImage";
-import defaultUserImage from "../App/assets/icons/default-user.svg";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import classNames from "classnames";
 import Error from "../Error/Error";
 import './assets/index.scss';
 import Button from "../Button/Button";
+import md5 from "md5";
+import UserContext from "../UserContext/UserContext";
+import UserIcon from "../UserIcon/UserIcon";
 
 const NewReviewForm = (props) => {
 
 	const [isShowError, setIsShowError] = useState(false);
 
-	const { reviewID, reviewCardRef, movieID, handleReplyOnReview, isShowReplyForm, setIsShowReplyForm, isReplyForm, currentUser } = props;
+	const { reviewID, reviewCardRef, movieID, handleReplyOnReview, isShowReplyForm, setIsShowReplyForm, isReplyForm } = props;
+
+	const { currentUser } = useContext(UserContext);
 
 	let reviewTextRef = useRef();
 
@@ -32,7 +33,7 @@ const NewReviewForm = (props) => {
 				const replyInfo = {
 					userID: currentUser.uid,
 					movieID: movieID,
-					id: uuidv1(),
+					id: md5(currentUser.uid + movieID),
 					likes: 0,
 					dislikes: 0,
 					userAvatar: currentUser.photoURL,
@@ -49,7 +50,7 @@ const NewReviewForm = (props) => {
 					review: {
 						userID: currentUser.uid,
 						movieID: movieID,
-						id: uuidv1(),
+						id: md5(currentUser.uid + movieID),
 						likes: 0,
 						dislikes: 0,
 						userAvatar: currentUser.photoURL,
@@ -110,7 +111,7 @@ const NewReviewForm = (props) => {
 				!isReplyForm && <h3 className="new-review-form__title">Leave your feedback</h3>
 			}
 			<div className="new-review-form__user-wrap">
-				<img className="new-review-form__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={currentUser.photoURL === null ? defaultUserImage : currentUser.photoURL} alt="user-avatar" />
+				<UserIcon profileLink={currentUser.uid} />
 				<div className="new-review-form__user-info">
 					<div className="new-review-form__username">{currentUser.displayName}</div>
 				</div>
@@ -123,14 +124,10 @@ const NewReviewForm = (props) => {
 				{
 					isReplyForm && <Button context={'cancel'} buttonOnClickFunction={() => {handleCancelButtonClick()}}>Cancel</Button>
 				}
-				<Button context={'filled'} type="submit">{isReplyForm ? 'Send reply' : 'Send review'}</Button>
+				<Button context={'filled'} buttonType={"submit"}>{isReplyForm ? 'Send reply' : 'Send review'}</Button>
 			</div>
 		</form>
 	)
 }
 
-const mapStateToProps = state => ({
-	currentUser: state.user.currentUser,
-});
-
-export default connect(mapStateToProps)(NewReviewForm);
+export default NewReviewForm;

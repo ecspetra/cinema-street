@@ -1,6 +1,6 @@
 import { get } from "firebase/database";
 
-const checkIfMovieExistsInCollection = (postListRef, movieID, isMovieNeeded = false) => {
+const checkIfMovieExistsInCollection = (postListRef, movieID, currentUser, isMovieNeeded = false) => {
 	return new Promise((resolve) => {
 		get(postListRef).then((snapshot) => {
 
@@ -12,9 +12,9 @@ const checkIfMovieExistsInCollection = (postListRef, movieID, isMovieNeeded = fa
 					data: childSnapshot.val(),
 				}
 
-				if (movieID === favoriteMovie.data.movie.id && isMovieNeeded === true) {
+				if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.uid && isMovieNeeded === true) {
 					movie = favoriteMovie;
-				} else if (movieID === favoriteMovie.data.movie.id && isMovieNeeded === false) {
+				} else if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.uid && isMovieNeeded === false) {
 					movie = true;
 				}
 			});

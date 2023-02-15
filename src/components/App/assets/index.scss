@@ -1,12 +1,12 @@
 .app {
   &__content {
     position: absolute;
-    top: 200px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 32px);
     max-width: 1140px;
     margin: 0 auto;
-    padding-bottom: 60px;
+    padding: 200px 0 60px;
   }
 }

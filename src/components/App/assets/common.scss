@@ -54,22 +54,23 @@ button {
 .login-form {
     width: 100vw;
     height: 100vh;
-    position: absolute;
-    top: 50%;
+    position: fixed;;
+    top: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: $text-color-extra-light;
     z-index: 3;
 
     &__content {
         width: 100%;
         max-width: 400px;
-        background-color: #ececec;
         padding: 20px;
         text-align: center;
+        border-radius: 12px;
+        background-color: rgba($wrap-background-color, .8);
+        box-shadow: 0 30px 30px rgba($extra-dark-color, .5);
     }
 
     &__field {
@@ -126,7 +127,32 @@ button {
     }
 }
 
+.home {
+    .movie-card-wrap-enter {
+        opacity: 1;
+    }
 
+    .movie-card-wrap-enter-done {
+        opacity: 1;
+    }
+
+    .movie-card-wrap-enter-active {
+        opacity: 1;
+    }
+
+    .movie-card-wrap-exit {
+        opacity: 1;
+    }
+
+    .movie-card-wrap-exit-active {
+        opacity: 1;
+    }
+
+    .movie-card-wrap-exit-done {
+        opacity: 1;
+        transform: none;
+    }
+}
 
 .close-icon {
     path {
@@ -160,6 +186,10 @@ button {
 .arrow-icon {
     width: 20px;
     height: 20px;
+}
+
+input[type='file'] {
+    opacity: 0;
 }
 
 @keyframes default-loader-animation {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	LINK_TO_FETCH_SEARCH_MOVIES_BY_GENRE,
 	LINK_TO_FETCH_SEARCH_MOVIES_BY_TITLE
@@ -10,10 +10,9 @@ import getGenres from "../../functions/getGenres";
 import Select from "../Select/Select";
 import SelectOption from "../SelectOption/SelectOption";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
-import classNames from "classnames";
-import Error from "../Error/Error";
 import Button from "../Button/Button";
 import './assets/index.scss';
+import Input from "../Input/Input";
 
 const SearchMovie = (props) => {
 
@@ -26,7 +25,10 @@ const SearchMovie = (props) => {
 	const [searchMethod, setSearchMethod] = useState('title');
 	const [isShowSearchList, setIsShowSearchList] = useState(false);
 	const [genresList, setGenresList] = useState([]);
-	const [isShowError, setIsShowError] = useState(false);
+	const [error, setError] = useState({
+		errorText: '',
+		isShowError: false,
+	});
 
 	let linkToFetchMoviesByTitle;
 	let linkToFetchMoviesByGenre;
@@ -37,7 +39,7 @@ const SearchMovie = (props) => {
 			setIsTitleSearchMethod(true);
 		} else {
 			setIsTitleSearchMethod(false);
-			setIsShowError(false);
+			setError({errorText: '', isShowError: false});
 			searchSelectRef.current = genresList[0];
 		}
 		setIsShowSearchList(false);
@@ -63,6 +65,7 @@ const SearchMovie = (props) => {
 
 	const handleSearch = async (event) => {
 		event.preventDefault();
+
 		await setIsShowSearchList(false);
 
 		if (searchMethod === 'title') {
@@ -70,7 +73,7 @@ const SearchMovie = (props) => {
 				linkToFetchMovies.current = getLinkToFetchMovies();
 				setIsShowSearchList(true);
 			} else {
-				setIsShowError(true);
+				setError({errorText: 'Search field shouldn\'t be empty', isShowError: true});
 			}
 		} else {
 			linkToFetchMovies.current = getLinkToFetchMovies();
@@ -89,16 +92,6 @@ const SearchMovie = (props) => {
 		})
 	}, []);
 
-	useEffect(() => {
-		if (isTitleSearchMethod === true) {
-			searchInputRef.current.focus();
-		}
-	}, [isTitleSearchMethod]);
-
-	const searchInputClassNames = classNames('search-movie__title-input', {
-		'search-movie__title-input--error': isShowError,
-	})
-
 	return (
 		<div className="search-movie">
 			<div className="search-movie__title-wrap">
@@ -113,10 +106,7 @@ const SearchMovie = (props) => {
 					searchMethod === 'title'
 						? (
 							<div className="search-movie__input-wrap">
-								<input ref={searchInputRef} onChange={() => {handleChangeInputValue(searchInputRef, setIsShowError)}} className={searchInputClassNames} />
-								{
-									isShowError && <Error>Search field shouldn't be empty</Error>
-								}
+								<Input inputRef={searchInputRef} isValid={!error.isShowError} errorText={error.errorText} isInFocus={isTitleSearchMethod} onChangeFunction={() => {handleChangeInputValue(searchInputRef, setError)}} />
 							</div>
 						)
 						: (
@@ -127,7 +117,7 @@ const SearchMovie = (props) => {
 							</Select>
 						)
 				}
-				<Button context={'filled'} className="search-movie__button" type="submit">Search</Button>
+				<Button buttonType={"submit"} context={'filled'} className="search-movie__button">Search</Button>
 			</form>
 			{
 				isShowSearchList && (

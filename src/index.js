@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';

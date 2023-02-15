@@ -2,15 +2,15 @@ import React, { forwardRef, useEffect, useState } from "react";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import { connect } from "react-redux";
 import { onValue, ref } from "firebase/database";
-import { database } from "../../firebase";
 import { setMyReview } from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import './assets/index.scss';
+import { database } from "../../firebase";
 
 const ReviewsList = forwardRef((props, reviewCardRef) => {
 
-	const { currentUser, movieID, handleSetMyReview } = props;
+	const { movieID, handleSetMyReview } = props;
 
 	const reviewsListRef = ref(database, 'reviews');
 	const apiReviews = props.reviews;
@@ -92,11 +92,10 @@ const ReviewsList = forwardRef((props, reviewCardRef) => {
 		return <ReviewCard
 			ref={reviewCardRef}
 			getMyReviewsForMovies={getMyReviewsForMovies}
-			userID={currentUser.uid}
+			userID={review.data.review.userID}
 			movieID={movieID}
 			reviewID={review.data.review.id}
 			key={review.data.review.id}
-			userIconPath={review.data.review.userAvatar}
 			userName={review.data.review.displayName}
 			reviewText={review.data.review.reviewText}
 			reviewDate={review.data.review.reviewDate}
@@ -138,23 +137,23 @@ const ReviewsList = forwardRef((props, reviewCardRef) => {
 		<>
 			{
 				generalReviews.length !== 0 ? (
-					<div className="reviews-list">
-						{generalReviews.length && generalReviews.map((review, index) => {
-							if (index < maxResultsLength) {
-								if (review.url) {
-									const apiReview = getAPIReviews(review);
-									return apiReview;
-								} else {
-									const userReview = getUsersReviews(review);
-									return userReview;
+						<div className="reviews-list">
+							{generalReviews.length && generalReviews.map((review, index) => {
+								if (index < maxResultsLength) {
+									if (review.url) {
+										const apiReview = getAPIReviews(review);
+										return apiReview;
+									} else {
+										const userReview = getUsersReviews(review);
+										return userReview;
+									}
 								}
+							})}
+							{
+								isShowMoreButton && <MoreButton listLength={generalReviews.length} maxListLength={maxResultsLength} moreButtonOnClickFunction={getReviewsList} />
 							}
-						})}
-						{
-							isShowMoreButton && <MoreButton listLength={generalReviews.length} maxListLength={maxResultsLength} moreButtonOnClickFunction={getReviewsList} />
-						}
-					</div>
-				)
+						</div>
+					)
 					: <InfoText>No reviews yet</InfoText>
 			}
 		</>
@@ -164,7 +163,6 @@ const ReviewsList = forwardRef((props, reviewCardRef) => {
 
 const mapStateToProps = state => ({
 	usersReviews: state.reviews.uploadedReviews,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { clearCurrentPersonPage, removeFromFavoritePersons } from "../../actions";
 import defaultPersonImage from "../App/assets/icons/default-person.svg";
@@ -12,20 +12,23 @@ import checkIfPersonExistsInCollection from "../../functions/checkIfPersonExists
 import { addDefaultImage } from "../../functions/addDefaultImage";
 import Modal from "../Modal/Modal";
 import InfoPopup from "../InfoPopup/InfoPopup";
-import MovieList from "../MovieList/MovieList";
+import MoviesList from "../MoviesList/MoviesList";
 import { LINK_TO_FETCH_MOVIES_FOR_CURRENT_PERSON } from "../../functions/linksToFetch";
 import DeletePersonFromCollectionPopup from "../Popups/DeletePersonFromCollectionPopup/DeletePersonFromCollectionPopup";
-import {getInfoPopupText} from "../../functions/getInfoPopupText";
+import { getInfoPopupText } from "../../functions/getInfoPopupText";
 import FlagIcon from "../App/assets/icons/FlagIcon";
 import CalendarIcon from "../App/assets/icons/CalendarIcon";
 import GenderIcon from "../App/assets/icons/GenderIcon";
 import './assets/index.scss';
+import UserContext from "../UserContext/UserContext";
 
 const PersonPage = (props) => {
 
-	const { currentUser, persons, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons } = props;
+	const { persons, handleClearCurrentPersonPage, handleRemoveFromFavoritePersons } = props;
 
 	const isCurrentPersonLoaded = persons.currentPersonInfo !== null;
+
+	const { currentUser } = useContext(UserContext);
 
 	const getPersonGender = () => {
 		if (persons.currentPersonInfo.gender === 1) {
@@ -158,7 +161,7 @@ const PersonPage = (props) => {
 						</div>
 						<div className="person-page__movies">
 							<h1>Movies with {currentPerson.name}</h1>
-							<MovieList linkToFetch={linkToFetchCurrentPersonMovies} />
+							<MoviesList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
 						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>
 							<InfoPopup title={infoPopupTextRef.current !== undefined ? infoPopupTextRef.current.resultText : null} />
@@ -174,7 +177,6 @@ const PersonPage = (props) => {
 
 const mapStateToProps = state => ({
 	persons: state.persons,
-	currentUser: state.user.currentUser,
 })
 
 const mapDispatchToProps = (dispatch) => {

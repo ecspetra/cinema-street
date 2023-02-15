@@ -18,7 +18,6 @@ import {
     clearCurrentPersonPage,
     setCurrentPersonPage
 } from "../../actions";
-import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Menu from "../Menu/Menu";
 import TopBanner from "../TopBanner/TopBanner";
@@ -27,28 +26,14 @@ import FavoriteMovies from "../FavoriteMovies/FavoriteMovies";
 import { useLocation } from "react-router";
 import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
-import axios from "axios";
-import {API_KEY} from "../../functions/linksToFetch";
+import useAuthListener from "../../functions/useAuthListener";
+import UserContext from '../UserContext/UserContext';
 
 const App = (props) => {
 
     const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
 
-    const history = useNavigate();
 
-    const auth = getAuth();
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                handleSetUser(user);
-                history('/');
-            } else {
-                history('/login');
-                handleClearUser();
-            }
-        });
-    }, [onAuthStateChanged]);
 
     /////////////////////////////////////////////////// - set current movie page when click back button
 
@@ -72,28 +57,48 @@ const App = (props) => {
         }
     }, [location]);
 
+    const { currentUser } = useAuthListener(handleSetUser, handleClearUser);
+
     return (
-        <div className="app">
-            <Menu auth={auth} />
-            <TopBanner />
-            <div className="app__content">
-                <Routes>
-                    <Route exact path="/" element={<Home />} />
-                    <Route path="/login" element={<Login/>} />
-                    <Route path="/register" element={<Register/>} />
-                    <Route path="/favorite-movies" element={<FavoriteMovies />} />
-                    <Route path="/persons" element={<Persons />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path={"/movie/:id"} element={<MoviePage />} />
-                    <Route path={"/person/:personID"} element={<PersonPage />} />
-                </Routes>
+        <UserContext.Provider value={{ currentUser }}>
+            <div className="app">
+                {
+                    currentUser ? (
+                        <>
+                            <Menu />
+                            <TopBanner />
+                            <div className="app__content">
+                                <Routes>
+                                    <Route exact path="/" element={<Home />} />
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/register" element={<Register />} />
+                                    <Route path="/favorite-movies" element={<FavoriteMovies />} />
+                                    <Route path="/persons" element={<Persons />} />
+                                    <Route path="/profile/:profileID" element={<Profile />} />
+                                    <Route path={"/movie/:id"} element={<MoviePage />} />
+                                    <Route path={"/person/:personID"} element={<PersonPage />} />
+                                </Routes>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <TopBanner />
+                            <div className="app__content">
+                                <Routes>
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/register" element={<Register />} />
+                                </Routes>
+                            </div>
+                        </>
+                    )
+                }
+
             </div>
-        </div>
+        </UserContext.Provider>
     );
 }
 
 const mapStateToProps = state => ({
-    currentUser: state.user.currentUser,
     currentMoviePage: state.currentMoviePage,
 })
 

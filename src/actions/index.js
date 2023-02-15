@@ -181,3 +181,16 @@ export const clearSearchResults = () => {
 		type: actionTypes.CLEAR_SEARCH_RESULTS,
 	}
 }
+
+export const setProfilePage = (user) => {
+	return {
+		type: actionTypes.SET_PROFILE_PAGE,
+		payload: user
+	}
+}
+
+export const clearProfilePage = () => {
+	return {
+		type: actionTypes.CLEAR_PROFILE_PAGE,
+	}
+}

@@ -1,0 +1,13 @@
+@import '../../App/assets/colors.module';
+
+.genre {
+	font-size: 10px;
+	line-height: 1;
+	font-weight: 500;
+	margin: 0 4px 4px 0;
+	padding: 3px 8px;
+	border-radius: 8px;
+	color: $text-color-light;
+	text-transform: uppercase;
+	background-image: linear-gradient(to right, rgba($main-color, .1), rgba($additional-color-1, .1));
+}

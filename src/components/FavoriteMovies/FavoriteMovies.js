@@ -1,14 +1,24 @@
-import React from "react";
-import MovieList from "../MovieList/MovieList";
+import React, { useContext } from "react";
+import MoviesList from "../MoviesList/MoviesList";
+import UserContext from "../UserContext/UserContext";
 
 const FavoriteMovies = () => {
 
+	const { currentUser } = useContext(UserContext);
+
 	return (
 		<>
-			<h1>Favorite movies</h1>
-			<div className="favorite-movie-list">
-				<MovieList isFavoriteMoviesList />
-			</div>
+			{
+				currentUser ? (
+					<>
+						<h1>Favorite movies</h1>
+						<div className="favorite-movie-list">
+							<MoviesList isFavoriteMoviesList />
+						</div>
+					</>
+				) : 'Loading'
+			}
+
 		</>
 	)
 }

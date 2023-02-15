@@ -8,13 +8,12 @@ import DropdownOption from "../DropdownOption/DropdownOption";
 import DeleteIcon from "../App/assets/icons/DeleteIcon";
 import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
-import { addDefaultImage } from "../../functions/addDefaultImage";
-import defaultUserImage from "../App/assets/icons/default-user.svg";
 import './assets/index.scss';
+import UserIcon from "../UserIcon/UserIcon";
 
 const ReplyCard = (props) => {
 
-	const { reply, userID, handleLikeReply, handleDislikeReply, deleteReplyFromReview, editReplyInReview, reviewID } = props;
+	const { reply, userID, userIconPath, handleLikeReply, handleDislikeReply, deleteReplyFromReview, editReplyInReview, reviewID } = props;
 
 	const maxReplyTextLength = 400;
 	const isLongReplyText = reply.replyText.length > maxReplyTextLength;
@@ -83,7 +82,7 @@ const ReplyCard = (props) => {
 	return (
 		<div className={replyCardClassNames}>
 			<div className="reply-card__user-wrap">
-				<img className="reply-card__user-avatar" onError={event => addDefaultImage(event, defaultUserImage)} src={reply.userAvatar === null ? defaultUserImage : reply.userAvatar} alt="user-avatar" />
+				<UserIcon isUserFromAPI={userID === 'userFromAPI'} profileImageSrc={userIconPath} profileLink={userID} />
 				<div className="reply-card__user-info">
 					<div className="reply-card__username">
 						{reply.displayName}

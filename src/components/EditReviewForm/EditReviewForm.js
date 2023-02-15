@@ -60,7 +60,7 @@ const EditReviewForm = (props) => {
 			}
 			<div className="edit-review-form__buttons-wrap">
 				<Button context={'cancel'} buttonOnClickFunction={() => {handleCancelButtonClick()}}>Cancel</Button>
-				<Button context={'filled'} type="submit">Save changes</Button>
+				<Button context={'filled'} buttonType={"submit"}>Save changes</Button>
 			</div>
 		</form>
 	)

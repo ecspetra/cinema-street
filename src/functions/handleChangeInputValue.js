@@ -1,5 +1,5 @@
-export const handleChangeInputValue = (inputRef, setIsShowError) => {
+export const handleChangeInputValue = (inputRef, setError) => {
 	if (inputRef.current.value.length) {
-		setIsShowError(false);
+		setError(false);
 	}
 }

@@ -1,5 +1,4 @@
 import { get } from "firebase/database";
-import {getTotalFavoriteMovies} from "./getMoviesFromDatabase";
 
 export const getTotalFavoritePersons = (postListRef, userID) => {
 	return new Promise((resolve) => {
