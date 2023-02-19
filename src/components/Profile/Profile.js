@@ -3,8 +3,8 @@ import EditProfileForm from "../EditProfileForm/EditProfileForm";
 import './assets/index.scss';
 import UserContext from "../UserContext/UserContext";
 import ImageInput from "../ImageInput/ImageInput";
-import {get, getDatabase, onValue, push, ref, set} from "firebase/database";
-import { addToFriends, clearFriends, clearProfilePage, removeFromFriends } from "../../actions";
+import { get, getDatabase, onValue, push, ref, set } from "firebase/database";
+import { clearFriends, clearProfilePage, removeFromFriends } from "../../actions";
 import { connect } from "react-redux";
 import UserIcon from "../UserIcon/UserIcon";
 import EmailIcon from "../App/assets/icons/EmailIcon";
@@ -16,6 +16,7 @@ import CollectionButton from "../CollectionButton/CollectionButton";
 import { removeUserFromFriends } from "../../functions/removeFriendFromCollection";
 import FriendsList from "../FriendsList/FriendsList";
 import FriendsPopup from "../Popups/FriendsPopup/FriendsPopup";
+import Title from "../Title/Title";
 
 const Profile = (props) => {
 
@@ -186,7 +187,7 @@ const Profile = (props) => {
 							</div>
 							<div className="profile__text-wrap">
 								<div className="profile__user-name-wrap">
-									<h1 className="profile__user-name">{userInfo.data.name}</h1>
+									<Title className="profile__user-name" title={userInfo.data.name} />
 									{
 										isShowEditButton && <Button context={'filled'} className="profile__edit" buttonOnClickFunction={() => {setIsEditState(true)}}>Edit profile</Button>
 									}
@@ -209,10 +210,9 @@ const Profile = (props) => {
 												</div>
 											</div>
 											<div className="profile__friends-list">
-												<h3 className="profile__friends-list-title">Friends</h3>
+												<h3 className="profile__friends-list-title">Friends:</h3>
 												<Button buttonOnClickFunction={() => {handleOpenFriendsPopup()}}>
 													<FriendsList isShortFriendsList={true} isMyFriendsList={userInfo.key === currentUser.uid} userID={userInfo.key} />
-													<span className="profile__friends-list-button-text">Show friends</span>
 												</Button>
 											</div>
 											<h3 className="profile__biography">Additional information:</h3>

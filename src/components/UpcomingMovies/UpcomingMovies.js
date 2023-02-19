@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { setUpcomingMovies } from "../../actions";
 import { API_KEY } from "../../functions/linksToFetch";
 import './assets/index.scss';
+import Title from "../Title/Title";
 
 const UpcomingMovies = (props) => {
 
@@ -127,7 +128,7 @@ const UpcomingMovies = (props) => {
 							<>
 								<img className="upcoming-movies__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + moviePreview.moviePosterPath} alt="movie-poster" />
 								<div className="upcoming-movies__info">
-									<h1 className="upcoming-movies__title">{moviePreview.movieTitle}</h1>
+									<Title className="upcoming-movies__title" title={moviePreview.movieTitle} />
 								</div>
 							</>
 						)

@@ -21,6 +21,7 @@ import CalendarIcon from "../App/assets/icons/CalendarIcon";
 import GenderIcon from "../App/assets/icons/GenderIcon";
 import './assets/index.scss';
 import UserContext from "../UserContext/UserContext";
+import Title from "../Title/Title";
 
 const PersonPage = (props) => {
 
@@ -130,7 +131,7 @@ const PersonPage = (props) => {
 								{!isImageLoaded && <Loader>Loading image</Loader>}
 							</div>
 							<div className="person-page__text-wrap">
-								<h1 className="person-page__name">{currentPerson.name}</h1>
+								<Title className="person-page__name" title={currentPerson.name} />
 								<p className="person-page__role">{currentPerson.known_for_department}</p>
 								<div className="person-page__details-wrap">
 									{currentPerson.place_of_birth && (
@@ -160,7 +161,7 @@ const PersonPage = (props) => {
 							</div>
 						</div>
 						<div className="person-page__movies">
-							<h1>Movies with {currentPerson.name}</h1>
+							<Title className="person-page__name" title={"Movies with `${currentPerson.name}`"} />
 							<MoviesList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
 						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>

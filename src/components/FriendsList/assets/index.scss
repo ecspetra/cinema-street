@@ -3,7 +3,7 @@
 .friends-list {
 	display: flex;
 	justify-content: flex-start;
-	align-items: flex-start;
+	align-items: center;
 	flex-wrap: wrap;
 
 	&__friend {
@@ -16,5 +16,13 @@
 
 	.main-button {
 		width: 100px;
+	}
+
+	&__friends-list-button-text {
+		font-size: 14px;
+		font-weight: 400;
+		color: $text-color-light;
+		margin-left: 10px;
+		padding: 0;
 	}
 }

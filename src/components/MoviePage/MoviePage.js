@@ -31,6 +31,7 @@ import defaultMovieImage from "../App/assets/icons/default-movie.svg";
 import './assets/index.scss';
 import md5 from "md5";
 import UserContext from "../UserContext/UserContext";
+import Title from "../Title/Title";
 
 const MoviePage = (props) => {
 
@@ -178,7 +179,7 @@ const MoviePage = (props) => {
 								</div>
 								<div className="movie-page__info-wrap">
 									{currentMovieInfo.adult && <span>18+</span>}
-									<h1 className="movie-page__title">{currentMovieInfo.title}</h1>
+									<Title className="movie-page__title" title={currentMovieInfo.title} />
 									<p className="movie-page__genres">
 										{
 											currentMovieInfo && currentMovieInfo.genres.map((item, index) => {
@@ -237,28 +238,28 @@ const MoviePage = (props) => {
 								</div>
 							</div>
 							<div className="movie-page__credits-wrap">
-								<h1>Persons</h1>
+								<Title title={"Persons"} />
 								<PersonsList currentMoviePersons={currentMovieCredits} isCurrentMovieCharacter />
 							</div>
 							<div className="movie-page__video-wrap">
-								<h1>Trailer</h1>
+								<Title title={"Trailer"} />
 								<div className="movie-page__video">
 									<Plyr source={videoSrcRef.current} />
 								</div>
 							</div>
 							<div className="movie-page__images-wrap">
-								<h1>Backdrops</h1>
+								<Title title={"Backdrops"} />
 								<BackdropsList backdrops={currentMovieImages.backdrops} />
 							</div>
 							<div className="movie-page__reviews-wrap">
-								<h1>Reviews</h1>
+								<Title title={"Reviews"} />
 								<div className="movie-page__reviews">
 									<ReviewsList ref={reviewCardRef} movieID={currentMovieInfo.id} reviews={currentMovieReviews.results} />
 									<NewReviewForm reviewCardRef={reviewCardRef} movieID={currentMovieInfo.id} />
 								</div>
 							</div>
 							<div className="movie-page__similar-movies-wrap">
-								<h1>Similar movies</h1>
+								<Title title={"Similar movies"} />
 								<MoviesList linkToFetch={LINK_TO_FETCH_SIMILAR_MOVIES.replace('{movieID}', currentMovieInfo.id)} />
 							</div>
 						</div>

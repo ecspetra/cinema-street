@@ -64,6 +64,12 @@
 		max-width: 200px;
 	}
 
+	&__biography-text {
+		color: $text-color-light;
+		font-size: 14px;
+		line-height: 24px;
+	}
+
 	.user-icon {
 		&__image-wrap {
 			width: 212px;
@@ -96,6 +102,10 @@
 			min-height: 0;
 			width: auto;
 			text-transform: none;
+			font-weight: 400;
+			color: $text-color-light;
+			font-size: 14px;
+			line-height: 24px;
 
 			&:before {
 				display: none;
@@ -122,13 +132,5 @@
 				margin-right: 0;
 			}
 		}
-	}
-
-	&__friends-list-button-text {
-		font-size: 14px;
-		font-weight: 400;
-		color: $text-color-light;
-		margin-left: 10px;
-		padding: 0;
 	}
 }

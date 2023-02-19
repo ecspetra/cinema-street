@@ -1,13 +1,14 @@
-import React, { useEffect, useContext, useRef, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { addToFriends, removeFromFriends } from "../../actions";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import UserContext from "../UserContext/UserContext";
 import { getDatabase, ref } from "firebase/database";
-import { fillFriendsList, getFriendsFromDatabase } from "../../functions/getFriendsFromDatabase";
+import { getFriendsFromDatabase } from "../../functions/getFriendsFromDatabase";
 import Friend from "../Friend/Friend";
 import './assets/index.scss';
 import {removeUserFromFriends} from "../../functions/removeFriendFromCollection";
 import Button from "../Button/Button";
+import InfoText from "../InfoText/InfoText";
 
 const FriendsList = (props) => {
 
@@ -38,16 +39,21 @@ const FriendsList = (props) => {
 	return (
 		<div className="friends-list">
 			{
-				friendsList && friendsList.map((user, index) => {
+				friendsList.length ? friendsList.map((user, index) => {
 					return (
-						<div className="friends-list__friend" key={index}>
-							<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
+						<>
+							<div className="friends-list__friend" key={index}>
+								<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
+								{
+									!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
+								}
+							</div>
 							{
-								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
+								isShortFriendsList && friendsList.length && <span className="friends-list__friends-list-button-text">Show friends</span>
 							}
-						</div>
+						</>
 					)
-				})
+				}) : <InfoText>No friends yet</InfoText>
 			}
 		</div>
 	)

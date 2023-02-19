@@ -1,4 +1,4 @@
-import { ref, getDatabase, remove, set } from "firebase/database";
+import { ref, getDatabase, set } from "firebase/database";
 import checkIfFriendExistsInCollection from "./checkIfFriendExistsInCollection";
 
 const removeFriendFromCollection = async (friendsListRef, user, currentUserID, removeFromFriendsFunction) => {

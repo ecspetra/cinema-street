@@ -5,6 +5,7 @@ import { LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME } from "../../functions/linksToFet
 import Button from "../Button/Button";
 import './assets/index.scss';
 import Input from "../Input/Input";
+import Title from "../Title/Title";
 
 const SearchPerson = () => {
 
@@ -31,7 +32,7 @@ const SearchPerson = () => {
 	return (
 		<div className="search-person">
 			<div className="search-person__title-wrap">
-				<h1 className="search-person__title">Search person by name</h1>
+				<Title className="search-person__title" title={"Search person by name"} />
 			</div>
 			<form className="search-person__form" onSubmit={handleSearch}>
 				<div className="search-person__input-wrap">

@@ -12,7 +12,7 @@ const EditProfileForm = (props) => {
 
 	const { setIsEditState, userInfo } = props;
 
-	const [dateOfBirthValue, setDateOfBirthValue] = useState("Unset");
+	const [dateOfBirthValue, setDateOfBirthValue] = useState("No information yet");
 
 	const nameInputRef = useRef();
 	const countryInputRef = useRef();
@@ -92,9 +92,9 @@ const EditProfileForm = (props) => {
 							name: nameInputRef.current.value,
 							email: userFromDatabase.data.email,
 							avatar: userFromDatabase.data.avatar,
-							country: fieldsValues.countryInputValue !== '' ? fieldsValues.countryInputValue : "Unset",
+							country: fieldsValues.countryInputValue !== '' ? fieldsValues.countryInputValue : "No information yet",
 							dateOfBirth: fieldsValues.dateOfBirth,
-							biography: fieldsValues.biographyValue !== '' ? fieldsValues.biographyValue : "Unset",
+							biography: fieldsValues.biographyValue !== '' ? fieldsValues.biographyValue : "No information yet",
 						});
 					}
 				});

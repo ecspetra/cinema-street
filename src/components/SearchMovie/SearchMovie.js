@@ -13,6 +13,7 @@ import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Button from "../Button/Button";
 import './assets/index.scss';
 import Input from "../Input/Input";
+import Title from "../Title/Title";
 
 const SearchMovie = (props) => {
 
@@ -95,7 +96,7 @@ const SearchMovie = (props) => {
 	return (
 		<div className="search-movie">
 			<div className="search-movie__title-wrap">
-				<h1 className="search-movie__title">Search movie by</h1>
+				<Title className="search-movie__title" title={"Search movie by"} />
 				<Select className="search-movie__method-select">
 					<SelectOption onClickAction={() => {getSearchMethod('title')}}>Title</SelectOption>
 					<SelectOption onClickAction={() => {getSearchMethod('genre')}}>Genre</SelectOption>

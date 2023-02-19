@@ -6,6 +6,7 @@ import { getDatabase, ref, set } from "firebase/database";
 import Input from "../Input/Input";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Button from "../Button/Button";
+import Title from "../Title/Title";
 
 const Register = () => {
 
@@ -85,9 +86,9 @@ const Register = () => {
                                 name: auth.currentUser.displayName,
                                 email: auth.currentUser.email,
                                 avatar: auth.currentUser.photoURL,
-                                country: "Unset",
-                                dateOfBirth: "Unset",
-                                biography: "Unset",
+                                country: "No information yet",
+                                dateOfBirth: "No information yet",
+                                biography: "No information yet",
                             }).then(() => {
                                 setIsLoading(false);
                             })
@@ -100,7 +101,7 @@ const Register = () => {
         <div className="registration-form">
             <form className="registration-form__content" onSubmit={handleSubmit}>
                 <div className="registration-form__text-wrap">
-                    <h1 className="registration-form__title">Register to Cinema street</h1>
+                    <Title className="registration-form__title" title={"Register to Cinema street"} />
                     <p className="registration-form__text">Please fill in the fields to enter</p>
                 </div>
                 <div className="registration-form__field">

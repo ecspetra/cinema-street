@@ -29,7 +29,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 
 	const checkIfReviewLikedByCurrentUser = () => {
 		if (likes !== 0) {
-			const currentUsersLike = likes.some(like => like.userID === userID);
+			const currentUsersLike = likes.some(like => like.userID === currentUser.uid);
 			setIsLikedReview(currentUsersLike);
 		} else {
 			setIsLikedReview(false);
@@ -38,7 +38,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 
 	const checkIfReviewDislikedByCurrentUser = () => {
 		if (dislikes !== 0) {
-			const currentUsersDislike = dislikes.some(dislike => dislike.userID === userID);
+			const currentUsersDislike = dislikes.some(dislike => dislike.userID === currentUser.uid);
 			setIsDislikedReview(currentUsersDislike);
 		} else {
 			setIsDislikedReview(false);
@@ -145,7 +145,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		const reviewsWithLikesFromFirebase = [];
 
 		const likeInfo = {
-			userID: userID,
+			userID: currentUser.uid,
 		};
 
 		if (usersReviews.length) {
@@ -161,7 +161,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
-					userID: userID,
+					userID: currentUser.uid,
 					movieID: movieID,
 					id: reviewID,
 					likes: [likeInfo],
@@ -191,7 +191,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
 							likes: [likeInfo],
-							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, userID),
+							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, currentUser.uid),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -205,8 +205,8 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? [...item.data.review.likes, likeInfo] : handleDeleteCurrentUsersLike(item, userID),
-							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, userID),
+							likes: isLikedReview === false ? [...item.data.review.likes, likeInfo] : handleDeleteCurrentUsersLike(item, currentUser.uid),
+							dislikes: isDislikedReview === false ? item.data.review.dislikes : handleDeleteCurrentUsersDislike(item, currentUser.uid),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -218,7 +218,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
-						userID: userID,
+						userID: currentUser.uid,
 						movieID: movieID,
 						id: reviewID,
 						likes: [likeInfo],
@@ -241,7 +241,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		const reviewsWithDislikesFromFirebase = [];
 
 		const dislikeInfo = {
-			userID: userID,
+			userID: currentUser.uid,
 		};
 
 		if (usersReviews.length) {
@@ -257,7 +257,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
-					userID: userID,
+					userID: currentUser.uid,
 					movieID: movieID,
 					id: reviewID,
 					likes: likes,
@@ -286,7 +286,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, userID),
+							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, currentUser.uid),
 							dislikes: [dislikeInfo],
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
@@ -301,8 +301,8 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 							userID: item.data.review.userID,
 							movieID: item.data.review.movieID,
 							id: item.data.review.id,
-							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, userID),
-							dislikes: isDislikedReview === false ? [...item.data.review.dislikes, dislikeInfo] : handleDeleteCurrentUsersDislike(item, userID),
+							likes: isLikedReview === false ? item.data.review.likes : handleDeleteCurrentUsersLike(item, currentUser.uid),
+							dislikes: isDislikedReview === false ? [...item.data.review.dislikes, dislikeInfo] : handleDeleteCurrentUsersDislike(item, currentUser.uid),
 							userAvatar: item.data.review.userAvatar,
 							displayName: item.data.review.displayName,
 							reviewText: item.data.review.reviewText,
@@ -314,7 +314,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
-						userID: userID,
+						userID: currentUser.uid,
 						movieID: movieID,
 						id: reviewID,
 						likes: likes,
@@ -349,7 +349,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 		} else {
 			set(reviewsPostRef, {
 				review: {
-					userID: userID,
+					userID: currentUser.uid,
 					movieID: movieID,
 					id: reviewID,
 					likes: likes ?? 0,
@@ -406,7 +406,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 			} else if (newReview) {
 				set(reviewsPostRef, {
 					review: {
-						userID: userID,
+						userID: currentUser.uid,
 						movieID: movieID,
 						id: reviewID,
 						likes: likes ?? 0,
@@ -480,7 +480,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 						updatedReplyLikes = [...reply.likes, likeInfo];
 						return updatedReplyLikes;
 					} else {
-						return handleDeleteCurrentUserReplyLike(reply, userID);
+						return handleDeleteCurrentUserReplyLike(reply, currentUser.uid);
 					}
 				} else {
 					return [likeInfo];
@@ -492,7 +492,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 				movieID: reply.movieID,
 				id: reply.id,
 				likes: checkReplyForLikes(reply),
-				dislikes: isDislikedReply === false ? reply.dislikes : handleDeleteCurrentUserReplyDislike(reply, userID),
+				dislikes: isDislikedReply === false ? reply.dislikes : handleDeleteCurrentUserReplyDislike(reply, currentUser.uid),
 				userAvatar: reply.userAvatar,
 				displayName: reply.displayName,
 				replyText: reply.replyText,
@@ -545,7 +545,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 						updatedReplyDislikes = [...reply.dislikes, dislikeInfo];
 						return updatedReplyDislikes;
 					} else {
-						return handleDeleteCurrentUserReplyDislike(reply, userID);
+						return handleDeleteCurrentUserReplyDislike(reply, currentUser.uid);
 					}
 				} else {
 					return [dislikeInfo];
@@ -556,7 +556,7 @@ const ReviewCard = forwardRef((props, reviewCardRef) => {
 				userID: reply.userID,
 				movieID: reply.movieID,
 				id: reply.id,
-				likes: isLikedReply === false ? reply.likes : handleDeleteCurrentUserReplyLike(reply, userID),
+				likes: isLikedReply === false ? reply.likes : handleDeleteCurrentUserReplyLike(reply, currentUser.uid),
 				dislikes: checkReplyForDislikes(reply),
 				userAvatar: reply.userAvatar,
 				displayName: reply.displayName,

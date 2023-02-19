@@ -4,6 +4,7 @@ import { LINK_TO_FETCH_PERSONS } from "../../functions/linksToFetch";
 import SearchPerson from "../SearchPerson/SearchPerson";
 import './assets/index.scss';
 import UserContext from "../UserContext/UserContext";
+import Title from "../Title/Title";
 
 const Persons = () => {
 
@@ -15,12 +16,12 @@ const Persons = () => {
 				currentUser !== null ? (
 					<div className="persons">
 						<div className="persons__favorite-list">
-							<h1>Favorite persons</h1>
+							<Title title={"Favorite persons"} />
 							<PersonsList isFavoritePersonsList />
 						</div>
 						<SearchPerson />
 						<div className="persons__general-list">
-							<h1>Discover persons</h1>
+							<Title title={"Discover persons"} />
 							<PersonsList linkToFetch={LINK_TO_FETCH_PERSONS} />
 						</div>
 					</div>

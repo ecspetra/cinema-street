@@ -23,8 +23,8 @@ const CalendarInput = (props) => {
 
 	const handleClearDate = (event) => {
 		event.stopPropagation();
-		handleSetDateInputValue('Unset');
-		dateInputRef.current.value = 'Unset';
+		handleSetDateInputValue('No information yet');
+		dateInputRef.current.value = 'No information yet';
 		setIsShowClearButton(false);
 	}
 

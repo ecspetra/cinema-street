@@ -5,6 +5,7 @@ import Input from "../Input/Input";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Error from "../Error/Error";
 import Button from "../Button/Button";
+import Title from "../Title/Title";
 
 const Login = () => {
 
@@ -67,7 +68,7 @@ const Login = () => {
         <div className="login-form">
             <form className="login-form__content" onSubmit={handleSubmit}>
                 <div className="login-form__text-wrap">
-                    <h1 className="login-form__title">Login to Cinema street</h1>
+                    <Title className="login-form__title" title={"Login to Cinema street"} />
                     <p className="login-form__text">Please enter your data</p>
                 </div>
                 <div className="login-form__field">

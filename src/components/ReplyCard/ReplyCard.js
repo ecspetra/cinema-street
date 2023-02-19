@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import ReactionIcon from "../App/assets/icons/ReactionIcon";
 import classNames from "classnames";
@@ -10,6 +10,7 @@ import EditReviewForm from "../EditReviewForm/EditReviewForm";
 import EditIcon from "../App/assets/icons/EditIcon";
 import './assets/index.scss';
 import UserIcon from "../UserIcon/UserIcon";
+import UserContext from "../UserContext/UserContext";
 
 const ReplyCard = (props) => {
 
@@ -23,7 +24,9 @@ const ReplyCard = (props) => {
 	const [isDislikedReply, setIsDislikedReply] = useState(false);
 	const [replyContent, setReplyContent] = useState();
 
-	const isCurrentUsersReply = reply.userID === userID;
+	const { currentUser } = useContext(UserContext);
+
+	const isCurrentUsersReply = reply.userID === currentUser.uid;
 
 	useEffect(() => {
 		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, isReplyTextHidden, isLongReplyText));
@@ -31,7 +34,7 @@ const ReplyCard = (props) => {
 
 	const checkIfReplyLikedByCurrentUser = () => {
 		if (reply.likes !== 0) {
-			const currentUsersLike = reply.likes.some(like => like.userID === userID);
+			const currentUsersLike = reply.likes.some(like => like.userID === currentUser.uid);
 			setIsLikedReply(currentUsersLike);
 		} else {
 			setIsLikedReply(false);
@@ -40,7 +43,7 @@ const ReplyCard = (props) => {
 
 	const checkIfReplyDislikedByCurrentUser = () => {
 		if (reply.dislikes !== 0) {
-			const currentUsersDislike = reply.dislikes.some(dislike => dislike.userID === userID);
+			const currentUsersDislike = reply.dislikes.some(dislike => dislike.userID === currentUser.uid);
 			setIsDislikedReply(currentUsersDislike);
 		} else {
 			setIsDislikedReply(false);
