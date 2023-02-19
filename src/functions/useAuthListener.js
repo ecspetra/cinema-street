@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 const useAuthListener = (handleSetUser, handleClearUser) => {
-	const [currentUser, setCurrentUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'));
+	const [currentUser, setCurrentUser] = useState(() => JSON.parse(localStorage.getItem('user') || null));
 
 	const auth = getAuth();
 

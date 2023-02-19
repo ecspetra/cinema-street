@@ -18,7 +18,6 @@ import {
     clearCurrentPersonPage,
     setCurrentPersonPage
 } from "../../actions";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Menu from "../Menu/Menu";
 import TopBanner from "../TopBanner/TopBanner";
 import MoviePage from "../MoviePage/MoviePage";
@@ -32,8 +31,6 @@ import UserContext from '../UserContext/UserContext';
 const App = (props) => {
 
     const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
-
-
 
     /////////////////////////////////////////////////// - set current movie page when click back button
 
@@ -59,40 +56,43 @@ const App = (props) => {
 
     const { currentUser } = useAuthListener(handleSetUser, handleClearUser);
 
+    const getContent = () => {
+        if (currentUser === null) {
+            return (
+                <>
+                    <TopBanner />
+                    <div className="app__content">
+                        <Routes>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                        </Routes>
+                    </div>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Menu />
+                    <TopBanner />
+                    <div className="app__content">
+                        <Routes>
+                            <Route exact path="/" element={<Home />} />
+                            <Route path="/favorite-movies" element={<FavoriteMovies />} />
+                            <Route path="/persons" element={<Persons />} />
+                            <Route path="/profile/:profileID" element={<Profile />} />
+                            <Route path={"/movie/:id"} element={<MoviePage />} />
+                            <Route path={"/person/:personID"} element={<PersonPage />} />
+                        </Routes>
+                    </div>
+                </>
+            )
+        }
+    }
+
     return (
         <UserContext.Provider value={{ currentUser }}>
             <div className="app">
-                {
-                    currentUser ? (
-                        <>
-                            <Menu />
-                            <TopBanner />
-                            <div className="app__content">
-                                <Routes>
-                                    <Route exact path="/" element={<Home />} />
-                                    <Route path="/login" element={<Login />} />
-                                    <Route path="/register" element={<Register />} />
-                                    <Route path="/favorite-movies" element={<FavoriteMovies />} />
-                                    <Route path="/persons" element={<Persons />} />
-                                    <Route path="/profile/:profileID" element={<Profile />} />
-                                    <Route path={"/movie/:id"} element={<MoviePage />} />
-                                    <Route path={"/person/:personID"} element={<PersonPage />} />
-                                </Routes>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <TopBanner />
-                            <div className="app__content">
-                                <Routes>
-                                    <Route path="/login" element={<Login />} />
-                                    <Route path="/register" element={<Register />} />
-                                </Routes>
-                            </div>
-                        </>
-                    )
-                }
-
+                {getContent()}
             </div>
         </UserContext.Provider>
     );

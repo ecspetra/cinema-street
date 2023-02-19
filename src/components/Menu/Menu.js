@@ -38,7 +38,7 @@ const Menu = () => {
 				<div className="project-menu__item-wrap">
 					<Link className="project-menu__item" to="/genres">Genres</Link>
 				</div>
-				<div className="project-menu__item-wrap">
+				<div className="project-menu__item-wrap project-menu__item-wrap--user">
 					<UserIcon profileLink={currentUser.uid} />
 				</div>
 				<div className="project-menu__item-wrap">
