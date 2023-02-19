@@ -1,0 +1,32 @@
+@import '../../App/assets/colors.module';
+
+.friend {
+	width: calc(100% - 110px);
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex: 0;
+
+	.user-icon {
+		margin-right: 10px;
+
+		&__image-wrap {
+			width: 36px;
+			height: 36px;
+			margin: 0;
+			outline: none;
+		}
+
+		&__image {
+			width: 36px;
+			height: 36px;
+		}
+	}
+
+	&__name {
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

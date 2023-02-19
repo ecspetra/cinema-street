@@ -19,6 +19,12 @@
 		transform: translateX(-50%);
 		background-color: transparent;
 	}
+
+	&--friends {
+		.friends-list {
+			flex-direction: column;
+		}
+	}
 }
 
 .modal-appear {

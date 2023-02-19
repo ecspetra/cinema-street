@@ -4,10 +4,10 @@ import Loader from "../Loader/Loader";
 
 const CollectionButton = (props) => {
 
-	const { isExistsInCollection, collectionButtonOnClickFunction, children } = props;
+	const { className, isExistsInCollection, collectionButtonOnClickFunction, children } = props;
 	const [isLoaded, setIsLoaded] = useState(false);
 
-	const collectionButtonClassNames = classNames('main-button', {
+	const collectionButtonClassNames = classNames('main-button', className, {
 		'main-button--remove': isExistsInCollection,
 	});
 

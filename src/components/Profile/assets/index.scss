@@ -59,6 +59,11 @@
 		margin: -7px 0 0 20px;
 	}
 
+	&__add-to-friends {
+		margin-top: 30px;
+		max-width: 200px;
+	}
+
 	.user-icon {
 		&__image-wrap {
 			width: 212px;
@@ -80,5 +85,50 @@
 	&__details-wrap {
 		color: $text-color-light;
 		margin-bottom: 25px;
+	}
+
+	&__friends-list {
+		margin-bottom: 30px;
+
+		.main-button {
+			border: none;
+			padding: 0;
+			min-height: 0;
+			width: auto;
+			text-transform: none;
+
+			&:before {
+				display: none;
+			}
+
+			&:hover {
+				box-shadow: none;
+			}
+		}
+
+		.friends-list {
+			&__friend {
+				width: auto;
+				margin: 0;
+
+				&:not(:first-child) {
+					margin: 0 0 0 -10px;
+				}
+			}
+		}
+
+		.friend {
+			.user-icon {
+				margin-right: 0;
+			}
+		}
+	}
+
+	&__friends-list-button-text {
+		font-size: 14px;
+		font-weight: 400;
+		color: $text-color-light;
+		margin-left: 10px;
+		padding: 0;
 	}
 }

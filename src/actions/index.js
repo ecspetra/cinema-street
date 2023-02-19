@@ -194,3 +194,23 @@ export const clearProfilePage = () => {
 		type: actionTypes.CLEAR_PROFILE_PAGE,
 	}
 }
+
+export const addToFriends = (user) => {
+	return {
+		type: actionTypes.SET_FRIENDS,
+		payload: user
+	}
+}
+
+export const removeFromFriends = (key) => {
+	return {
+		type: actionTypes.REMOVE_FROM_FRIENDS,
+		payload: key
+	}
+}
+
+export const clearFriends = () => {
+	return {
+		type: actionTypes.CLEAR_FRIENDS,
+	}
+}
