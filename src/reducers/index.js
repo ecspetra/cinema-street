@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/types';
 import { combineReducers } from "redux";
-import {SET_FRIENDS} from "../actions/types";
 
 const initialUserState = {
 	currentUser: null,
@@ -261,7 +260,7 @@ const profile_page_reducer = (state = initialProfilePageState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_PROFILE_PAGE:
 			return {
-				user: action.payload,
+				profile: action.payload,
 			}
 		case actionTypes.CLEAR_PROFILE_PAGE:
 			return {
@@ -274,7 +273,7 @@ const profile_page_reducer = (state = initialProfilePageState, action) => {
 const friends_reducer = (state = initialFriendsState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_FRIENDS:
-			const friendAlreadyExistsInState = state.friends.some(item => item.key === action.payload.key);
+			const friendAlreadyExistsInState = state.friends.some(item => item.userID === action.payload.userID);
 			if (friendAlreadyExistsInState) {
 				return state;
 			}

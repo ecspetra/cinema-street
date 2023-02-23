@@ -83,6 +83,7 @@ const Register = () => {
                     })
                         .then(() => {
                             set(ref(database, 'users/' + auth.currentUser.uid),  {
+                                userID: auth.currentUser.uid,
                                 name: auth.currentUser.displayName,
                                 email: auth.currentUser.email,
                                 avatar: auth.currentUser.photoURL,
@@ -98,34 +99,35 @@ const Register = () => {
     }
 
     return (
-        <div className="registration-form">
-            <form className="registration-form__content" onSubmit={handleSubmit}>
-                <div className="registration-form__text-wrap">
-                    <Title className="registration-form__title" title={"Register to Cinema street"} />
-                    <p className="registration-form__text">Please fill in the fields to enter</p>
-                </div>
-                <div className="registration-form__field">
-                    <label className="registration-form__label" htmlFor="username">Enter your name</label>
-                    <Input inputRef={usernameInputRef} id="username" isValid={!usernameError.isShowError} errorText={usernameError.usernameErrorText} onChangeFunction={() => {handleChangeInputValue(usernameInputRef, setUsernameError)}} />
-                </div>
-                <div className="registration-form__field">
-                    <label className="registration-form__label" htmlFor="email">Enter your email</label>
-                    <Input inputRef={emailInputRef} id="email" isValid={!emailError.isShowError} errorText={emailError.emailErrorText} onChangeFunction={() => {handleChangeInputValue(emailInputRef, setEmailError)}} />
-                </div>
-                <div className="registration-form__field">
-                    <label className="registration-form__label" htmlFor="password">Enter your password</label>
-                    <Input inputRef={passwordInputRef} id="password" isValid={!passwordError.isShowError} errorText={passwordError.passwordErrorText} onChangeFunction={() => {handleChangeInputValue(passwordInputRef, setPasswordError)}} />
-                </div>
-                <Button buttonType={"submit"} context={'filled'} className="registration-form__button">Submit</Button>
-                <div className="registration-form__footer">
-                    Already a user?
-                    <Link to="/login">Login</Link>
-                </div>
-                {
-                    isLoading && <div>Loading...</div>
-                }
-            </form>
-        </div>
+        <>
+            <Title className="auth-form-title" title={"Register to Cinema Street"} />
+            <div className="auth-form">
+                <form className="auth-form__content" onSubmit={handleSubmit}>
+                    <div className="auth-form__fields">
+                        <div className="auth-form__field">
+                            <label className="auth-form__label" htmlFor="username">Enter your name</label>
+                            <Input inputRef={usernameInputRef} id="username" isValid={!usernameError.isShowError} errorText={usernameError.usernameErrorText} onChangeFunction={() => {handleChangeInputValue(usernameInputRef, setUsernameError)}} />
+                        </div>
+                        <div className="auth-form__field">
+                            <label className="auth-form__label" htmlFor="email">Enter your email</label>
+                            <Input inputRef={emailInputRef} id="email" isValid={!emailError.isShowError} errorText={emailError.emailErrorText} onChangeFunction={() => {handleChangeInputValue(emailInputRef, setEmailError)}} />
+                        </div>
+                        <div className="auth-form__field">
+                            <label className="auth-form__label" htmlFor="password">Enter your password</label>
+                            <Input inputRef={passwordInputRef} id="password" isValid={!passwordError.isShowError} errorText={passwordError.passwordErrorText} onChangeFunction={() => {handleChangeInputValue(passwordInputRef, setPasswordError)}} />
+                        </div>
+                    </div>
+                    <Button buttonType={"submit"} context={'filled'} className="registration-form__button">Submit</Button>
+                    <div className="auth-form__footer">
+                        <p className="auth-form__footer-text">Already a user?</p>
+                        <Link className="auth-form__footer-link" to="/login">Login</Link>
+                    </div>
+                    {
+                        isLoading && <div>Loading...</div>
+                    }
+                </form>
+            </div>
+        </>
     )
 }
 

@@ -12,11 +12,10 @@ import InfoText from "../InfoText/InfoText";
 
 const FriendsList = (props) => {
 
-	const { friends, isShortFriendsList, isMyFriendsList, handleAddFriend, handleRemoveFriend, userID, setIsFriendFromCollection } = props;
+	const { friends, state, isShortFriendsList, isMyFriendsList, handleAddFriend, handleRemoveFriend, userID, setIsFriendFromCollection } = props;
 
 	const { currentUser } = useContext(UserContext);
 
-	const [isFriendsListLoaded, setIsFriendsListLoaded] = useState(true);
 	const [friendsList, setFriendsList] = useState([]);
 
 	const database = getDatabase();
@@ -27,8 +26,6 @@ const FriendsList = (props) => {
 			data.map((friend) => {
 				handleAddFriend(friend);
 			})
-		}).then(() => {
-			setIsFriendsListLoaded(true);
 		})
 	}, []);
 
@@ -41,19 +38,17 @@ const FriendsList = (props) => {
 			{
 				friendsList.length ? friendsList.map((user, index) => {
 					return (
-						<>
-							<div className="friends-list__friend" key={index}>
-								<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
-								{
-									!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
-								}
-							</div>
+						<div className="friends-list__friend" key={index}>
+							<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
 							{
-								isShortFriendsList && friendsList.length && <span className="friends-list__friends-list-button-text">Show friends</span>
+								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
 							}
-						</>
+						</div>
 					)
 				}) : <InfoText>No friends yet</InfoText>
+			}
+			{
+				isShortFriendsList && friendsList.length && <span className="friends-list__friends-list-button-text">Show friends</span>
 			}
 		</div>
 	)

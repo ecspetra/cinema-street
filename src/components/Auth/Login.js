@@ -6,6 +6,7 @@ import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Error from "../Error/Error";
 import Button from "../Button/Button";
 import Title from "../Title/Title";
+import Loader from "../Loader/Loader";
 
 const Login = () => {
 
@@ -65,33 +66,34 @@ const Login = () => {
     }
 
     return (
-        <div className="login-form">
-            <form className="login-form__content" onSubmit={handleSubmit}>
-                <div className="login-form__text-wrap">
-                    <Title className="login-form__title" title={"Login to Cinema street"} />
-                    <p className="login-form__text">Please enter your data</p>
-                </div>
-                <div className="login-form__field">
-                    <label className="login-form__label" htmlFor="email">Enter your email</label>
-                    <Input inputRef={emailInputRef} id="email" isValid={!emailError.isShowError} errorText={emailError.emailErrorText} onChangeFunction={() => {handleChangeInputValue(emailInputRef, setEmailError)}} />
-                </div>
-                <div className="login-form__field">
-                    <label className="login-form__label" htmlFor="password">Enter your password</label>
-                    <Input inputRef={passwordInputRef} id="password" type="password" isValid={!passwordError.isShowError} errorText={passwordError.passwordErrorText} onChangeFunction={() => {handleChangeInputValue(passwordInputRef, setPasswordError)}} />
-                </div>
-                <Button buttonType={"submit"} context={'filled'} className="login-form__button">Log in</Button>
-                <div className="login-form__field">
-                    Don't have an account?
-                    <Link to="/register">Register</Link>
-                </div>
-                {
-                    isLoading && <div>Loading...</div>
-                }
-                {
-                    formError.isShowError && <Error>{formError.formErrorText}</Error>
-                }
-            </form>
-        </div>
+        <>
+            <Title className="auth-form-title" title={"Login to Cinema Street"} />
+            <div className="auth-form">
+                <form className="auth-form__content" onSubmit={handleSubmit}>
+                    <div className="auth-form__fields">
+                        <div className="auth-form__field">
+                            <label className="auth-form__label" htmlFor="email">Enter your email</label>
+                            <Input inputRef={emailInputRef} id="email" isValid={!emailError.isShowError} errorText={emailError.emailErrorText} onChangeFunction={() => {handleChangeInputValue(emailInputRef, setEmailError)}} />
+                        </div>
+                        <div className="auth-form__field">
+                            <label className="auth-form__label" htmlFor="password">Enter your password</label>
+                            <Input inputRef={passwordInputRef} id="password" type="password" isValid={!passwordError.isShowError} errorText={passwordError.passwordErrorText} onChangeFunction={() => {handleChangeInputValue(passwordInputRef, setPasswordError)}} />
+                        </div>
+                    </div>
+                    <Button buttonType={"submit"} context={'filled'} className="auth-form__button">Log in</Button>
+                    <div className="auth-form__footer">
+                        <p className="auth-form__footer-text">Don't have an account?</p>
+                        <Link className="auth-form__footer-link" to="/register">Register</Link>
+                    </div>
+                    {
+                        isLoading && <Loader>Loading</Loader>
+                    }
+                    {
+                        formError.isShowError && <Error>{formError.formErrorText}</Error>
+                    }
+                </form>
+            </div>
+        </>
     )
 }
 

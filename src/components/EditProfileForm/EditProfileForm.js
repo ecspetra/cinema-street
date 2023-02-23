@@ -3,22 +3,23 @@ import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import UserContext from "../UserContext/UserContext";
-import { getDatabase, onValue, ref, set } from "firebase/database";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 import { getAuth, updateProfile } from "firebase/auth";
 import CalendarInput from "../CalendarInput/CalendarInput";
 import './assets/index.scss';
+import {getCurrentUserFromDatabase} from "../../functions/getCurrentUserFromDatabase";
 
 const EditProfileForm = (props) => {
 
-	const { setIsEditState, userInfo } = props;
+	const { setIsEditState, userInfo, updatedProfileImage, handleUpdateProfilePage, setTemporaryProfileImage } = props;
 
 	const [dateOfBirthValue, setDateOfBirthValue] = useState("No information yet");
-
-	const nameInputRef = useRef();
-	const countryInputRef = useRef();
-	const biographyInputRef = useRef();
+	const [biographyInputValue, setBiographyInputValue] = useState("No information yet");
 
 	const { currentUser } = useContext(UserContext);
+
+	const nameInputRef = useRef(currentUser.displayName);
+	const countryInputRef = useRef(userInfo.country);
 
 	const database = getDatabase();
 	const postListRef = ref(database, 'users');
@@ -30,6 +31,7 @@ const EditProfileForm = (props) => {
 	});
 
 	const handleCancelButtonClick = () => {
+		setTemporaryProfileImage(null);
 		setIsEditState(false);
 	}
 
@@ -48,20 +50,28 @@ const EditProfileForm = (props) => {
 	}
 
 	let fieldsValues = {
+		nameInputValue: '',
+		updatedProfileImage: '',
 		countryInputValue: '',
 		dateOfBirth: '',
 		biography: '',
 	}
 
+	const handleChangeBiographyValue = (event) => {
+		setBiographyInputValue(event.target.value);
+	}
+
 	useEffect(() => {
 		fieldsValues = {
+			nameInputValue: nameInputRef.current.value,
+			updatedProfileImage: updatedProfileImage,
 			countryInputValue: countryInputRef.current.value,
 			dateOfBirth: dateOfBirthValue,
-			biographyValue: biographyInputRef.current.value,
+			biographyValue: biographyInputValue,
 		}
-	}, [countryInputRef, dateOfBirthValue, biographyInputRef]);
+	}, [nameInputRef, countryInputRef, dateOfBirthValue, biographyInputValue, updatedProfileImage]);
 
-	const handleSubmitEditProfile = (event) => {
+	const handleSubmitEditProfile = async (event) => {
 
 		event.preventDefault();
 
@@ -70,37 +80,28 @@ const EditProfileForm = (props) => {
 		if (isNameInputValid) {
 
 			updateProfile(auth.currentUser, {
-				displayName: nameInputRef.current.value,
+				displayName: fieldsValues.nameInputValue ? fieldsValues.nameInputValue: currentUser.displayName,
+				photoURL: fieldsValues.updatedProfileImage ? fieldsValues.updatedProfileImage : currentUser.photoURL,
 			}).then(() => {
 				// Profile updated!
 				// ...
 			});
 
-			onValue(postListRef, (snapshot) => {
-				snapshot.forEach((childSnapshot) => {
+			getCurrentUserFromDatabase(currentUser.uid).then((user) => {
+				const userRef = ref(database, "/users/" + user.key);
 
-					const userFromDatabase = {
-						key: childSnapshot.key,
-						data: childSnapshot.val(),
-					}
-
-					if (userFromDatabase.key === currentUser.uid) {
-
-						const userRef = ref(database, "/users/" + userFromDatabase.key);
-
-						set(userRef, {
-							name: nameInputRef.current.value,
-							email: userFromDatabase.data.email,
-							avatar: userFromDatabase.data.avatar,
-							country: fieldsValues.countryInputValue !== '' ? fieldsValues.countryInputValue : "No information yet",
-							dateOfBirth: fieldsValues.dateOfBirth,
-							biography: fieldsValues.biographyValue !== '' ? fieldsValues.biographyValue : "No information yet",
-						});
-					}
-				});
+				set(userRef, {
+					name: fieldsValues.nameInputValue,
+					email: user.data.email,
+					avatar: fieldsValues.updatedProfileImage ? fieldsValues.updatedProfileImage : user.data.avatar,
+					country: fieldsValues.countryInputValue.trim() !== '' ? fieldsValues.countryInputValue : "No information yet",
+					dateOfBirth: fieldsValues.dateOfBirth,
+					biography: biographyInputValue.trim() !== '' ? biographyInputValue : "No information yet",
+				}).then(() => {
+					handleUpdateProfilePage();
+					setIsEditState(false);
+				})
 			});
-
-			setIsEditState(false);
 		}
 	}
 
@@ -116,12 +117,12 @@ const EditProfileForm = (props) => {
 			</div>
 			<div className="edit-profile-form__field">
 				<label className="edit-profile-form__label" htmlFor="country">Choose your country</label>
-				<Input inputRef={countryInputRef} id="country" isValid={true} defaultValue={userInfo.data.country} />
+				<Input inputRef={countryInputRef} id="country" isValid={true} defaultValue={userInfo.country} />
 			</div>
-			<CalendarInput className="edit-profile-form__field" handleSetDateInputValue={handleSetDateInputValue} inputDefaultValue={userInfo.data.dateOfBirth}/>
+			<CalendarInput className="edit-profile-form__field" handleSetDateInputValue={handleSetDateInputValue} inputDefaultValue={userInfo.dateOfBirth}/>
 			<div className="edit-profile-form__field">
 				<label className="edit-profile-form__label" htmlFor="biography">Enter your additional information</label>
-				<textarea ref={biographyInputRef} className="edit-profile-form__textarea" id="biography" defaultValue={userInfo.data.biography} />
+				<textarea className="edit-profile-form__textarea" id="biography" defaultValue={userInfo.biography} onChange={(event) => handleChangeBiographyValue(event)} />
 			</div>
 			<div className="edit-profile-form__buttons-wrap">
 				<Button context={'cancel'} buttonOnClickFunction={() => {handleCancelButtonClick()}}>Cancel</Button>

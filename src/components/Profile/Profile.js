@@ -4,7 +4,7 @@ import './assets/index.scss';
 import UserContext from "../UserContext/UserContext";
 import ImageInput from "../ImageInput/ImageInput";
 import { get, getDatabase, onValue, push, ref, set } from "firebase/database";
-import { clearFriends, clearProfilePage, removeFromFriends } from "../../actions";
+import {addToFriends, clearFriends, clearProfilePage, removeFromFriends} from "../../actions";
 import { connect } from "react-redux";
 import UserIcon from "../UserIcon/UserIcon";
 import EmailIcon from "../App/assets/icons/EmailIcon";
@@ -17,28 +17,42 @@ import { removeUserFromFriends } from "../../functions/removeFriendFromCollectio
 import FriendsList from "../FriendsList/FriendsList";
 import FriendsPopup from "../Popups/FriendsPopup/FriendsPopup";
 import Title from "../Title/Title";
+import { getFriendsFromDatabase } from "../../functions/getFriendsFromDatabase";
+import Loader from "../Loader/Loader";
+import {getCurrentUserFromDatabase} from "../../functions/getCurrentUserFromDatabase";
 
 const Profile = (props) => {
 
-	const { profile, handleClearProfilePage, handleClearFriends, handleRemoveFriend } = props;
+	const { profile, handleClearProfilePage, handleClearFriends, handleRemoveFriend, handleAddFriend } = props;
 
-	let userInfo;
 	let isShowEditButton;
 	let isShowAddToFriendsButton;
 	const [isEditState, setIsEditState] = useState(false);
+	const [temporaryProfileImage, setTemporaryProfileImage] = useState(null);
 	const [isFriendFromCollection, setIsFriendFromCollection] = useState(false);
 	const [isShowFriendsModal, setIsShowFriendsModal] = useState(false);
+	const [userProfile, setUserProfile] = useState({
+		userID: '',
+		name: '',
+		email: '',
+		avatar: '',
+		country: '',
+		dateOfBirth: '',
+		biography: '',
+	});
 	const { currentUser } = useContext(UserContext);
 	const database = getDatabase();
 	const usersListRef = ref(database, 'users');
 	const friendsListRef = ref(database, 'friends');
+	let isMyFriendsList;
 
-	const isProfileLoaded = profile !== undefined;
+
+	const isProfileLoaded = profile !== null;
 
 	if (isProfileLoaded) {
-		userInfo = profile;
-		isShowEditButton = !isEditState && userInfo.key === currentUser.uid;
-		isShowAddToFriendsButton = userInfo.key !== currentUser.uid;
+		isShowEditButton = !isEditState && profile.key === currentUser.uid;
+		isShowAddToFriendsButton = profile.key !== currentUser.uid;
+		isMyFriendsList = profile.key === currentUser.uid;
 	}
 
 	const onProfileUnmount = useRef();
@@ -52,10 +66,25 @@ const Profile = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (isProfileLoaded && userInfo.key !== currentUser.uid) {
-			checkIfFriendExistsInCollection(friendsListRef, userInfo, currentUser.uid).then(data => setIsFriendFromCollection(data));
+		if (isProfileLoaded) {
+
+			setUserProfile({
+				userID: profile.data.userID,
+				name: profile.data.name,
+				email: profile.data.email,
+				avatar: profile.data.avatar,
+				country: profile.data.country,
+				dateOfBirth: profile.data.dateOfBirth,
+				biography: profile.data.biography,
+			});
 		}
 	}, [isProfileLoaded]);
+
+	useEffect(() => {
+		if (isProfileLoaded && profile.key !== currentUser.uid) {
+			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.uid).then(data => setIsFriendFromCollection(data));
+		}
+	}, [userProfile]);
 
 	const addUserToFriends = async () => {
 
@@ -85,7 +114,7 @@ const Profile = (props) => {
 						email: currentUser.email,
 						avatar: currentUser.photoURL,
 					},
-					friends: [userInfo],
+					friends: [userProfile],
 				})
 			}
 
@@ -106,7 +135,7 @@ const Profile = (props) => {
 								email: currentUser.email,
 								avatar: currentUser.photoURL,
 							},
-							friends: [userInfo],
+							friends: [userProfile],
 						})
 					} else {
 						set(userRef, {
@@ -116,7 +145,7 @@ const Profile = (props) => {
 								email: item.data.info.email,
 								avatar: item.data.info.avatar,
 							},
-							friends: [...item.data.friends, userInfo],
+							friends: [...item.data.friends, userProfile],
 						});
 					}
 				} else if (newUser) {
@@ -127,17 +156,36 @@ const Profile = (props) => {
 							email: currentUser.email,
 							avatar: currentUser.photoURL,
 						},
-						friends: [userInfo],
+						friends: [userProfile],
 					})
 				}
 			});
 
-			checkIfFriendExistsInCollection(friendsListRef, userInfo, currentUser.uid).then(data => setIsFriendFromCollection(data));
+			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.uid).then(data => setIsFriendFromCollection(data));
+			getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.uid : profile.key, isMyFriendsList).then((data) => {
+				data.map((friend) => {
+					handleAddFriend(friend);
+				})
+			});
+		});
+	}
+
+	const handleUpdateProfilePage = () => {
+		getCurrentUserFromDatabase(currentUser.uid).then((updatedProfile) => {
+			setUserProfile({
+				userID: updatedProfile.data.userID,
+				name: updatedProfile.data.name,
+				email: updatedProfile.data.email,
+				avatar: updatedProfile.data.avatar,
+				country: updatedProfile.data.country,
+				dateOfBirth: updatedProfile.data.dateOfBirth,
+				biography: updatedProfile.data.biography,
+			});
 		});
 	}
 
 	const handleRemoveFriendFromCollection = () => {
-		removeUserFromFriends(friendsListRef, userInfo, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection);
+		removeUserFromFriends(friendsListRef, userProfile, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection);
 	}
 
 	const collectionButtonOnClickFunction = isFriendFromCollection ? handleRemoveFriendFromCollection : addUserToFriends;
@@ -157,6 +205,7 @@ const Profile = (props) => {
 					const userRef = ref(database, "/users/" + userFromDatabase.key);
 
 					set(userRef, {
+						userID: userFromDatabase.data.userID,
 						name: userFromDatabase.data.name,
 						email: userFromDatabase.data.email,
 						avatar: newAvatar,
@@ -180,43 +229,43 @@ const Profile = (props) => {
 					<div className="profile">
 						<div className="profile__content">
 							<div className="profile__avatar">
-								<UserIcon profileLink={userInfo.key} />
+								<UserIcon isProfile={true} profileImageSrc={temporaryProfileImage} profileLink={profile.key} />
 								{
-									isEditState && <ImageInput setNewImageFunction={setNewAvatarFunction} />
+									isEditState && <ImageInput setImagePreview={setTemporaryProfileImage} setNewImageFunction={setNewAvatarFunction} />
 								}
 							</div>
 							<div className="profile__text-wrap">
 								<div className="profile__user-name-wrap">
-									<Title className="profile__user-name" title={userInfo.data.name} />
+									<Title className="profile__user-name" title={userProfile.name} />
 									{
-										isShowEditButton && <Button context={'filled'} className="profile__edit" buttonOnClickFunction={() => {setIsEditState(true)}}>Edit profile</Button>
+										isShowEditButton && <Button className="profile__edit" buttonOnClickFunction={() => {setIsEditState(true)}}>Edit profile</Button>
 									}
 								</div>
 								{
-									isEditState ? <EditProfileForm userInfo={userInfo} setIsEditState={setIsEditState} /> : (
+									isEditState ? <EditProfileForm handleUpdateProfilePage={handleUpdateProfilePage} setTemporaryProfileImage={setTemporaryProfileImage} updatedProfileImage={temporaryProfileImage} userInfo={userProfile} setIsEditState={setIsEditState} /> : (
 										<>
 											<div className="profile__details-wrap">
 												<div className="profile__details profile__details--email">
 													<EmailIcon />
-													<p className="profile__details-text">Email: <span className="profile__details-bold">{userInfo.data.email}</span></p>
+													<p className="profile__details-text">Email: <span className="profile__details-bold">{userProfile.email}</span></p>
 												</div>
 												<div className="profile__details profile__details--date-of-birth">
 													<CalendarIcon />
-													<p className="profile__details-text">Date of birth: <span className="profile__details-bold">{userInfo.data.dateOfBirth}</span></p>
+													<p className="profile__details-text">Date of birth: <span className="profile__details-bold">{userProfile.dateOfBirth}</span></p>
 												</div>
 												<div className="profile__details profile__details--country">
 													<FlagIcon />
-													<p className="profile__details-text">Country: <span className="profile__details-bold">{userInfo.data.country}</span></p>
+													<p className="profile__details-text">Country: <span className="profile__details-bold">{userProfile.country}</span></p>
 												</div>
 											</div>
 											<div className="profile__friends-list">
 												<h3 className="profile__friends-list-title">Friends:</h3>
 												<Button buttonOnClickFunction={() => {handleOpenFriendsPopup()}}>
-													<FriendsList isShortFriendsList={true} isMyFriendsList={userInfo.key === currentUser.uid} userID={userInfo.key} />
+													<FriendsList isShortFriendsList={true} isMyFriendsList={isMyFriendsList} userID={profile.key} />
 												</Button>
 											</div>
 											<h3 className="profile__biography">Additional information:</h3>
-											<p className="profile__biography-text">{userInfo.data.biography}</p>
+											<p className="profile__biography-text">{userProfile.biography}</p>
 											{
 												isShowAddToFriendsButton && <CollectionButton className="profile__add-to-friends" isExistsInCollection={isFriendFromCollection} collectionButtonOnClickFunction={collectionButtonOnClickFunction}>{isFriendFromCollection ? 'Remove from friends' : 'Add to friends'}</CollectionButton>
 											}
@@ -224,23 +273,24 @@ const Profile = (props) => {
 									)
 								}
 							</div>
-							<FriendsPopup isShowModal={isShowFriendsModal} setIsShowModal={setIsShowFriendsModal} setIsFriendFromCollection={setIsFriendFromCollection} isMyFriendsList={userInfo.key === currentUser.uid} userID={userInfo.key} />
+							<FriendsPopup isShortFriendsList={false} isShowModal={isShowFriendsModal} setIsShowModal={setIsShowFriendsModal} setIsFriendFromCollection={setIsFriendFromCollection} isMyFriendsList={profile.key === currentUser.uid} userID={profile.key} />
 						</div>
 					</div>
-				) : 'Loading'
+				) : <Loader>Loading profile</Loader>
 			}
 		</>
 	)
 }
 
 const mapStateToProps = state => ({
-	profile: state.profile.user,
+	profile: state.profile.profile,
 })
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleClearProfilePage: () => dispatch(clearProfilePage()),
 		handleClearFriends: () => dispatch(clearFriends()),
+		handleAddFriend: (user) => dispatch(addToFriends(user)),
 		handleRemoveFriend: (key) => dispatch(removeFromFriends(key))
 	}
 }

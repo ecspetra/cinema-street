@@ -13,9 +13,9 @@ const checkIfFriendExistsInCollection = (friendsListRef, user, currentUserID, is
 					data: childSnapshot.val(),
 				}
 
-				if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.data.avatar === friend.data.avatar) && isUserNeeded === true) {
+				if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.userID === friend.userID) && isUserNeeded === true) {
 					isFriendFromCollection = friend;
-				} else if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.data.avatar === friend.data.avatar) && isUserNeeded === false) {
+				} else if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.userID === friend.userID) && isUserNeeded === false) {
 					isFriendFromCollection = true;
 				}
 			});

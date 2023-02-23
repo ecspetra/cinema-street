@@ -14,7 +14,7 @@ export const getFriendsFromDatabase = (friendsListRef, currentUserID, isMyFriend
 						data: childSnapshot.val(),
 					}
 
-					if (user.data.friends.length && user.data.friends.some((user) => user.key === currentUserID)) {
+					if (user.data.friends.length && user.data.friends.some((user) => user.userID === currentUserID)) {
 						response.push(user);
 					}
 				});

@@ -4,17 +4,17 @@ import './assets/index.scss';
 
 const Friend = (props) => {
 
-	const { user, isMyFriend, isShortFriendsList } = props;
+	const { user, isMyFriend, isShortFriendsList = false } = props;
 
-	const userAvatar = isMyFriend ? user.data.avatar : user.data.info.avatar;
-	const userProfile = isMyFriend ? user.key : user.data.userID;
-	const userName = isMyFriend ? user.data.name : user.data.info.name;
+	const userAvatar = isMyFriend ? user.avatar : user.data.info.avatar;
+	const userProfile = isMyFriend ? user.userID : user.data.userID;
+	const userName = isMyFriend ? user.name : user.data.info.name;
 
 	return (
 		<div className="friend">
 			<UserIcon profileImageSrc={userAvatar} profileLink={userProfile} />
 			{
-				!isShortFriendsList && <p className="friend__name">{userName}</p>
+				isShortFriendsList === false && <p className="friend__name">{userName}</p>
 			}
 		</div>
 	)

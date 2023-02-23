@@ -50,14 +50,12 @@ button {
     color: $text-color-extra-light;
 }
 
-.registration-form,
-.login-form {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+.auth-form-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.auth-form {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,6 +76,22 @@ button {
         display: flex;
         flex-direction: column;
         margin-bottom: 15px;
+
+        &:last-child {
+            margin-bottom: 25px;
+        }
+    }
+
+    &__footer {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    &__footer-link {
+        margin-left: 5px;
+        color: $text-main-color;
     }
 }
 

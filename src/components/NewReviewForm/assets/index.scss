@@ -33,12 +33,15 @@
 		outline: none;
 		color: $text-color-extra-light;
 		border-radius: 8px;
-		padding: 16px;
+		padding: 10px 16px;
 		width: 100%;
 		resize: none;
 		display: block;
 		margin-bottom: 20px;
 		transition: .3s;
+		font-size: 14px;
+		line-height: 24px;
+		font-family: 'Poppins', sans-serif;
 
 		&:focus {
 			border-color: $main-color;

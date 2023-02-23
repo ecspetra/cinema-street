@@ -16,7 +16,7 @@ import {
     setCurrentMovie,
     clearCurrentMoviePage,
     clearCurrentPersonPage,
-    setCurrentPersonPage
+    setCurrentPersonPage, setProfilePage, clearProfilePage, clearFriends
 } from "../../actions";
 import Menu from "../Menu/Menu";
 import TopBanner from "../TopBanner/TopBanner";
@@ -27,10 +27,12 @@ import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
 import useAuthListener from "../../functions/useAuthListener";
 import UserContext from '../UserContext/UserContext';
+import {getCurrentUserFromDatabase} from "../../functions/getCurrentUserFromDatabase";
+import {handleChooseProfilePage} from "../../functions/handleChooseProfilePage";
 
 const App = (props) => {
 
-    const { handleSetCurrentMoviePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
+    const { handleSetCurrentMoviePage, handleClearFriends, handleClearProfilePage, handleSetProfilePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
 
     /////////////////////////////////////////////////// - set current movie page when click back button
 
@@ -51,6 +53,15 @@ const App = (props) => {
 
         if (match) {
             getCurrentPersonPage(match.params.personID, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)});
+        }
+    }, [location]);
+
+    useEffect(() => {
+
+        const match = matchPath({ path: '/profile/:profileID' }, location.pathname);
+
+        if (match) {
+            handleChooseProfilePage(match.params.profileID, handleClearProfilePage, handleClearFriends, handleSetProfilePage)
         }
     }, [location]);
 
@@ -104,12 +115,15 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        handleSetProfilePage: (userInfo) => dispatch(setProfilePage(userInfo)),
+        handleClearProfilePage: () => dispatch(clearProfilePage()),
         handleSetCurrentMoviePage: (selectedMovie) => dispatch(setCurrentMovie(selectedMovie)),
         handleClearCurrentMoviePage: () => dispatch(clearCurrentMoviePage()),
         handleSetCurrentPersonPage: (selectedPerson) => dispatch(setCurrentPersonPage(selectedPerson)),
         handleClearCurrentPersonPage: () => dispatch(clearCurrentPersonPage()),
         handleSetUser: (user) => dispatch(setUser(user)),
         handleClearUser: () => dispatch(clearUser()),
+        handleClearFriends: () => dispatch(clearFriends()),
     }
 }
 
