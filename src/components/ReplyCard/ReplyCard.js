@@ -26,7 +26,7 @@ const ReplyCard = (props) => {
 
 	const { currentUser } = useContext(UserContext);
 
-	const isCurrentUsersReply = reply.userID === currentUser.uid;
+	const isCurrentUsersReply = reply.userID === currentUser.userID;
 
 	useEffect(() => {
 		setReplyContent(getTextLengthForPost(reply.replyText, maxReplyTextLength, isReplyTextHidden, isLongReplyText));
@@ -34,7 +34,7 @@ const ReplyCard = (props) => {
 
 	const checkIfReplyLikedByCurrentUser = () => {
 		if (reply.likes !== 0) {
-			const currentUsersLike = reply.likes.some(like => like.userID === currentUser.uid);
+			const currentUsersLike = reply.likes.some(like => like.userID === currentUser.userID);
 			setIsLikedReply(currentUsersLike);
 		} else {
 			setIsLikedReply(false);
@@ -43,7 +43,7 @@ const ReplyCard = (props) => {
 
 	const checkIfReplyDislikedByCurrentUser = () => {
 		if (reply.dislikes !== 0) {
-			const currentUsersDislike = reply.dislikes.some(dislike => dislike.userID === currentUser.uid);
+			const currentUsersDislike = reply.dislikes.some(dislike => dislike.userID === currentUser.userID);
 			setIsDislikedReply(currentUsersDislike);
 		} else {
 			setIsDislikedReply(false);

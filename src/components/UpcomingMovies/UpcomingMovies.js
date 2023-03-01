@@ -126,7 +126,7 @@ const UpcomingMovies = (props) => {
 						? <div className="upcoming-movies__video-player"><Plyr source={videoSrc} options={videoOptions} /></div>
 						: (
 							<>
-								<img className="upcoming-movies__image" src={'https://image.tmdb.org/t/p/w440_and_h660_face' + moviePreview.moviePosterPath} alt="movie-poster" />
+								<img className="upcoming-movies__image" src={`https://image.tmdb.org/t/p/w440_and_h660_face${moviePreview.moviePosterPath}`} alt="movie-poster" />
 								<div className="upcoming-movies__info">
 									<Title className="upcoming-movies__title" title={moviePreview.movieTitle} />
 								</div>

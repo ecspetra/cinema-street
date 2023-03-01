@@ -35,11 +35,8 @@ const Menu = () => {
 				<div className="project-menu__item-wrap">
 					<Link className="project-menu__item" to="/persons">Persons</Link>
 				</div>
-				<div className="project-menu__item-wrap">
-					<Link className="project-menu__item" to="/genres">Genres</Link>
-				</div>
 				<div className="project-menu__item-wrap project-menu__item-wrap--user">
-					<UserIcon profileLink={currentUser.uid} />
+					<UserIcon profileLink={currentUser.userID} />
 				</div>
 				<div className="project-menu__item-wrap">
 					{

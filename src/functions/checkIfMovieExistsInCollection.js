@@ -12,9 +12,9 @@ const checkIfMovieExistsInCollection = (postListRef, movieID, currentUser, isMov
 					data: childSnapshot.val(),
 				}
 
-				if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.uid && isMovieNeeded === true) {
+				if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.userID && isMovieNeeded === true) {
 					movie = favoriteMovie;
-				} else if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.uid && isMovieNeeded === false) {
+				} else if (movieID === favoriteMovie.data.movie.id && favoriteMovie.data.movie.userID === currentUser.userID && isMovieNeeded === false) {
 					movie = true;
 				}
 			});

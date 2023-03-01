@@ -29,16 +29,6 @@ const ImageInput = (props) => {
 				getDownloadURL(uploadTask.snapshot.ref).then((url) => {
 					setImagePreview(url);
 				});
-
-				// getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-				// 	setNewImageFunction(url);
-				// 	updateProfile(auth.currentUser, {
-				// 		photoURL: url,
-				// 	}).then(() => {
-				// 		// Profile updated!
-				// 		// ...
-				// 	});
-				// });
 			}
 		);
 	}

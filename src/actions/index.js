@@ -46,6 +46,12 @@ export const removeMyReview = (id) => {
 	}
 }
 
+export const clearReviews = () => {
+	return {
+		type: actionTypes.CLEAR_MY_REVIEWS_FOR_MOVIE,
+	}
+}
+
 export const setMyMark = (marks) => {
 	return {
 		type: actionTypes.SET_MY_MARK_FOR_MOVIE,
@@ -59,6 +65,12 @@ export const removeMyMark = (key) => {
 	return {
 		type: actionTypes.REMOVE_MY_MARK_FOR_MOVIE,
 		payload: key
+	}
+}
+
+export const clearMyMark = () => {
+	return {
+		type: actionTypes.CLEAR_MY_MARK_FOR_MOVIE,
 	}
 }
 

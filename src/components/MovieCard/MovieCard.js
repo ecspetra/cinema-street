@@ -87,16 +87,16 @@ const MovieCard = (props) => {
 				classNames="movie-card-wrap"
 			>
 				<div className="movie-card">
-					<Link to={"/movie/" + movie.id} className="movie-card__link" onClick={() => {
+					<Link to={`/movie/${movie.id}`} className="movie-card__link" onClick={() => {
 						handleChooseCurrentMoviePage(movie, handleClearCurrentMoviePage).then((data) => {handleSetCurrentMoviePage(data)})
 					}}>
 						<span className="movie-card__image-wrap">
-							<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path} alt="movie-poster" />
+							<img className="movie-card__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={`https://image.tmdb.org/t/p/w440_and_h660_face${movie.poster_path}`} alt="movie-poster" />
 							{!isImageLoaded && <Loader>Loading image</Loader>}
 							<MyMark movie={movie} />
 						</span>
-							<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear())}</span>
-							<span className="movie-card__title-wrap">
+						<span className="movie-card__release-date">{(new Date(movie.release_date).getFullYear()).toString()}</span>
+						<span className="movie-card__title-wrap">
 							<span className="movie-card__title">{movie.title}</span>
 							<Rating movie={movie} />
 						</span>
@@ -105,7 +105,7 @@ const MovieCard = (props) => {
 						{
 							movieGenresNames.map((genre, index) => {
 								if (index <= 2) {
-									return <Genre key={md5(genre + index)}>{genre}</Genre>
+									return <Genre key={md5(genre)}>{genre}</Genre>
 								}
 							})
 						}

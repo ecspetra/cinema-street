@@ -47,6 +47,23 @@
 	&__avatar {
 		max-width: 212px;
 		margin-right: 35px;
+
+		.user-icon {
+			width: 212px;
+			height: 212px;
+			margin-bottom: 25px;
+
+			&__image-wrap {
+				width: 212px;
+				height: 212px;
+				outline: none;
+			}
+
+			&__image {
+				width: 100%;
+				height: 100%;
+			}
+		}
 	}
 
 	&__user-name-wrap {
@@ -68,20 +85,6 @@
 		color: $text-color-light;
 		font-size: 14px;
 		line-height: 24px;
-	}
-
-	.user-icon {
-		&__image-wrap {
-			width: 212px;
-			height: 212px;
-			margin-bottom: 25px;
-			outline: none;
-		}
-
-		&__image {
-			width: 100%;
-			height: 100%;
-		}
 	}
 
 	&__user-name {
@@ -118,7 +121,7 @@
 
 		.friends-list {
 			&__friend {
-				width: auto;
+				width: 36px;
 				margin: 0;
 
 				&:not(:first-child) {
@@ -135,6 +138,23 @@
 			.user-icon {
 				margin-right: 0;
 			}
+		}
+	}
+
+	@media (max-width: 1024px) {
+		&__avatar {
+			margin: 0 auto;
+		}
+
+		&__content,
+		&__user-name-wrap {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		&__edit {
+			margin-left: 0;
+			margin-bottom: 30px;
 		}
 	}
 }

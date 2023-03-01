@@ -114,6 +114,10 @@ const marks_reducer = (state = initialMarksState, action) => {
 				...state,
 				uploadedMarks: state.uploadedMarks.filter(item => item.key !== action.payload)
 			}
+		case actionTypes.CLEAR_MY_MARK_FOR_MOVIE:
+			return {
+				...initialMarksState
+			}
 		default: return state;
 	}
 }
@@ -148,6 +152,10 @@ const reviews_reducer = (state = initialReviewsState, action) => {
 				...state,
 				uploadedReviews: state.uploadedReviews.filter(item => item.data.review.id !== action.payload)
 			}
+		case actionTypes.CLEAR_MY_REVIEWS_FOR_MOVIE:
+			return {
+				uploadedReviews: []
+			}
 		default: return state;
 	}
 }
@@ -165,7 +173,15 @@ const upcoming_movies_reducer = (state = initialUpcomingMoviesState, action) => 
 const favorite_movies_reducer = (state = initialFavoriteMoviesState, action) => {
 	switch (action.type) {
 		case actionTypes.SET_FAVORITE_MOVIES:
-			const movieAlreadyExistsInState = state.favoriteMovies.some(item => item.key === action.payload.favoriteMovies.key);
+			let movieAlreadyExistsInState = false;
+			action.payload.favoriteMovies.map((item) => {
+				const sameMovie = state.favoriteMovies.some(item => item.key === item.key);
+
+				if (sameMovie) {
+					movieAlreadyExistsInState = true;
+				}
+			});
+
 			if (movieAlreadyExistsInState) {
 				return state;
 			}

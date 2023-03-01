@@ -1,6 +1,13 @@
 @import '../../App/assets/colors.module';
 
 .user-icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	position: relative;
+	
 	&__image-wrap {
 		width: 40px;
 		height: 40px;

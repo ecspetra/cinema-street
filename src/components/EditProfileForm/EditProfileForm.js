@@ -8,21 +8,23 @@ import { getAuth, updateProfile } from "firebase/auth";
 import CalendarInput from "../CalendarInput/CalendarInput";
 import './assets/index.scss';
 import {getCurrentUserFromDatabase} from "../../functions/getCurrentUserFromDatabase";
+import {setUser} from "../../actions";
+import {connect} from "react-redux";
+import {saveUserToLocalStorage} from "../../functions/userLocalStorageManager";
 
 const EditProfileForm = (props) => {
 
-	const { setIsEditState, userInfo, updatedProfileImage, handleUpdateProfilePage, setTemporaryProfileImage } = props;
+	const { setIsEditState, handleSetUser, userInfo, updatedProfileImage, handleUpdateProfilePage, setTemporaryProfileImage } = props;
 
 	const [dateOfBirthValue, setDateOfBirthValue] = useState("No information yet");
 	const [biographyInputValue, setBiographyInputValue] = useState("No information yet");
 
 	const { currentUser } = useContext(UserContext);
 
-	const nameInputRef = useRef(currentUser.displayName);
+	const nameInputRef = useRef(currentUser.name);
 	const countryInputRef = useRef(userInfo.country);
 
 	const database = getDatabase();
-	const postListRef = ref(database, 'users');
 	const auth = getAuth();
 
 	const [nameError, setNameError] = useState({
@@ -61,6 +63,8 @@ const EditProfileForm = (props) => {
 		setBiographyInputValue(event.target.value);
 	}
 
+	const { setCurrentUser } = useContext(UserContext);
+
 	useEffect(() => {
 		fieldsValues = {
 			nameInputValue: nameInputRef.current.value,
@@ -80,24 +84,27 @@ const EditProfileForm = (props) => {
 		if (isNameInputValid) {
 
 			updateProfile(auth.currentUser, {
-				displayName: fieldsValues.nameInputValue ? fieldsValues.nameInputValue: currentUser.displayName,
-				photoURL: fieldsValues.updatedProfileImage ? fieldsValues.updatedProfileImage : currentUser.photoURL,
-			}).then(() => {
-				// Profile updated!
-				// ...
+				displayName: fieldsValues.nameInputValue ? fieldsValues.nameInputValue: currentUser.name,
+				photoURL: fieldsValues.updatedProfileImage ? fieldsValues.updatedProfileImage : currentUser.avatar,
 			});
 
-			getCurrentUserFromDatabase(currentUser.uid).then((user) => {
+			getCurrentUserFromDatabase(currentUser.userID).then((user) => {
+
 				const userRef = ref(database, "/users/" + user.key);
 
-				set(userRef, {
+				const userToSave = {
+					userID: user.data.userID,
 					name: fieldsValues.nameInputValue,
 					email: user.data.email,
 					avatar: fieldsValues.updatedProfileImage ? fieldsValues.updatedProfileImage : user.data.avatar,
 					country: fieldsValues.countryInputValue.trim() !== '' ? fieldsValues.countryInputValue : "No information yet",
 					dateOfBirth: fieldsValues.dateOfBirth,
 					biography: biographyInputValue.trim() !== '' ? biographyInputValue : "No information yet",
-				}).then(() => {
+				}
+
+				set(userRef, userToSave).then(() => {
+					saveUserToLocalStorage(userToSave);
+					setCurrentUser(userToSave);
 					handleUpdateProfilePage();
 					setIsEditState(false);
 				})
@@ -113,7 +120,7 @@ const EditProfileForm = (props) => {
 			</div>
 			<div className="edit-profile-form__field">
 				<label className="edit-profile-form__label" htmlFor="name">Enter your name</label>
-				<Input inputRef={nameInputRef} id="name" defaultValue={currentUser.displayName} isValid={!nameError.isShowError} errorText={nameError.nameErrorText} onChangeFunction={() => {handleChangeInputValue(nameInputRef, setNameError)}} />
+				<Input inputRef={nameInputRef} id="name" defaultValue={currentUser.name} isValid={!nameError.isShowError} errorText={nameError.nameErrorText} onChangeFunction={() => {handleChangeInputValue(nameInputRef, setNameError)}} />
 			</div>
 			<div className="edit-profile-form__field">
 				<label className="edit-profile-form__label" htmlFor="country">Choose your country</label>
@@ -132,4 +139,10 @@ const EditProfileForm = (props) => {
 	)
 }
 
-export default EditProfileForm;
+const mapDispatchToProps = (dispatch) => {
+	return {
+		handleSetUser: (user) => dispatch(setUser(user)),
+	}
+}
+
+export default connect(null, mapDispatchToProps)(EditProfileForm);

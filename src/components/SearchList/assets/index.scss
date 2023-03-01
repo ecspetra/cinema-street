@@ -6,6 +6,10 @@
 	align-items: stretch;
 	flex-wrap: wrap;
 	margin: 0 -10px;
+
+	@media (max-width: 1180px) {
+		justify-content: center;
+	}
 }
 
 .search-list-buttons-wrap {

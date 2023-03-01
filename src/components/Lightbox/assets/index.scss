@@ -29,6 +29,7 @@
 		top: 50%;
 		transform: translateY(-50%);
 		padding: 0;
+		border: none;
 
 		&:before {
 			content: '';
@@ -47,6 +48,8 @@
 		}
 
 		&:hover {
+			box-shadow: none;
+
 			&:before {
 				opacity: .8;
 			}
@@ -72,6 +75,38 @@
 			top: 20px;
 			right: 0;
 			transform: none;
+		}
+	}
+
+	@media (max-width: 680px) {
+		&__button {
+			top: calc(50% + 180px);
+
+			&--left {
+				left: 30%;
+			}
+
+			&--right {
+				right: 30%;
+			}
+
+			&--close {
+				top: 20px;
+				right: 0;
+				transform: none;
+			}
+		}
+	}
+
+	@media (max-width: 440px) {
+		&__button {
+			top: calc(50% + 140px);
+
+			&--close {
+				top: 20px;
+				right: 0;
+				transform: none;
+			}
 		}
 	}
 }

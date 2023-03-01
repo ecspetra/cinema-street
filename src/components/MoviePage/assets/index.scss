@@ -42,6 +42,10 @@
 		}
 	}
 
+	&__info-wrap {
+		width: calc(100% - 355px);
+	}
+
 	&__movie-info {
 		display: flex;
 		justify-content: flex-start;
@@ -54,6 +58,16 @@
 
 		.main-button {
 			max-width: 200px;
+		}
+
+		.my-mark {
+			margin-top: 0;
+
+			.star {
+				path {
+					fill: $mark-color;
+				}
+			}
 		}
 	}
 
@@ -121,12 +135,56 @@
 		margin-bottom: 60px;
 	}
 
-	.my-mark {
-		margin-top: 0;
+	@media (max-width: 1024px) {
+		&__cover-wrap {
+			margin: 0 auto 30px auto;
+		}
 
-		.star {
-			path {
-				fill: $mark-color;
+		&__movie-info {
+			flex-direction: column;
+
+			.rating {
+				.star {
+					width: 18px;
+					height: 18px;
+				}
+			}
+
+			.my-mark {
+				.star {
+					width: 18px;
+					height: 18px;
+				}
+			}
+		}
+
+		&__info-wrap {
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 440px) {
+		&__image {
+			width: 240px;
+		}
+
+		&__movie-info {
+
+			.rating {
+				&__count {
+					display: none;
+				}
+			}
+
+			.my-mark {
+				position: relative;
+				margin-bottom: 45px;
+
+				&__remove {
+					position: absolute;
+					left: -10px;
+					top: 30px;
+				}
 			}
 		}
 	}

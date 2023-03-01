@@ -50,9 +50,9 @@ const Profile = (props) => {
 	const isProfileLoaded = profile !== null;
 
 	if (isProfileLoaded) {
-		isShowEditButton = !isEditState && profile.key === currentUser.uid;
-		isShowAddToFriendsButton = profile.key !== currentUser.uid;
-		isMyFriendsList = profile.key === currentUser.uid;
+		isShowEditButton = !isEditState && profile.key === currentUser.userID;
+		isShowAddToFriendsButton = profile.key !== currentUser.userID;
+		isMyFriendsList = profile.key === currentUser.userID;
 	}
 
 	const onProfileUnmount = useRef();
@@ -64,6 +64,10 @@ const Profile = (props) => {
 	useEffect(() => {
 		return () => onProfileUnmount.current();
 	}, []);
+
+	useEffect(() => {
+		setIsShowFriendsModal(false);
+	}, [profile]);
 
 	useEffect(() => {
 		if (isProfileLoaded) {
@@ -81,8 +85,8 @@ const Profile = (props) => {
 	}, [isProfileLoaded]);
 
 	useEffect(() => {
-		if (isProfileLoaded && profile.key !== currentUser.uid) {
-			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.uid).then(data => setIsFriendFromCollection(data));
+		if (isProfileLoaded && profile.key !== currentUser.userID) {
+			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.userID).then(data => setIsFriendFromCollection(data));
 		}
 	}, [userProfile]);
 
@@ -108,11 +112,11 @@ const Profile = (props) => {
 		}).then((data) => {
 			if (!data.length) {
 				set(friendsPostRef, {
-					userID: currentUser.uid,
+					userID: currentUser.userID,
 					info: {
-						name: currentUser.displayName,
+						name: currentUser.name,
 						email: currentUser.email,
-						avatar: currentUser.photoURL,
+						avatar: currentUser.avatar,
 					},
 					friends: [userProfile],
 				})
@@ -120,20 +124,20 @@ const Profile = (props) => {
 
 			data.map((item) => {
 
-				const newUser = !data.find(user => user.data.userID === currentUser.uid);
+				const newUser = !data.find(user => user.data.userID === currentUser.userID);
 				const newFriend = !item.data.friends;
 
-				if (item.data.userID === currentUser.uid) {
+				if (item.data.userID === currentUser.userID) {
 
 					const userRef = ref(database, "/friends/" + item.key);
 
 					if (newFriend) {
 						set(userRef, {
-							userID: currentUser.uid,
+							userID: currentUser.userID,
 							info: {
-								name: currentUser.displayName,
+								name: currentUser.name,
 								email: currentUser.email,
-								avatar: currentUser.photoURL,
+								avatar: currentUser.avatar,
 							},
 							friends: [userProfile],
 						})
@@ -150,19 +154,19 @@ const Profile = (props) => {
 					}
 				} else if (newUser) {
 					set(friendsPostRef, {
-						userID: currentUser.uid,
+						userID: currentUser.userID,
 						info: {
-							name: currentUser.displayName,
+							name: currentUser.name,
 							email: currentUser.email,
-							avatar: currentUser.photoURL,
+							avatar: currentUser.avatar,
 						},
 						friends: [userProfile],
 					})
 				}
 			});
 
-			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.uid).then(data => setIsFriendFromCollection(data));
-			getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.uid : profile.key, isMyFriendsList).then((data) => {
+			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.userID).then(data => setIsFriendFromCollection(data));
+			getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
 				data.map((friend) => {
 					handleAddFriend(friend);
 				})
@@ -171,7 +175,7 @@ const Profile = (props) => {
 	}
 
 	const handleUpdateProfilePage = () => {
-		getCurrentUserFromDatabase(currentUser.uid).then((updatedProfile) => {
+		getCurrentUserFromDatabase(currentUser.userID).then((updatedProfile) => {
 			setUserProfile({
 				userID: updatedProfile.data.userID,
 				name: updatedProfile.data.name,
@@ -185,7 +189,7 @@ const Profile = (props) => {
 	}
 
 	const handleRemoveFriendFromCollection = () => {
-		removeUserFromFriends(friendsListRef, userProfile, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection);
+		removeUserFromFriends(friendsListRef, userProfile, currentUser.userID, handleRemoveFriend, setIsFriendFromCollection);
 	}
 
 	const collectionButtonOnClickFunction = isFriendFromCollection ? handleRemoveFriendFromCollection : addUserToFriends;
@@ -200,7 +204,7 @@ const Profile = (props) => {
 					data: childSnapshot.val(),
 				}
 
-				if (userFromDatabase.key === currentUser.uid) {
+				if (userFromDatabase.key === currentUser.userID) {
 
 					const userRef = ref(database, "/users/" + userFromDatabase.key);
 
@@ -273,7 +277,7 @@ const Profile = (props) => {
 									)
 								}
 							</div>
-							<FriendsPopup isShortFriendsList={false} isShowModal={isShowFriendsModal} setIsShowModal={setIsShowFriendsModal} setIsFriendFromCollection={setIsFriendFromCollection} isMyFriendsList={profile.key === currentUser.uid} userID={profile.key} />
+							<FriendsPopup isShortFriendsList={false} isShowModal={isShowFriendsModal} setIsShowModal={setIsShowFriendsModal} setIsFriendFromCollection={setIsFriendFromCollection} isMyFriendsList={profile.key === currentUser.userID} userID={profile.key} />
 						</div>
 					</div>
 				) : <Loader>Loading profile</Loader>

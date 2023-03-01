@@ -65,7 +65,7 @@ const PersonPage = (props) => {
 	useEffect(() => {
 		if (isCurrentPersonLoaded) {
 			getPersonGender();
-			checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then(data => setIsExistsInCollection(data));
+			checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.userID).then(data => setIsExistsInCollection(data));
 		}
 	}, [isCurrentPersonLoaded]);
 
@@ -79,8 +79,8 @@ const PersonPage = (props) => {
 			clearTimeout(infoPopupTimerRef.current);
 		}
 
-		await postPersonToDataBase(database, currentPerson, currentUser.uid);
-		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then((isPersonFromCollection) => {
+		await postPersonToDataBase(database, currentPerson, currentUser.userID);
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.userID).then((isPersonFromCollection) => {
 			setIsExistsInCollection(isPersonFromCollection);
 			infoPopupTextRef.current = getInfoPopupText('add', isPersonFromCollection, 'Person added to favorites successfully', );
 
@@ -101,8 +101,8 @@ const PersonPage = (props) => {
 			clearTimeout(infoPopupTimerRef.current);
 		}
 
-		await removePersonFromCollection(postListRef, currentPerson, currentUser.uid, handleRemoveFromFavoritePersons);
-		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.uid).then((isPersonFromCollection) => {
+		await removePersonFromCollection(postListRef, currentPerson, currentUser.userID, handleRemoveFromFavoritePersons);
+		checkIfPersonExistsInCollection(postListRef, currentPerson, currentUser.userID).then((isPersonFromCollection) => {
 			setIsExistsInCollection(isPersonFromCollection);
 			infoPopupTextRef.current = getInfoPopupText('remove', isPersonFromCollection, 'Person removed from favorites successfully');
 
@@ -127,7 +127,7 @@ const PersonPage = (props) => {
 					<div className="person-page">
 						<div className="person-page__content">
 							<div className="person-page__image-wrap">
-								<img className="person-page__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + currentPerson.profile_path} alt="person-photo" />
+								<img className="person-page__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={`https://image.tmdb.org/t/p/w440_and_h660_face${currentPerson.profile_path}`} alt="person-photo" />
 								{!isImageLoaded && <Loader>Loading image</Loader>}
 							</div>
 							<div className="person-page__text-wrap">
@@ -161,7 +161,7 @@ const PersonPage = (props) => {
 							</div>
 						</div>
 						<div className="person-page__movies">
-							<Title className="person-page__name" title={"Movies with `${currentPerson.name}`"} />
+							<Title className="person-page__name" title={`Movies with ${currentPerson.name}`} />
 							<MoviesList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
 						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>

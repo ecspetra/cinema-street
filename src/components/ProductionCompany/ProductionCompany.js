@@ -19,7 +19,7 @@ const ProductionCompany = (props) => {
 			</div>
 			<Tooltip isShowTooltip={isShowTooltip} title={company.name} description={company.origin_country}>
 				<div className="tooltip__image-wrap">
-					<img className="tooltip__image" onError={event => addDefaultImage(event, defaultImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w200' + company.logo_path} alt="company-logo" />
+					<img className="tooltip__image" onError={event => addDefaultImage(event, defaultImage)} onLoad={() => {setIsImageLoaded(true)}} src={`https://image.tmdb.org/t/p/w200${company.logo_path}`} alt="company-logo" />
 					{!isImageLoaded && <Loader>Loading image</Loader>}
 				</div>
 			</Tooltip>

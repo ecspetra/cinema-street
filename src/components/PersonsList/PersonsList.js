@@ -52,7 +52,7 @@ const PersonsList = (props) => {
 				receivedFavoritePersonsKeys = personsList.map((person) => {
 					return person.key;
 				})
-				await getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+				await getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.userID).then((data) => {
 
 					const isEmptyResult = !data.dataFromResponse.length;
 
@@ -117,7 +117,7 @@ const PersonsList = (props) => {
 			return person.key;
 		})
 
-		await fillFavoritePersonsList(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+		await fillFavoritePersonsList(postListRef, receivedFavoritePersonsKeys, currentUser.userID).then((data) => {
 			const isEmptyResult = !data.dataFromResponse.length;
 
 			if (!isEmptyResult && personsList.length !== data.dataFromResponse.length) {
@@ -168,7 +168,7 @@ const PersonsList = (props) => {
 
 			let receivedFavoritePersonsKeys = [];
 
-			getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.uid).then((data) => {
+			getMyPersonsFromDatabase(postListRef, receivedFavoritePersonsKeys, currentUser.userID).then((data) => {
 
 				const isEmptyResult = !data.dataFromResponse.length;
 

@@ -11,30 +11,6 @@
 	line-height: 1;
 	margin: 0;
 
-	//&--actors {
-	//    background-image: url('assets/images/image-5.jpg');
-	//}
-	//
-	//&--genres {
-	//    background-image: url('assets/images/image-7.jpg');
-	//}
-	//
-	//&--profile {
-	//    background-image: url('assets/images/image-1.jpg');
-	//}
-
-	//&--profile {
-	//    background-image: url('assets/images/image-2.jpg');
-	//}
-	//
-	//&--profile {
-	//    background-image: url('assets/images/image-5.jpg');
-	//}
-	//
-	//&--profile {
-	//    background-image: url('assets/images/image-6.jpg');
-	//}
-
 	&:before {
 		content: '';
 		position: absolute;
@@ -84,5 +60,30 @@
 		font-size: 40px;
 		font-weight: 600;
 		color: $text-main-color;
+	}
+
+	@media (max-width: 1024px) {
+		height: 50vh;
+		background-position: center;
+	}
+
+	@media (max-width: 680px) {
+		&__title {
+			width: auto;
+			display: flex;
+			justify-content: center;
+		}
+		
+		&__accent {
+			position: static;
+			transform: none;
+			font-size: 30px;
+			font-weight: 700;
+		}
+
+		&__logo-icon {
+			position: static;
+			margin: 0 10px;
+		}
 	}
 }

@@ -68,4 +68,20 @@
 			margin-right: 10px;
 		}
 	}
+
+	@media (max-width: 1024px) {
+		&__image-wrap {
+			margin: 0 auto 30px auto;
+		}
+
+		&__content {
+			flex-direction: column;
+		}
+	}
+
+	@media (max-width: 440px) {
+		&__image {
+			width: 240px;
+		}
+	}
 }

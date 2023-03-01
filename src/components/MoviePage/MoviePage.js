@@ -12,7 +12,7 @@ import NewReviewForm from "../NewReviewForm/NewReviewForm";
 import checkIfMovieExistsInCollection from "../../functions/checkIfMovieExistsInCollection";
 import { getDatabase, ref } from "firebase/database";
 import { connect } from "react-redux";
-import { clearCurrentMoviePage, removeFromFavoriteMovies } from "../../actions";
+import {clearCurrentMoviePage, clearReviews, removeFromFavoriteMovies} from "../../actions";
 import postMovieToDataBase from "../../functions/postMovieToDataBase";
 import removeMovieFromCollection from "../../functions/removeMovieFromCollection";
 import Loader from "../Loader/Loader";
@@ -159,7 +159,8 @@ const MoviePage = (props) => {
 
 	const getMovieTrailer = () => {
 		const trailer = currentMovieVideos.find(video => video.type === "Trailer");
-		return trailer.key;
+		const video = currentMovieVideos[0];
+		return trailer ? trailer.key : video.key;
 	}
 
 	const infoPopupClassNames = classNames({
@@ -174,7 +175,7 @@ const MoviePage = (props) => {
 						<div className="movie-page__content">
 							<div className="movie-page__movie-info">
 								<div className="movie-page__cover-wrap">
-									<img className="movie-page__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + currentMovieInfo.poster_path} alt="image" />
+									<img className="movie-page__image" onError={event => addDefaultImage(event, defaultMovieImage)} onLoad={() => {setIsImageLoaded(true)}} src={`https://image.tmdb.org/t/p/w440_and_h660_face${currentMovieInfo.poster_path}`} alt="image" />
 									{!isImageLoaded && <Loader>Loading image</Loader>}
 								</div>
 								<div className="movie-page__info-wrap">
@@ -221,7 +222,7 @@ const MoviePage = (props) => {
 									</div>
 									<Rating movie={currentMovieInfo} isRatingCount isShowExtendRating />
 									<h3 className="movie-page__my-mark-title">My mark:</h3>
-									<MyMark movie={currentMovieInfo} userID={currentUser.uid} isShowExtendMark />
+									<MyMark movie={currentMovieInfo} isShowExtendMark />
 									<h3 className="movie-page__overview-title">Overview:</h3>
 									<p className="movie-page__overview">{currentMovieInfo.overview}</p>
 									<div className="movie-page__production-companies-wrap">

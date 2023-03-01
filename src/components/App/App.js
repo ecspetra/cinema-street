@@ -27,14 +27,11 @@ import handleChooseCurrentMoviePage from "../../functions/setCurrentMoviePage";
 import getCurrentPersonPage from "../../functions/getCurrentPersonPage";
 import useAuthListener from "../../functions/useAuthListener";
 import UserContext from '../UserContext/UserContext';
-import {getCurrentUserFromDatabase} from "../../functions/getCurrentUserFromDatabase";
 import {handleChooseProfilePage} from "../../functions/handleChooseProfilePage";
 
 const App = (props) => {
 
     const { handleSetCurrentMoviePage, handleClearFriends, handleClearProfilePage, handleSetProfilePage, handleClearCurrentMoviePage, handleSetCurrentPersonPage, handleClearCurrentPersonPage, handleSetUser, handleClearUser } = props;
-
-    /////////////////////////////////////////////////// - set current movie page when click back button
 
     const location = useLocation();
 
@@ -65,7 +62,7 @@ const App = (props) => {
         }
     }, [location]);
 
-    const { currentUser } = useAuthListener(handleSetUser, handleClearUser);
+    const { currentUser, setCurrentUser } = useAuthListener(handleSetUser, handleClearUser);
 
     const getContent = () => {
         if (currentUser === null) {
@@ -101,7 +98,7 @@ const App = (props) => {
     }
 
     return (
-        <UserContext.Provider value={{ currentUser }}>
+        <UserContext.Provider value={{ currentUser, setCurrentUser }}>
             <div className="app">
                 {getContent()}
             </div>

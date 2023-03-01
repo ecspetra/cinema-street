@@ -76,4 +76,27 @@
 	&--hidden {
 		display: none;
 	}
+
+	@media (max-width: 680px) {
+		top: 80px;
+		justify-content: center;
+
+		&__content {
+			flex-direction: column;
+		}
+
+		&__item {
+			font-size: 12px;
+		}
+
+		&__item-wrap {
+			&:not(:last-child) {
+				margin-right: 0;
+			}
+
+			&--user {
+				margin: 10px 0;
+			}
+		}
+	}
 }

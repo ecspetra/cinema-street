@@ -11,7 +11,7 @@ const postMovieToDataBase = async (database, movie, currentUser) => {
 	if (movieFromCollection === false) {
 		set(newPostRef, {
 			movie: {
-				userID: currentUser.uid,
+				userID: currentUser.userID,
 				poster_path: 'https://image.tmdb.org/t/p/w440_and_h660_face' + movie.poster_path,
 				title: movie.title,
 				release_date: movie.release_date,

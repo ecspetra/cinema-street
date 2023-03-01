@@ -1,12 +1,18 @@
 .app {
-  &__content {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 32px);
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 200px 0 60px;
-  }
+    &__content {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 32px);
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 200px 0 60px;
+    }
+
+    @media (max-width: 680px) {
+        &__content {
+            padding-top: 300px;
+        }
+    }
 }

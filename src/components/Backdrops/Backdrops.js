@@ -19,7 +19,7 @@ const Backdrops = (props) => {
 
 	return (
 		<div ref={backdropsImageRef} className="backdrops" onClick={() => {handleSetImage()}}>
-			<img className="backdrops__image" onError={event => addDefaultImage(event, defaultBackdropsImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w500' + backdrops.file_path} alt="backdrops" />
+			<img className="backdrops__image" onError={event => addDefaultImage(event, defaultBackdropsImage)} onLoad={() => {setIsImageLoaded(true)}} src={`https://image.tmdb.org/t/p/w500${backdrops.file_path}`} alt="backdrops" />
 			{!isImageLoaded && <Loader>Loading image</Loader>}
 		</div>
 	)

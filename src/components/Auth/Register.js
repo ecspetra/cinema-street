@@ -1,14 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword} from "firebase/auth";
-import md5 from 'md5';
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    updateProfile,
+} from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import Input from "../Input/Input";
 import { handleChangeInputValue } from "../../functions/handleChangeInputValue";
 import Button from "../Button/Button";
 import Title from "../Title/Title";
+import {clearUser, setUser} from "../../actions";
+import {connect} from "react-redux";
+import { saveUserToLocalStorage } from "../../functions/userLocalStorageManager";
+import UserContext from "../UserContext/UserContext";
 
-const Register = () => {
+const Register = (props) => {
+
+    const { handleSetUser, handleClearUser } = props;
 
     const [isLoading, setIsLoading] = useState(false);
     const [usernameError, setUsernameError] = useState({
@@ -66,6 +75,8 @@ const Register = () => {
         }
     }
 
+    const { setCurrentUser } = useContext(UserContext);
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -76,13 +87,13 @@ const Register = () => {
         if (isPasswordCorrect && isEmailCorrect && isUserNameCorrect) {
             setIsLoading(true);
             createUserWithEmailAndPassword(auth, emailInputRef.current.value, passwordInputRef.current.value)
-                .then((currentUser) => {
+                .then(() => {
                     updateProfile(auth.currentUser, {
                         displayName: usernameInputRef.current.value,
-                        photoURL: `http://gravatar.com/avatar/${md5(currentUser.user.email)}?d=identicon`,
+                        photoURL: `https://api.dicebear.com/5.x/thumbs/svg?seed=${usernameInputRef.current.value}`,
                     })
                         .then(() => {
-                            set(ref(database, 'users/' + auth.currentUser.uid),  {
+                            const userToSave = {
                                 userID: auth.currentUser.uid,
                                 name: auth.currentUser.displayName,
                                 email: auth.currentUser.email,
@@ -90,10 +101,15 @@ const Register = () => {
                                 country: "No information yet",
                                 dateOfBirth: "No information yet",
                                 biography: "No information yet",
-                            }).then(() => {
+                            }
+                            set(ref(database, 'users/' + auth.currentUser.uid), userToSave).then(() => {
+                                saveUserToLocalStorage(userToSave);
+                                setCurrentUser(userToSave);
+                                handleSetUser(userToSave);
                                 setIsLoading(false);
                             })
                         })
+
                 })
         }
     }
@@ -131,4 +147,11 @@ const Register = () => {
     )
 }
 
-export default Register;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleSetUser: (user) => dispatch(setUser(user)),
+        handleClearUser: () => dispatch(clearUser()),
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Register);

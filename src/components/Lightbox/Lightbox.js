@@ -40,7 +40,7 @@ const Lightbox = (props) => {
 	return (
 		<div className="lightbox">
 			<div className="lightbox__image-wrap">
-				<img className="lightbox__image" onError={event => addDefaultImage(event, defaultBackdropsImage)} onLoad={() => {setIsImageLoaded(true)}} src={'https://image.tmdb.org/t/p/w500' + currentImage.image.file_path} alt="backdrops" />
+				<img className="lightbox__image" onError={event => addDefaultImage(event, defaultBackdropsImage)} onLoad={() => {setIsImageLoaded(true)}} src={`https://image.tmdb.org/t/p/w500${currentImage.image.file_path}`} alt="backdrops" />
 				{!isImageLoaded && <Loader>Loading image</Loader>}
 			</div>
 			<Button className="lightbox__button lightbox__button--left" buttonOnClickFunction={() => {getImage('Previous', currentImage.index)}}>

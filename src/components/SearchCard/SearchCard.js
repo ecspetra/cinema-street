@@ -15,9 +15,9 @@ const SearchCard = (props) => {
 
 	const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-	const linkToResultPage = (isMovieCard ? "/movie/" : "/person/") + result.id;
+	const linkToResultPage = isMovieCard ? `/movie/${result.id}` : `/person/${result.id}`;
 	const resultText = isMovieCard ? result.title : result.name;
-	const resultImage = 'https://image.tmdb.org/t/p/w440_and_h660_face' + (isMovieCard ? result.poster_path : result.profile_path);
+	const resultImage = `https://image.tmdb.org/t/p/w440_and_h660_face${isMovieCard ? result.poster_path : result.profile_path}`;
 
 	let onClickRef = useRef();
 

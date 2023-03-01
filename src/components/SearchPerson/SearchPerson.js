@@ -25,7 +25,7 @@ const SearchPerson = () => {
 			linkToFetchPersons.current = LINK_TO_FETCH_SEARCH_PERSONS_BY_NAME.replace('{personName}', searchInputRef.current.value.replace(/ /g, "+"));
 			setIsShowSearchList(true);
 		} else {
-			setError({errorText: '', isShowError: false});
+			setError({errorText: 'Search field shouldn\'t be empty', isShowError: true});
 		}
 	}
 

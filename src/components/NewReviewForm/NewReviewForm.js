@@ -31,13 +31,13 @@ const NewReviewForm = (props) => {
 			if (isReplyForm) {
 
 				const replyInfo = {
-					userID: currentUser.uid,
+					userID: currentUser.userID,
 					movieID: movieID,
-					id: md5(currentUser.uid + movieID),
+					id: md5(currentUser.userID + new Date().getTime()),
 					likes: 0,
 					dislikes: 0,
-					userAvatar: currentUser.photoURL,
-					displayName: currentUser.displayName,
+					userAvatar: currentUser.avatar,
+					displayName: currentUser.name,
 					replyText: reviewTextRef.current.value,
 					replyDate: new Date().getTime(),
 				}
@@ -48,13 +48,13 @@ const NewReviewForm = (props) => {
 			} else {
 				set(reviewsPostRef, {
 					review: {
-						userID: currentUser.uid,
+						userID: currentUser.userID,
 						movieID: movieID,
-						id: md5(currentUser.uid + movieID),
+						id: md5(currentUser.userID + new Date().getTime()),
 						likes: 0,
 						dislikes: 0,
-						userAvatar: currentUser.photoURL,
-						displayName: currentUser.displayName,
+						userAvatar: currentUser.avatar,
+						displayName: currentUser.name,
 						reviewText: reviewTextRef.current.value,
 						reviewDate: new Date().getTime(),
 						replies: 0,
@@ -111,9 +111,9 @@ const NewReviewForm = (props) => {
 				!isReplyForm && <h3 className="new-review-form__title">Leave your feedback</h3>
 			}
 			<div className="new-review-form__user-wrap">
-				<UserIcon profileLink={currentUser.uid} />
+				<UserIcon profileLink={currentUser.userID} />
 				<div className="new-review-form__user-info">
-					<div className="new-review-form__username">{currentUser.displayName}</div>
+					<div className="new-review-form__username">{currentUser.name}</div>
 				</div>
 			</div>
 			<textarea className={textAreaClassNames} cols="10" rows="8" ref={reviewTextRef} onChange={() => {handleChangeInputValue(reviewTextRef, setIsShowError)}}></textarea>

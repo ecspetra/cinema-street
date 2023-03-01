@@ -55,7 +55,7 @@ const MoviesList = (props) => {
 						return movie.key;
 					})
 				}
-				await getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, currentUser.uid).then((data) => {
+				await getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, currentUser.userID).then((data) => {
 
 					const isEmptyResult = !data.dataFromResponse.length;
 
@@ -101,7 +101,7 @@ const MoviesList = (props) => {
 			return person.key;
 		})
 
-		await fillFavoriteMoviesList(postListRef, receivedFavoriteMoviesKeys, currentUser.uid).then((data) => {
+		await fillFavoriteMoviesList(postListRef, receivedFavoriteMoviesKeys, currentUser.userID).then((data) => {
 			const isEmptyResult = !data.dataFromResponse.length;
 
 			if (!isEmptyResult && moviesList.length !== data.dataFromResponse.length) {
@@ -146,7 +146,7 @@ const MoviesList = (props) => {
 
 			let receivedFavoriteMoviesKeys = [];
 
-			getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, currentUser.uid).then((data) => {
+			getMyMoviesFromDatabase(postListRef, receivedFavoriteMoviesKeys, currentUser.userID).then((data) => {
 
 				const isEmptyResult = !data.dataFromResponse.length;
 

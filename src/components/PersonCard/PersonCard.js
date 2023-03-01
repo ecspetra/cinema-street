@@ -44,7 +44,7 @@ const PersonCard = (props) => {
 		handleFillFavoritePersonsList();
 
 		setTimeout(async () => {
-			await removePersonFromCollection(postListRef, person, currentUser.uid, handleRemoveFromFavoritePersons);
+			await removePersonFromCollection(postListRef, person, currentUser.userID, handleRemoveFromFavoritePersons);
 		}, 750);
 	}
 
@@ -61,10 +61,10 @@ const PersonCard = (props) => {
 				classNames="person-card-wrap"
 			>
 				<div className="person-card">
-					<Link to={"/person/" + person.id} className="person-card__link" onClick={() => {getCurrentPersonPage(person.id, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)})}}>
+					<Link to={`/person/${person.id}`} className="person-card__link" onClick={() => {getCurrentPersonPage(person.id, handleClearCurrentPersonPage).then((data) => {handleSetCurrentPersonPage(data)})}}>
 					<span className="person-card__content">
 						<span className="person-card__image-wrap">
-							<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={'https://image.tmdb.org/t/p/w440_and_h660_face' + person.profile_path} alt="person-photo" />
+							<img className="person-card__image" onLoad={() => {setIsImageLoaded(true)}} onError={event => addDefaultImage(event, defaultPersonImage)} src={`https://image.tmdb.org/t/p/w440_and_h660_face${person.profile_path}`} alt="person-photo" />
 							{!isImageLoaded && <Loader>Loading image</Loader>}
 						</span>
 						<span className="person-card__title">{person.name}</span>

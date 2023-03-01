@@ -22,7 +22,7 @@ const FriendsList = (props) => {
 	const friendsListRef = ref(database, 'friends');
 
 	useEffect(() => {
-		getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.uid : userID, isMyFriendsList).then((data) => {
+		getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : userID, isMyFriendsList).then((data) => {
 			data.map((friend) => {
 				handleAddFriend(friend);
 			})
@@ -41,14 +41,14 @@ const FriendsList = (props) => {
 						<div className="friends-list__friend" key={index}>
 							<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
 							{
-								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.uid, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
+								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.userID, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
 							}
 						</div>
 					)
 				}) : <InfoText>No friends yet</InfoText>
 			}
 			{
-				isShortFriendsList && friendsList.length && <span className="friends-list__friends-list-button-text">Show friends</span>
+				isShortFriendsList && friendsList.length !== 0 && <span className="friends-list__friends-list-button-text">Show friends</span>
 			}
 		</div>
 	)

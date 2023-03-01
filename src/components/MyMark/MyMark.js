@@ -1,23 +1,36 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useContext} from "react";
 import RatingIcon from "../App/assets/icons/Rating";
 import getMyMarks from "../../functions/getMyMarks";
 import {onValue, push, ref, remove, set} from "firebase/database";
 import {database} from "../../firebase";
 import {
+	clearMyMark,
 	removeMyMark,
 	setMyMark
 } from "../../actions";
 import { connect } from "react-redux";
 import getRatingStars from "../../functions/getRatingStars";
 import './assets/index.scss';
+import UserContext from "../UserContext/UserContext";
 
 const MyMark = (props) => {
 
-	const { userID, movie, myMarks, isShowExtendMark, handleSetMyMark, handleRemoveMyMark } = props;
+	const { movie, myMarks, isShowExtendMark, handleSetMyMark, handleRemoveMyMark, handleClearMyMark } = props;
+
+	const { currentUser } = useContext(UserContext);
 
 	const marksListRef = ref(database, 'marks');
 	const marksPostRef = push(marksListRef);
 	const markRef = useRef();
+
+	const onMarkUnmount = useRef();
+	onMarkUnmount.current = () => {
+		handleClearMyMark();
+	}
+
+	useEffect(() => {
+		return () => onMarkUnmount.current();
+	}, []);
 
 	const handleUpdateMyMarks = (id, mark, userID) => {
 
@@ -42,7 +55,7 @@ const MyMark = (props) => {
 					key: childSnapshot.key,
 					data: childSnapshot.val(),
 				}
-				if (myMark.data.movie.userID === userID) {
+				if (myMark.data.movie.userID === currentUser.userID) {
 					handleSetMyMark(myMark);
 				}
 			});
@@ -67,37 +80,25 @@ const MyMark = (props) => {
 		iconsArray: null,
 		mark: null,
 	});
-	const [isLoadingMark, setIsLoadingMark] = useState(false);
 
 	const renderShortMark = (myMarkFromStore) => {
-
-		setIsLoadingMark(true);
-
 		const myMarkShortIcon = <RatingIcon />;
 		const myMarkShortNumber = <span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span>;
 
 		setMyMovieMark({iconsArray: myMarkShortIcon, mark: myMarkShortNumber});
-		setIsLoadingMark(false);
 	}
 
 	const renderExtendedMark = (myMarkFromStore) => {
-
-		setIsLoadingMark(true);
-
 		const myMarkExtendedIcons = <>{getRatingStars(myMarkFromStore.data.movie.myMark)}</>;
 		const myMarkExtendedNumber = <>
 			<span className="my-mark__text">{myMarkFromStore.data.movie.myMark}</span>
-			<button className="my-mark__remove" onClick={() => {handleRemoveMyMarkForMovie(myMarkFromStore.key)}}>Remove my mark</button>
+			<button className="my-mark__remove" onClick={() => {handleRemoveMyMarkForMovie(myMarkFromStore.key)}}>Remove</button>
 		</>;
 
 		setMyMovieMark({ iconsArray: myMarkExtendedIcons, mark: myMarkExtendedNumber});
-		setIsLoadingMark(false);
 	}
 
 	const renderEmptyMark = () => {
-
-		setIsLoadingMark(true);
-
 		const emptyMarkArray = [];
 		const maxIconsAvailable = 10;
 
@@ -116,11 +117,10 @@ const MyMark = (props) => {
 
 		const mappedEmptyMarkArray = emptyMarkArray.map((icon, index) => {
 			const mark = index + 1;
-			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</button>;
+			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, currentUser.userID)}}>{icon}</button>;
 		})
 
 		setMyMovieMark({ iconsArray: mappedEmptyMarkArray, mark: null});
-		setIsLoadingMark(false);
 	}
 
 	const handleRemoveMyMarkForMovie = (key) => {
@@ -158,7 +158,7 @@ const MyMark = (props) => {
 		}
 
 		const mappedHoveredIconsArray = hoveredIconsArray.map((icon, index) => {
-			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, userID)}}>{icon}</button>;
+			return <button className="my-mark__stars-item" key={index} onClick={() => {handleSetMyMarkForMovie(movie.id, mark, currentUser.userID)}}>{icon}</button>;
 		})
 
 		markRef.current = iconIndex;
@@ -189,10 +189,8 @@ const MyMark = (props) => {
 
 	return (
 		<span className="my-mark">
-			{!isLoadingMark && <>
-				<span className="my-mark__icons">{myMovieMark.iconsArray}</span>
-				{myMovieMark.mark}
-			</>}
+			<span className="my-mark__icons">{myMovieMark.iconsArray}</span>
+			{myMovieMark.mark}
 		</span>
 	)
 }
@@ -204,7 +202,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleSetMyMark: (myMark) => dispatch(setMyMark(myMark)),
-		handleRemoveMyMark: (myMarkKey) => dispatch(removeMyMark(myMarkKey))
+		handleRemoveMyMark: (myMarkKey) => dispatch(removeMyMark(myMarkKey)),
+		handleClearMyMark: () => dispatch(clearMyMark())
 	}
 }
 

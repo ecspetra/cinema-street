@@ -1,8 +1,8 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, useRef } from "react";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import { connect } from "react-redux";
 import { onValue, ref } from "firebase/database";
-import { setMyReview } from "../../actions";
+import {clearReviews, setMyReview} from "../../actions";
 import MoreButton from "../MoreButton/MoreButton";
 import InfoText from "../InfoText/InfoText";
 import './assets/index.scss';
@@ -10,13 +10,22 @@ import { database } from "../../firebase";
 
 const ReviewsList = forwardRef((props, reviewCardRef) => {
 
-	const { movieID, handleSetMyReview } = props;
+	const { movieID, handleSetMyReview, handleClearReviews } = props;
 
 	const reviewsListRef = ref(database, 'reviews');
 	const apiReviews = props.reviews;
 	const usersReviews = props.usersReviews;
 	const initialListLength = 4;
 	const [maxResultsLength, setMaxResultsLength] = useState(initialListLength);
+
+	const onReviewsUnmount = useRef();
+	onReviewsUnmount.current = () => {
+		handleClearReviews();
+	}
+
+	useEffect(() => {
+		return () => onReviewsUnmount.current();
+	}, []);
 
 	const getReviewsList = () => {
 		if (generalReviews.length >= maxResultsLength) {
@@ -168,6 +177,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
 	return {
 		handleSetMyReview: (review) => dispatch(setMyReview(review)),
+		handleClearReviews: () => dispatch(clearReviews()),
 	}
 }
 

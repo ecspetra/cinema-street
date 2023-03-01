@@ -5,7 +5,6 @@ import fetchMoreResults from "../../functions/fetchMoreResults";
 import MoreButton from "../MoreButton/MoreButton";
 import SearchCard from "../SearchCard/SearchCard";
 import InfoText from "../InfoText/InfoText";
-import {v1 as uuidv1} from "uuid";
 import './assets/index.scss';
 import md5 from "md5";
 
@@ -22,6 +21,7 @@ const SearchList = (props) => {
 		return () => onSearchListUnmount.current();
 	}, []);
 
+	const searchListRef = useRef();
 	const [currentResultsPage, setCurrentResultsPage] = useState(1);
 	const [isSearchListLoaded, setIsSearchListLoaded] = useState(true);
 	const [prevResultsPage, setPrevResultsPage] = useState(0);
@@ -48,12 +48,27 @@ const SearchList = (props) => {
 
 	const isShowMoreButton = isResultsExist && isSearchListLoaded;
 
+	const clearSearchResults = () => {
+		let refOffset = 300;
+		let refPosition = searchListRef.current.getBoundingClientRect().top;
+		let offsetPosition = refPosition + window.pageYOffset - refOffset;
+
+		window.scrollTo({
+			top: offsetPosition,
+			behavior: "smooth"
+		});
+
+		setTimeout(() => {
+			setIsShowSearchList(false);
+		}, 750);
+	}
+
 	return (
 		<>
 			{
 				searchResults.length > 0
 					? <>
-						<div className="search-list">
+						<div className="search-list" ref={searchListRef}>
 							{
 								searchResults.length > 0 && searchResults.map((result) => {
 									return (
@@ -66,7 +81,7 @@ const SearchList = (props) => {
 							{
 								(isShowMoreButton && isSearchListLoaded) && <MoreButton isFetchResultsButton moreButtonOnClickFunction={getSearchResults} />
 							}
-							<button className="search-list-buttons-wrap__clear-button" onClick={() => {setIsShowSearchList(false)}}>Clear search results</button>
+							<button className="search-list-buttons-wrap__clear-button" onClick={() => {clearSearchResults()}}>Clear results</button>
 						</div>
 					</>
 					: <InfoText>No results. Please try another request.</InfoText>
