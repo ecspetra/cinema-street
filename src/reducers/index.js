@@ -304,7 +304,7 @@ const friends_reducer = (state = initialFriendsState, action) => {
 		case actionTypes.REMOVE_FROM_FRIENDS:
 			return {
 				...state,
-				friends: state.friends.filter(item => item.key !== action.payload)
+				friends: state.friends.filter(item => item.userID !== action.payload)
 			}
 		default: return state;
 	}

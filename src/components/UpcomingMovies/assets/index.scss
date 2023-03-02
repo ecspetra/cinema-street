@@ -36,6 +36,7 @@
 		height: 100%;
 		display: block;
 		object-fit: cover;
+		aspect-ratio: 16/9.1;
 	}
 
 	&__list {
@@ -132,6 +133,7 @@
 		position: absolute;
 		left: 30px;
 		bottom: 30px;
+		max-width: calc(100% - 60px);
 	}
 
 	&__title {

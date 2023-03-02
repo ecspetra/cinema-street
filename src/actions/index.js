@@ -214,10 +214,10 @@ export const addToFriends = (user) => {
 	}
 }
 
-export const removeFromFriends = (key) => {
+export const removeFromFriends = (id) => {
 	return {
 		type: actionTypes.REMOVE_FROM_FRIENDS,
-		payload: key
+		payload: id
 	}
 }
 

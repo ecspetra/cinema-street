@@ -35,7 +35,7 @@ const SearchCard = (props) => {
 					{!isImageLoaded && <Loader>Loading image</Loader>}
 				</div>
 				{
-					isMovieCard === true && <span className="search-card__release-date">{(new Date(result.release_date).getFullYear())}</span>
+					isMovieCard === true && <span className="search-card__release-date">{((new Date(result.release_date).getFullYear()).toString())}</span>
 				}
 				<h3 className="search-card__title">{resultText}</h3>
 			</Link>

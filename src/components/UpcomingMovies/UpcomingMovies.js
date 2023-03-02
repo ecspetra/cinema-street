@@ -19,7 +19,7 @@ const UpcomingMovies = (props) => {
 
 	const getUpcomingMovies = async () => {
 		const response = await axios.get(
-			'https://api.themoviedb.org/3/movie/upcoming?api_key=' + API_KEY
+			`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`
 		);
 		handleSetUpcomingMovies(response.data.results);
 	}
@@ -33,7 +33,7 @@ const UpcomingMovies = (props) => {
 
 	const getUpcomingMovieVideo = async (selectedMovie) => {
 		const response = await axios.get(
-			'https://api.themoviedb.org/3/movie/' + selectedMovie.id + '/videos?api_key=' + API_KEY
+			`https://api.themoviedb.org/3/movie/${selectedMovie.id}/videos?api_key=${API_KEY}`
 		);
 		if (response.data.results.length) {
 			const trailer = response.data.results.find(video => video.type === "Trailer");
@@ -100,7 +100,6 @@ const UpcomingMovies = (props) => {
 	};
 
 	const videoOptions = {
-		// debug: true,
 		controls: [
 			'restart', // Restart playback
 			'play', // Play/pause playback
@@ -113,35 +112,38 @@ const UpcomingMovies = (props) => {
 			'settings', // Settings menus
 			'fullscreen', // Toggle fullscreen
 		],
-		// youtube: {
-		// 	modestbranding: 1,
-		// }
 	};
 
 	return (
-		<div className="upcoming-movies">
-			<div className="upcoming-movies__preview">
-				{
-					moviePreview.movieTrailer
-						? <div className="upcoming-movies__video-player"><Plyr source={videoSrc} options={videoOptions} /></div>
-						: (
-							<>
-								<img className="upcoming-movies__image" src={`https://image.tmdb.org/t/p/w440_and_h660_face${moviePreview.moviePosterPath}`} alt="movie-poster" />
-								<div className="upcoming-movies__info">
-									<Title className="upcoming-movies__title" title={moviePreview.movieTitle} />
-								</div>
-							</>
-						)
-				}
-			</div>
-			<div className="upcoming-movies__list">
-				{
-					moviesSortedByReleaseDate.map((movie) => {
-						return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={movie.id} />
-					})
-				}
-			</div>
-		</div>
+		<>
+			{
+				Object.keys(moviePreview).length !== 0 && (
+					<div className="upcoming-movies">
+						<div className="upcoming-movies__preview">
+							{
+								moviePreview.movieTrailer
+									? <div className="upcoming-movies__video-player"><Plyr source={videoSrc} options={videoOptions} /></div>
+									: (
+										<>
+											<img className="upcoming-movies__image" src={`https://image.tmdb.org/t/p/w440_and_h660_face${moviePreview.moviePosterPath}`} alt="movie-poster" />
+											<div className="upcoming-movies__info">
+												<Title className="upcoming-movies__title" title={moviePreview.movieTitle} />
+											</div>
+										</>
+									)
+							}
+						</div>
+						<div className="upcoming-movies__list">
+							{
+								moviesSortedByReleaseDate.map((movie) => {
+									return <UpcomingMovieItem handleSetMoviePreview={handleSetMoviePreview} isMoviePreviewSelected={isMoviePreviewSelected} movie={movie} key={movie.id} />
+								})
+							}
+						</div>
+					</div>
+				)
+			}
+		</>
 	)
 }
 

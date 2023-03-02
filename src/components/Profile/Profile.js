@@ -86,13 +86,15 @@ const Profile = (props) => {
 
 	useEffect(() => {
 		if (isProfileLoaded && profile.key !== currentUser.userID) {
-			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.userID).then(data => setIsFriendFromCollection(data));
+			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
 		}
 	}, [userProfile]);
 
 	const addUserToFriends = async () => {
 
-		const friendsPostRef = push(friendsListRef);
+		const currentUserPostRef = push(friendsListRef);
+		const newUserPostRef = push(friendsListRef);
+		const selectedUserPostRef = push(friendsListRef);
 
 		return new Promise((resolve) => {
 			get(friendsListRef).then((snapshot) => {
@@ -111,7 +113,7 @@ const Profile = (props) => {
 			});
 		}).then((data) => {
 			if (!data.length) {
-				set(friendsPostRef, {
+				set(currentUserPostRef, {
 					userID: currentUser.userID,
 					info: {
 						name: currentUser.name,
@@ -119,59 +121,141 @@ const Profile = (props) => {
 						avatar: currentUser.avatar,
 					},
 					friends: [userProfile],
-				})
+				}).then(() => {
+					set(selectedUserPostRef, {
+						userID: userProfile.userID,
+						info: {
+							name: userProfile.name,
+							email: userProfile.email,
+							avatar: userProfile.avatar,
+						},
+						friends: [currentUser],
+					})
+				}).then(() => {
+					checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
+					getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
+						data.map((friend) => {
+							handleAddFriend(friend);
+						})
+					});
+				});
 			}
 
-			data.map((item) => {
+			const isCurrentUserExists = data.find(user => user.data.userID === currentUser.userID) ?? false;
+			const isSelectedUserExists = data.find(user => user.data.userID === userProfile.userID) ?? false;
+			const currentUserRef = ref(database, "/friends/" + isCurrentUserExists.key);
+			const selectedUserRef = ref(database, "/friends/" + isSelectedUserExists.key);
 
-				const newUser = !data.find(user => user.data.userID === currentUser.userID);
-				const newFriend = !item.data.friends;
-
-				if (item.data.userID === currentUser.userID) {
-
-					const userRef = ref(database, "/friends/" + item.key);
-
-					if (newFriend) {
-						set(userRef, {
-							userID: currentUser.userID,
-							info: {
-								name: currentUser.name,
-								email: currentUser.email,
-								avatar: currentUser.avatar,
-							},
-							friends: [userProfile],
-						})
-					} else {
-						set(userRef, {
-							userID: item.data.userID,
-							info: {
-								name: item.data.info.name,
-								email: item.data.info.email,
-								avatar: item.data.info.avatar,
-							},
-							friends: [...item.data.friends, userProfile],
-						});
-					}
-				} else if (newUser) {
-					set(friendsPostRef, {
-						userID: currentUser.userID,
+			if (isCurrentUserExists && isSelectedUserExists) {
+				set(currentUserRef, {
+					userID: isCurrentUserExists.data.userID,
+					info: {
+						name: isCurrentUserExists.data.info.name,
+						email: isCurrentUserExists.data.info.email,
+						avatar: isCurrentUserExists.data.info.avatar,
+					},
+					friends: isCurrentUserExists.data.friends ? [...isCurrentUserExists.data.friends, userProfile] : [userProfile],
+				}).then(() => {
+					set(selectedUserRef, {
+						userID: isSelectedUserExists.data.userID,
 						info: {
-							name: currentUser.name,
-							email: currentUser.email,
-							avatar: currentUser.avatar,
+							name: isSelectedUserExists.data.info.name,
+							email: isSelectedUserExists.data.info.email,
+							avatar: isSelectedUserExists.data.info.avatar,
 						},
-						friends: [userProfile],
+						friends: isSelectedUserExists.data.friends ? [...isSelectedUserExists.data.friends, currentUser] : [currentUser],
 					})
-				}
-			});
-
-			checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser.userID).then(data => setIsFriendFromCollection(data));
-			getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
-				data.map((friend) => {
-					handleAddFriend(friend);
-				})
-			});
-		});
+				}).then(() => {
+					checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
+					getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
+						data.map((friend) => {
+							handleAddFriend(friend);
+						})
+					});
+				});
+			} else if (isCurrentUserExists && !isSelectedUserExists) {
+				set(currentUserRef, {
+					userID: isCurrentUserExists.data.userID,
+					info: {
+						name: isCurrentUserExists.data.info.name,
+						email: isCurrentUserExists.data.info.email,
+						avatar: isCurrentUserExists.data.info.avatar,
+					},
+					friends: isCurrentUserExists.data.friends ? [...isCurrentUserExists.data.friends, userProfile] : [userProfile],
+				}).then(() => {
+					set(newUserPostRef, {
+						userID: userProfile.userID,
+						info: {
+							name: userProfile.name,
+							email: userProfile.email,
+							avatar: userProfile.avatar,
+						},
+						friends: [currentUser],
+					})
+				}).then(() => {
+					checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
+					getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
+						data.map((friend) => {
+							handleAddFriend(friend);
+						})
+					});
+				});
+			} else if (!isCurrentUserExists && isSelectedUserExists) {
+				set(newUserPostRef, {
+					userID: currentUser.userID,
+					info: {
+						name: currentUser.name,
+						email: currentUser.email,
+						avatar: currentUser.avatar,
+					},
+					friends: [userProfile],
+				}).then(() => {
+					set(selectedUserRef, {
+						userID: isSelectedUserExists.data.userID,
+						info: {
+							name: isSelectedUserExists.data.info.name,
+							email: isSelectedUserExists.data.info.email,
+							avatar: isSelectedUserExists.data.info.avatar,
+						},
+						friends: isSelectedUserExists.data.friends ? [...isSelectedUserExists.data.friends, currentUser] : [currentUser],
+					})
+				}).then(() => {
+					checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
+					getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
+						data.map((friend) => {
+							handleAddFriend(friend);
+						})
+					});
+				});
+			} else {
+				set(currentUserPostRef, {
+					userID: currentUser.userID,
+					info: {
+						name: currentUser.name,
+						email: currentUser.email,
+						avatar: currentUser.avatar,
+					},
+					friends: [userProfile],
+				}).then(() => {
+					set(selectedUserPostRef, {
+						userID: userProfile.userID,
+						info: {
+							name: userProfile.name,
+							email: userProfile.email,
+							avatar: userProfile.avatar,
+						},
+						friends: [currentUser],
+					})
+				}).then(() => {
+					checkIfFriendExistsInCollection(friendsListRef, userProfile, currentUser).then(data => setIsFriendFromCollection(data));
+					getFriendsFromDatabase(friendsListRef, isMyFriendsList ? currentUser.userID : profile.key, isMyFriendsList).then((data) => {
+						data.map((friend) => {
+							handleAddFriend(friend);
+						})
+					});
+				});
+			}
+		})
 	}
 
 	const handleUpdateProfilePage = () => {
@@ -189,7 +273,7 @@ const Profile = (props) => {
 	}
 
 	const handleRemoveFriendFromCollection = () => {
-		removeUserFromFriends(friendsListRef, userProfile, currentUser.userID, handleRemoveFriend, setIsFriendFromCollection);
+		removeUserFromFriends(friendsListRef, userProfile, currentUser, handleRemoveFriend, setIsFriendFromCollection);
 	}
 
 	const collectionButtonOnClickFunction = isFriendFromCollection ? handleRemoveFriendFromCollection : addUserToFriends;

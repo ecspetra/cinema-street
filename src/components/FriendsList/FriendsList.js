@@ -41,7 +41,7 @@ const FriendsList = (props) => {
 						<div className="friends-list__friend" key={index}>
 							<Friend isMyFriend={isMyFriendsList} isShortFriendsList={isShortFriendsList} user={user} />
 							{
-								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser.userID, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
+								!isShortFriendsList && <Button buttonOnClickFunction={() => removeUserFromFriends(friendsListRef, user, currentUser, handleRemoveFriend, setIsFriendFromCollection)}>Remove</Button>
 							}
 						</div>
 					)

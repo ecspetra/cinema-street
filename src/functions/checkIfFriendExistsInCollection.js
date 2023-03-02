@@ -1,6 +1,6 @@
 import { get } from "firebase/database";
 
-const checkIfFriendExistsInCollection = (friendsListRef, user, currentUserID, isUserNeeded = false) => {
+const checkIfFriendExistsInCollection = (friendsListRef, selectedUser, currentUser, isUserNeeded = false, isSelectedUserNeeded = false) => {
 
 	return new Promise((resolve) => {
 		get(friendsListRef).then((snapshot) => {
@@ -13,14 +13,23 @@ const checkIfFriendExistsInCollection = (friendsListRef, user, currentUserID, is
 					data: childSnapshot.val(),
 				}
 
-				if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.userID === friend.userID) && isUserNeeded === true) {
-					isFriendFromCollection = friend;
-				} else if (friend.data.friends.length && currentUserID === friend.data.userID && friend.data.friends.some(friend => user.userID === friend.userID) && isUserNeeded === false) {
-					isFriendFromCollection = true;
+				if (isSelectedUserNeeded === true) {
+					if (friend.data.friends.length && selectedUser.userID === friend.data.userID && friend.data.friends.some(friend => currentUser.userID === friend.userID) && isUserNeeded === true) {
+
+						isFriendFromCollection = friend;
+					} else if (friend.data.friends.length && selectedUser.userID === friend.data.userID && friend.data.friends.some(friend => currentUser.userID === friend.userID) && isUserNeeded === false) {
+						isFriendFromCollection = true;
+					}
+				} else {
+					if (friend.data.friends.length && currentUser.userID === friend.data.userID && friend.data.friends.some(friend => selectedUser.userID === friend.userID) && isUserNeeded === true) {
+						isFriendFromCollection = friend;
+					} else if (friend.data.friends.length && currentUser.userID === friend.data.userID && friend.data.friends.some(friend => selectedUser.userID === friend.userID) && isUserNeeded === false) {
+						isFriendFromCollection = true;
+					}
 				}
 			});
 
-			resolve(isFriendFromCollection)
+			resolve(isFriendFromCollection);
 		});
 	});
 }

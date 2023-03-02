@@ -32,6 +32,7 @@ import './assets/index.scss';
 import md5 from "md5";
 import UserContext from "../UserContext/UserContext";
 import Title from "../Title/Title";
+import InfoText from "../InfoText/InfoText";
 
 const MoviePage = (props) => {
 
@@ -133,17 +134,23 @@ const MoviePage = (props) => {
 		return () => onMoviePageUnmount.current();
 	}, []);
 
+	const getVideoSrc = async () => {
+		videoSrcRef.current = {
+			type: "video",
+			sources: [
+				{
+					src: await getMovieTrailer(),
+					provider: "youtube",
+				}
+			]
+		}
+	}
+
 	useEffect(() => {
 		if (isCurrentMovieLoaded) {
 			checkIfMovieExistsInCollection(postListRef, currentMovieInfo.id, currentUser).then(data => setIsMovieFromCollection(data));
-			videoSrcRef.current = {
-				type: "video",
-				sources: [
-					{
-						src: getMovieTrailer(),
-						provider: "youtube",
-					}
-				]
+			if (currentMovieVideos.length) {
+				getVideoSrc();
 			}
 		}
 	}, [isCurrentMovieLoaded]);
@@ -244,9 +251,14 @@ const MoviePage = (props) => {
 							</div>
 							<div className="movie-page__video-wrap">
 								<Title title={"Trailer"} />
-								<div className="movie-page__video">
-									<Plyr source={videoSrcRef.current} />
-								</div>
+								{
+									videoSrcRef.current ? (
+										<div className="movie-page__video">
+											<Plyr source={videoSrcRef.current} />
+										</div>
+									) : <InfoText>No trailers yet</InfoText>
+								}
+
 							</div>
 							<div className="movie-page__images-wrap">
 								<Title title={"Backdrops"} />
