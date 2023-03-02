@@ -2,11 +2,14 @@ import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import Rating from "../Rating/Rating";
+import {useParams} from "react-router";
 
 const MovieCard = (props) => {
 
 	const [movieGenresIDs, setMovieGenresIDs] = useState([]);
 	const [movieGenresNames, setMovieGenresNames] = useState([]);
+
+	const favouriteMovies = props.favouriteMovies;
 
 	const getMovieGenresIDs = () => {
 		props.movie.genre_ids.map((genre) => {
