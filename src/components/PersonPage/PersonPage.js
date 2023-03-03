@@ -161,7 +161,7 @@ const PersonPage = (props) => {
 							</div>
 						</div>
 						<div className="person-page__movies">
-							<Title className="person-page__name" title={`Movies with ${currentPerson.name}`} />
+							<Title className="person-page__title" title={`Movies with ${currentPerson.name}`} />
 							<MoviesList linkToFetch={linkToFetchCurrentPersonMovies} />
 						</div>
 						<Modal isShowModal={isShowInfoPopup} className="modal--transparent" overflow={'visible'}>
