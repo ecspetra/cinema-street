@@ -9,7 +9,7 @@
 ![project-screenshot-8](public/assets/images/screenshot-8.png)
 
 ## Description
-Film library. Users have the opportunity to register on the platform, explore information about films, TV series, and actors. They can utilize quick search and filtering options, leave reviews, provide ratings and reactions, connect with other project participants as friends, and create their own collections.
+This web platform allows users to register and discover information about movies, TV shows, and actors. They can search and filter easily, leave reviews and ratings, react to content, connect with friends, and create their own collections.
 
 ## Link
 https://cinema-street.yuliia-tkachenko.dev
